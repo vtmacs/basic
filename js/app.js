@@ -11,7 +11,7 @@
       font: '"Courier New", "Noto Sans Mono CJK JP", "MS Gothic", monospace',
     },
     n88: {
-      desc: 'NEC PC-8801/PC-9801 シリーズの標準BASIC。行番号つきで、色・図形(LINE/CIRCLE/PAINT)・音(PLAY)・文字列関数・ファイル(OPEN/PRINT#/INPUT#)が使える、日本のパソコン黎明期の定番です。',
+      desc: 'NEC PC-8801/PC-9801 シリーズ向けBASICを参考にした非公式の互換実装。行番号つきで、色・図形(LINE/CIRCLE/PAINT)・音(PLAY)・文字列関数・ファイル(OPEN/PRINT#/INPUT#)が使える、日本のパソコン黎明期の定番です。',
       keys: '<kbd>INKEY$</kbd> 用に、画面をクリックしてからキーを押します(矢印キー = 28〜31)。画面は 80×25 文字・640×400 ドット・8色です。',
       font: '"MS Gothic", "Noto Sans Mono CJK JP", "Courier New", monospace',
     },
@@ -21,7 +21,7 @@
       font: '"Courier New", "Noto Sans Mono CJK JP", "MS Gothic", monospace',
     },
     smile: {
-      desc: 'ゲームを作りたくなる現代的なBASIC(SmileBASIC風)。行番号なし、ラベル(@LOOP)、DEF による関数、配列 A[i]、VSYNC によるフレーム同期、RGB() による色指定、スプライト(SPSET)・BG(BGPUT)・ファイル保存(SAVE/LOAD)にも対応しています。',
+      desc: 'ゲームを作りたくなる現代的なBASIC(SmileBASIC を参考にした非公式の互換実装)。行番号なし、ラベル(@LOOP)、DEF による関数、配列 A[i]、VSYNC によるフレーム同期、RGB() による色指定、スプライト(SPSET)・BG(BGPUT)・ファイル保存(SAVE/LOAD)にも対応しています。',
       keys: '<kbd>←↑↓→</kbd> = 十字キー、<kbd>Z</kbd><kbd>X</kbd><kbd>A</kbd><kbd>S</kbd> = A/B/X/Y ボタン(<kbd>BUTTON()</kbd>)。マウスでタッチ(<kbd>TOUCH</kbd>)。画面は 400×240 ドット・50×30 文字です。',
       font: '"Noto Sans Mono CJK JP", "MS Gothic", "Courier New", monospace',
     },

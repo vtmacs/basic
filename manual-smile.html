@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>smile BASIC マニュアル | MACS Project</title>
-<meta name="description" content="ゲームを作りたくなる現代的なBASIC(SmileBASIC風)。行番号なし、ラベル、関数(DEF)、配列、スプライトとBG、VSYNC でのフレーム同期、RGB() での色指定、ファイル保存。">
+<meta name="description" content="ゲームを作りたくなる現代的なBASIC(SmileBASIC を参考にした非公式の互換実装)。行番号なし、ラベル、関数(DEF)、配列、スプライトとBG、VSYNC でのフレーム同期、RGB() での色指定、ファイル保存。">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -22,14 +22,14 @@
 <main class="wrap">
 
 <h1>smile BASIC マニュアル</h1>
-<p class="lead">ゲームを作りたくなる現代的なBASIC(SmileBASIC風)。行番号なし、ラベル、関数(DEF)、配列、スプライトとBG、VSYNC でのフレーム同期、RGB() での色指定、ファイル保存。</p>
+<p class="lead">ゲームを作りたくなる現代的なBASIC(SmileBASIC を参考にした非公式の互換実装)。行番号なし、ラベル、関数(DEF)、配列、スプライトとBG、VSYNC でのフレーム同期、RGB() での色指定、ファイル保存。</p>
 <div class="doc-layout">
   <nav class="toc" aria-label="目次"><b>目次</b><a href="#about">smile BASIC とは</a><a href="#start">画面とはじめかた</a><a href="#program">プログラムの書き方</a><a href="#data">変数・配列・演算子</a><a href="#io">入出力・文字画面</a><a href="#control">制御構造</a><a href="#def">DEF(関数・手続き)</a><a href="#arrays">配列の命令・データ</a><a href="#functions">関数</a><a href="#graphics">グラフィック</a><a href="#game">動かしてみよう(VSYNC・ボタン)</a><a href="#sprite">スプライト</a><a href="#bg">BG(背景)</a><a href="#page">グラフィックページ</a><a href="#file">ファイル(SAVE / LOAD)</a><a href="#errors">エラーメッセージ</a><a href="#limits">制限事項</a><a href="compare.html">▶ 方言の比較</a><a href="index.html#smile">▶ シミュレータで試す</a></nav>
   <article>
 <section id="about"><h2>smile BASIC とは</h2>
 
-<p>smile BASIC は、ニンテンドー3DS/Switch の「SmileBASIC」のように、<b>ゲームやグラフィックを手軽に作れる</b>ことを目指した現代的なBASICです。行番号は使わず、飛び先には <code>@LOOP</code> のような<b>ラベル</b>を使い、<code>DEF</code> で関数を作り、配列は <code>A[3]</code> のように <code>[ ]</code> で書きます。</p>
-<div class="note tip">このシミュレータの smile BASIC は SmileBASIC の文法を参考にした再現です。文字画面(コンソール)・図形・<b>スプライト・BG</b>・<b>ファイル保存</b>に対応しています。音楽・ネットワーク・実機の細かい仕様は含みません。</div>
+<p>smile BASIC は、株式会社スマイルブームの「SmileBASIC」のように、<b>ゲームやグラフィックを手軽に作れる</b>ことを目指した現代的なBASICです。行番号は使わず、飛び先には <code>@LOOP</code> のような<b>ラベル</b>を使い、<code>DEF</code> で関数を作り、配列は <code>A[3]</code> のように <code>[ ]</code> で書きます。このシミュレータは SmileBASIC の文法を参考に独自に作った<b>非公式の互換実装</b>で、株式会社スマイルブームとは関係がありません。</p>
+<div class="note tip">このシミュレータの smile BASIC は SmileBASIC の文法を参考にした非公式の再現です(標準のスプライト・タイルの絵や説明文はすべて独自のものです)。文字画面(コンソール)・図形・<b>スプライト・BG</b>・<b>ファイル保存</b>に対応しています。音楽・ネットワーク・実機の細かい仕様は含みません。</div>
 </section>
 <section id="start"><h2>画面とはじめかた</h2>
 
@@ -391,6 +391,7 @@ DELETE "DAT:SQUARES"</pre></div>
     <span>マニュアル: <a href="manual-tiny.html">Tiny BASIC</a><a href="manual-n88.html">N88-BASIC</a><a href="manual-full.html">Full BASIC</a><a href="manual-smile.html" aria-current="page">smile BASIC</a></span>
     <span><a href="compare.html">方言の比較</a> / <a href="index.html">シミュレータ</a></span>
   </div>
+  <div class="wrap"><p class="legal">「N88-BASIC」「PC-8801」「PC-9801」は日本電気株式会社(NEC)の、「SmileBASIC」は株式会社スマイルブームの、「Microsoft」は Microsoft Corporation の、「Nintendo」は任天堂株式会社の商標または登録商標です。このサイトは個人・学習用の<b>非公式</b>のシミュレータで、これらの会社とは関係がなく、承認・提携・推奨を受けたものではありません。「N88-BASIC」「smile BASIC」の名前は、文法や使い方を参考にした互換実装であることを示すために使っています。各社の製品・ソフトウェア・画像・マニュアルの内容は含まれていません(画面の絵・サンプル・説明文はすべて独自に作成したものです)。</p></div>
 </footer>
 </body>
 </html>

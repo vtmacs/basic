@@ -1,7 +1,7 @@
 // 方言の比較ページ。セルの先頭の y: / p: / n: は ● / △ / × の印になる。
 const ROWS = [
   ['基本', [
-    ['時代・出どころ', '1975年ごろ。Tiny BASIC 仕様(最小のBASIC)', '1980年代。NEC PC-8801/9801 の標準BASIC(Microsoft BASIC系)', '1980年代に規格化(ANSI/ISO、JIS X 3003)。教育用', '2010年代〜。ゲーム向けの現代的BASIC(SmileBASIC風)'],
+    ['時代・出どころ', '1975年ごろ。Tiny BASIC 仕様(最小のBASIC)', '1980年代のNEC PC-8801/9801 向けBASICを参考にした互換(Microsoft BASIC系の文法)', '1980年代に規格化(ANSI/ISO、JIS X 3003)。教育用', '2010年代〜のゲーム向け現代的BASIC(SmileBASIC を参考にした互換)'],
     ['行番号', '必須', '必須', 'p:省略できる(付けても可)', 'y:使わない(ラベル <code>@名前</code>)'],
     ['1行に複数の文(<code>:</code>)', 'n:不可', 'y:可', 'y:可', 'y:可'],
     ['コメント', '<code>REM</code>', '<code>REM</code> と <code>\'</code>', '<code>!</code> と <code>REM</code>', '<code>\'</code> と <code>REM</code>'],

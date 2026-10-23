@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>N88-BASIC マニュアル | MACS Project</title>
-<meta name="description" content="NEC PC-8801 / PC-9801 シリーズの標準BASIC。行番号つきの手軽な書き方に、色・図形・音・文字列処理がそろった、日本のパソコン黎明期の定番です。">
+<meta name="description" content="NEC の PC-8801 / PC-9801 シリーズ向けBASICの文法を参考にした、非公式の互換実装です。行番号つきの手軽な書き方に、色・図形・音・文字列処理がそろった、日本のパソコン黎明期の定番です。">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -22,14 +22,14 @@
 <main class="wrap">
 
 <h1>N88-BASIC マニュアル</h1>
-<p class="lead">NEC PC-8801 / PC-9801 シリーズの標準BASIC。行番号つきの手軽な書き方に、色・図形・音・文字列処理がそろった、日本のパソコン黎明期の定番です。</p>
+<p class="lead">NEC の PC-8801 / PC-9801 シリーズ向けBASICの文法を参考にした、非公式の互換実装です。行番号つきの手軽な書き方に、色・図形・音・文字列処理がそろった、日本のパソコン黎明期の定番です。</p>
 <div class="doc-layout">
   <nav class="toc" aria-label="目次"><b>目次</b><a href="#about">N88-BASIC とは</a><a href="#start">画面とはじめかた</a><a href="#program">プログラムの書き方</a><a href="#data">変数・型・演算子</a><a href="#io">入出力の命令</a><a href="#control">制御の命令</a><a href="#vars">データと変数の命令</a><a href="#functions">関数</a><a href="#graphics">グラフィック</a><a href="#file">ファイル</a><a href="#samples">もう少し大きなプログラム</a><a href="#errors">エラーメッセージ</a><a href="#limits">制限事項</a><a href="compare.html">▶ 方言の比較</a><a href="index.html#n88">▶ シミュレータで試す</a></nav>
   <article>
 <section id="about"><h2>N88-BASIC とは</h2>
 
-<p>N88-BASIC は NEC のパソコン PC-8801 シリーズ(のちに PC-9801 の N88-BASIC(86) も)に搭載された BASIC で、マイクロソフトの BASIC を元にしています。行番号で書くスタイルは <a href="manual-tiny.html">Tiny BASIC</a> と同じですが、変数の型、配列、文字列、FOR/WHILE、ON GOTO、DATA/READ、グラフィック命令などが加わっています。</p>
-<div class="note tip">このシミュレータの N88-BASIC は、よく使われる命令を中心に再現した学習用のものです。ディスクやカセットの命令、スプライト、PEEK/POKE などの機種依存の機能は含みません。</div>
+<p>N88-BASIC は、NEC のパソコン PC-8801 シリーズ(のちに PC-9801 シリーズ)に搭載された BASIC で、マイクロソフト社の BASIC を元にしています。このシミュレータは、その文法や使い方を参考に独自に作った<b>非公式の互換実装</b>で、NEC やマイクロソフト社とは関係がありません。行番号で書くスタイルは <a href="manual-tiny.html">Tiny BASIC</a> と同じですが、変数の型、配列、文字列、FOR/WHILE、ON GOTO、DATA/READ、グラフィック命令などが加わっています。</p>
+<div class="note tip">このシミュレータの N88-BASIC は、よく使われる命令を中心に再現した学習用のものです(実機のソフトウェアや画像は含みません)。ディスクやカセットの命令、スプライト、PEEK/POKE などの機種依存の機能は含みません。</div>
 </section>
 <section id="start"><h2>画面とはじめかた</h2>
 
@@ -271,6 +271,7 @@
     <span>マニュアル: <a href="manual-tiny.html">Tiny BASIC</a><a href="manual-n88.html" aria-current="page">N88-BASIC</a><a href="manual-full.html">Full BASIC</a><a href="manual-smile.html">smile BASIC</a></span>
     <span><a href="compare.html">方言の比較</a> / <a href="index.html">シミュレータ</a></span>
   </div>
+  <div class="wrap"><p class="legal">「N88-BASIC」「PC-8801」「PC-9801」は日本電気株式会社(NEC)の、「SmileBASIC」は株式会社スマイルブームの、「Microsoft」は Microsoft Corporation の、「Nintendo」は任天堂株式会社の商標または登録商標です。このサイトは個人・学習用の<b>非公式</b>のシミュレータで、これらの会社とは関係がなく、承認・提携・推奨を受けたものではありません。「N88-BASIC」「smile BASIC」の名前は、文法や使い方を参考にした互換実装であることを示すために使っています。各社の製品・ソフトウェア・画像・マニュアルの内容は含まれていません(画面の絵・サンプル・説明文はすべて独自に作成したものです)。</p></div>
 </footer>
 </body>
 </html>

@@ -1,12 +1,12 @@
 module.exports = {
   title: 'smile BASIC マニュアル',
-  lead: 'ゲームを作りたくなる現代的なBASIC(SmileBASIC風)。行番号なし、ラベル、関数(DEF)、配列、スプライトとBG、VSYNC でのフレーム同期、RGB() での色指定、ファイル保存。',
+  lead: 'ゲームを作りたくなる現代的なBASIC(SmileBASIC を参考にした非公式の互換実装)。行番号なし、ラベル、関数(DEF)、配列、スプライトとBG、VSYNC でのフレーム同期、RGB() での色指定、ファイル保存。',
   sections: (h) => [
     {
       id: 'about', title: 'smile BASIC とは',
       html: `
-<p>smile BASIC は、ニンテンドー3DS/Switch の「SmileBASIC」のように、<b>ゲームやグラフィックを手軽に作れる</b>ことを目指した現代的なBASICです。行番号は使わず、飛び先には <code>@LOOP</code> のような<b>ラベル</b>を使い、<code>DEF</code> で関数を作り、配列は <code>A[3]</code> のように <code>[ ]</code> で書きます。</p>
-${h.tip('このシミュレータの smile BASIC は SmileBASIC の文法を参考にした再現です。文字画面(コンソール)・図形・<b>スプライト・BG</b>・<b>ファイル保存</b>に対応しています。音楽・ネットワーク・実機の細かい仕様は含みません。')}`,
+<p>smile BASIC は、株式会社スマイルブームの「SmileBASIC」のように、<b>ゲームやグラフィックを手軽に作れる</b>ことを目指した現代的なBASICです。行番号は使わず、飛び先には <code>@LOOP</code> のような<b>ラベル</b>を使い、<code>DEF</code> で関数を作り、配列は <code>A[3]</code> のように <code>[ ]</code> で書きます。このシミュレータは SmileBASIC の文法を参考に独自に作った<b>非公式の互換実装</b>で、株式会社スマイルブームとは関係がありません。</p>
+${h.tip('このシミュレータの smile BASIC は SmileBASIC の文法を参考にした非公式の再現です(標準のスプライト・タイルの絵や説明文はすべて独自のものです)。文字画面(コンソール)・図形・<b>スプライト・BG</b>・<b>ファイル保存</b>に対応しています。音楽・ネットワーク・実機の細かい仕様は含みません。')}`,
     },
     {
       id: 'start', title: '画面とはじめかた',

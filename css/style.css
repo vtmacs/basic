@@ -163,6 +163,8 @@ table.cmp td.no::before { content: "× "; }
 .col pre.code { margin-top: 0; border-radius: 0 0 var(--radius) var(--radius); border-left-width: 1px; }
 .site-footer { border-top: 1px solid var(--line); padding: 18px 0 28px; color: var(--muted); font-size: 13px; background: var(--panel); }
 .site-footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; }
+.site-footer .wrap + .wrap { margin-top: 10px; }
+.legal { margin: 0; font-size: 12px; line-height: 1.7; color: var(--muted); }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 @media (prefers-reduced-motion: no-preference) { .btn, .tab, .card { transition: all .12s; } }
 @media print { .site-header, .toc, .site-footer, .strip { display: none; } .doc-layout { display: block; } }
