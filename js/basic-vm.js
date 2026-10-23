@@ -82,7 +82,7 @@
       return keys.filter((k) => /^(TXT|DAT):/.test(k)).sort();
     }
 
-    // ------------------------------------------------------------ N88-BASIC のファイル
+    // ------------------------------------------------------------ N88互換BASIC のファイル
     fileName(name) {
       if (typeof name !== 'string') throw typeErr();
       const t = name.trim().replace(/^[A-Za-z0-9]:/, '').toUpperCase();

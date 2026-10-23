@@ -1,12 +1,12 @@
 module.exports = {
-  title: 'smile BASIC マニュアル',
+  title: 'SmileBASIC互換 マニュアル',
   lead: 'ゲームを作りたくなる現代的なBASIC(SmileBASIC を参考にした非公式の互換実装)。行番号なし、ラベル、関数(DEF)、配列、スプライトとBG、VSYNC でのフレーム同期、RGB() での色指定、ファイル保存。',
   sections: (h) => [
     {
-      id: 'about', title: 'smile BASIC とは',
+      id: 'about', title: 'SmileBASIC互換 とは',
       html: `
-<p>smile BASIC は、株式会社スマイルブームの「SmileBASIC」のように、<b>ゲームやグラフィックを手軽に作れる</b>ことを目指した現代的なBASICです。行番号は使わず、飛び先には <code>@LOOP</code> のような<b>ラベル</b>を使い、<code>DEF</code> で関数を作り、配列は <code>A[3]</code> のように <code>[ ]</code> で書きます。このシミュレータは SmileBASIC の文法を参考に独自に作った<b>非公式の互換実装</b>で、株式会社スマイルブームとは関係がありません。</p>
-${h.tip('このシミュレータの smile BASIC は SmileBASIC の文法を参考にした非公式の再現です(標準のスプライト・タイルの絵や説明文はすべて独自のものです)。文字画面(コンソール)・図形・<b>スプライト・BG</b>・<b>ファイル保存</b>に対応しています。音楽・ネットワーク・実機の細かい仕様は含みません。')}`,
+<p>SmileBASIC互換 は、株式会社スマイルブームの「SmileBASIC」を参考に、<b>ゲームやグラフィックを手軽に作れる</b>ことを目指した現代的なBASICです。行番号は使わず、飛び先には <code>@LOOP</code> のような<b>ラベル</b>を使い、<code>DEF</code> で関数を作り、配列は <code>A[3]</code> のように <code>[ ]</code> で書きます。このシミュレータは SmileBASIC の文法を参考に独自に作った<b>非公式の互換実装</b>で、株式会社スマイルブームとは関係がありません。</p>
+${h.tip('このシミュレータの SmileBASIC互換 は SmileBASIC の文法を参考にした非公式の再現です(標準のスプライト・タイルの絵や説明文はすべて独自のものです)。文字画面(コンソール)・図形・<b>スプライト・BG</b>・<b>ファイル保存</b>に対応しています。音楽・ネットワーク・実機の細かい仕様は含みません。')}`,
     },
     {
       id: 'start', title: '画面とはじめかた',
@@ -16,7 +16,7 @@ ${h.tip('このシミュレータの smile BASIC は SmileBASIC の文法を参�
 <li>実行は <b>「▶ 実行」</b>(<kbd>Ctrl</kbd>+<kbd>Enter</kbd>)。ずっと動き続けるプログラムは「■ 停止」で止めます。</li>
 <li>キー操作: <kbd>←↑↓→</kbd> が十字キー、<kbd>Z</kbd><kbd>X</kbd><kbd>A</kbd><kbd>S</kbd> が A/B/X/Y ボタン、<kbd>Q</kbd><kbd>W</kbd> が L/R ボタン。画面をマウスでさわると <code>TOUCH</code> で座標が分かります。</li>
 </ul>
-${h.ex(`' はじめての smile BASIC
+${h.ex(`' はじめての SmileBASIC互換
 PRINT "Hello, World!"
 COLOR 6
 PRINT "COLOR で文字の色を変えます"
@@ -479,7 +479,7 @@ ${h.table(['メッセージ', '原因'], [
   ['添字が範囲外です (Subscript out of range)', '配列・文字列の範囲を超えた。'],
   ['配列が定義されていません', '<code>DIM</code> しないで <code>A[0]</code> を使った。'],
   ['0で割りました (Division by zero)', '0 で割った。'],
-  ['〜は〜のコマンドです (smile BASICでは使えません)', '他の方言の命令を使った。smile BASIC での書き方に直します。'],
+  ['〜は〜のコマンドです (SmileBASIC互換では使えません)', '他の方言の命令を使った。SmileBASIC互換 での書き方に直します。'],
 ])}`,
     },
     {

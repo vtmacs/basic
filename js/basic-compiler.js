@@ -1142,7 +1142,7 @@
   // ---- グラフィック: 共通 ----
   function colorOf(vm, c) { return c === null || c === undefined ? vm.gcolor : vm.toRGB(c); }
 
-  // N88-BASIC
+  // N88互換BASIC
   function pt(vm, p) { // 点の評価 → 描画座標(論理)
     let x = nm(p.x(vm)), y = nm(p.y(vm));
     if (p.step) { x += vm.screen.lastX; y += vm.screen.lastY; }
@@ -1229,7 +1229,7 @@
     });
   };
 
-  // Tiny BASIC 拡張 / smile BASIC のグラフィック
+  // Tiny BASIC 拡張 / SmileBASIC互換 のグラフィック
   function numArgs(c, min, max, what) {
     const a = c.optArgs();
     if (a.length < min || a.length > max) c.syntax(what);
@@ -1292,7 +1292,7 @@
     } else this.ignoreRest();
   };
 
-  // smile BASIC のグラフィック
+  // SmileBASIC互換 のグラフィック
   H.ACLS = function () {
     this.emit((vm) => { vm.screen.cls(); vm.screen.usePage(0); vm.screen.dispPage = 0; vm.screen.gcls(); vm.screen.color(vm.D.fg, -1); if (vm.screen.spr) vm.screen.spr.acls(); });
   };
@@ -1353,7 +1353,7 @@
   H.TOUCH = outStmt('TOUCH');
 
 
-  // ---- スプライト / BG / グラフィックページ / ファイル (smile BASIC) ----
+  // ---- スプライト / BG / グラフィックページ / ファイル (SmileBASIC互換) ----
   const sprOf = (vm) => { if (!vm.screen.spr) throw E('この環境ではスプライトを使えません', 5); return vm.screen.spr; };
   const nv = (f, vm) => (f ? nm(f(vm)) : undefined);
   function spSimple(method, min, max, what) {
@@ -1454,7 +1454,7 @@
   };
 
 
-  // ---- ファイル (N88-BASIC) ----
+  // ---- ファイル (N88互換BASIC) ----
   H.OPEN = function () {
     const e1 = this.expr();
     let mode, name, no, len = null;

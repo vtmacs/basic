@@ -26,7 +26,7 @@
       font: '"Noto Sans Mono CJK JP", "MS Gothic", "Courier New", monospace',
     },
   };
-  const LABELS = { tiny: 'Tiny BASIC', n88: 'N88-BASIC', full: 'Full BASIC', smile: 'smile BASIC' };
+  const LABELS = { tiny: 'Tiny BASIC', n88: 'N88互換BASIC', full: 'Full BASIC', smile: 'SmileBASIC互換' };
 
   const editor = $('#editor'), statusEl = $('#status'), runBtn = $('#run'), stopBtn = $('#stop');
   const screenEl = $('#screen'), gfx = $('#gfx'), txt = $('#txt');
@@ -43,7 +43,7 @@
     set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* 無視 */ } },
   };
   const codeKey = (d) => 'macs-basic:code:' + d;
-  // smile BASIC の SAVE / LOAD 用のファイル置き場(ブラウザの localStorage)
+  // SmileBASIC互換 の SAVE / LOAD 用のファイル置き場(ブラウザの localStorage)
   const FSP = 'macs-basic:file:';
   const fs = {
     get(k) { try { return localStorage.getItem(FSP + k); } catch (e) { return null; } },

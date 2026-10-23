@@ -1,12 +1,12 @@
 module.exports = {
-  title: 'N88-BASIC マニュアル',
+  title: 'N88互換BASIC マニュアル',
   lead: 'NEC の PC-8801 / PC-9801 シリーズ向けBASICの文法を参考にした、非公式の互換実装です。行番号つきの手軽な書き方に、色・図形・音・文字列処理がそろった、日本のパソコン黎明期の定番です。',
   sections: (h) => [
     {
-      id: 'about', title: 'N88-BASIC とは',
+      id: 'about', title: 'N88互換BASIC とは',
       html: `
-<p>N88-BASIC は、NEC のパソコン PC-8801 シリーズ(のちに PC-9801 シリーズ)に搭載された BASIC で、マイクロソフト社の BASIC を元にしています。このシミュレータは、その文法や使い方を参考に独自に作った<b>非公式の互換実装</b>で、NEC やマイクロソフト社とは関係がありません。行番号で書くスタイルは <a href="manual-tiny.html">Tiny BASIC</a> と同じですが、変数の型、配列、文字列、FOR/WHILE、ON GOTO、DATA/READ、グラフィック命令などが加わっています。</p>
-${h.tip('このシミュレータの N88-BASIC は、よく使われる命令を中心に再現した学習用のものです(実機のソフトウェアや画像は含みません)。ディスクやカセットの命令、スプライト、PEEK/POKE などの機種依存の機能は含みません。')}`,
+<p>N88互換BASIC が参考にしている N88-BASIC は、NEC のパソコン PC-8801 シリーズ(のちに PC-9801 シリーズ)に搭載された BASIC で、マイクロソフト社の BASIC を元にしています。このシミュレータは、その文法や使い方を参考に独自に作った<b>非公式の互換実装</b>で、NEC やマイクロソフト社とは関係がありません。行番号で書くスタイルは <a href="manual-tiny.html">Tiny BASIC</a> と同じですが、変数の型、配列、文字列、FOR/WHILE、ON GOTO、DATA/READ、グラフィック命令などが加わっています。</p>
+${h.tip('このシミュレータの N88互換BASIC は、よく使われる命令を中心に再現した学習用のものです(実機のソフトウェアや画像は含みません)。ディスクやカセットの命令、スプライト、PEEK/POKE などの機種依存の機能は含みません。')}`,
     },
     {
       id: 'start', title: '画面とはじめかた',
@@ -20,7 +20,7 @@ ${h.tip('このシミュレータの N88-BASIC は、よく使われる命令を
 </ul>
 ${h.ex(`10 CLS
 20 PRINT "Hello, World!"
-30 PRINT "こんにちは N88-BASIC"
+30 PRINT "こんにちは N88互換BASIC"
 40 END`, 'Hello, World')}`,
     },
     {
@@ -184,7 +184,7 @@ ${h.funcs([
   ['SPACE$ STRING$', 'SPACE$(n)  STRING$(n,c)', 'n 個の空白、n 個の同じ文字'],
   ['TIME$ DATE$', 'TIME$  DATE$', '現在の時刻・日付'],
 ])}
-${h.ex(`10 A$="N88-BASIC"
+${h.ex(`10 A$="MY-BASIC"
 20 PRINT LEN(A$);LEFT$(A$,3);RIGHT$(A$,5);MID$(A$,5,2)
 30 PRINT INSTR(A$,"-");STR$(3);VAL("12")+1
 40 PRINT CHR$(65);ASC("a");HEX$(255);STRING$(5,"*")
@@ -211,7 +211,7 @@ ${h.ex(`10 SCREEN 3: CLS
 60 PAINT (320,230),2,6
 70 CIRCLE (320,230),60,5
 80 LINE (100,150)-(540,390),7,B
-90 LOCATE 30,12: COLOR 7: PRINT "N88-BASIC GRAPHICS"
+90 LOCATE 30,12: COLOR 7: PRINT "N88互換BASIC GRAPHICS"
 100 END`, '図形')}
 ${h.ex(`10 SCREEN 3: CLS
 20 LINE (0,200)-(639,200),7

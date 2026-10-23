@@ -87,10 +87,10 @@
   ];
 
   S.n88 = [
-    { title: 'Hello, World', code: `10 ' はじめてのN88-BASIC
+    { title: 'Hello, World', code: `10 ' はじめてのN88互換BASIC
 20 CLS
 30 PRINT "Hello, World!"
-40 PRINT "こんにちは N88-BASIC"
+40 PRINT "こんにちは N88互換BASIC"
 50 END
 ` },
     { title: '九九の表', code: `10 CLS
@@ -115,7 +115,7 @@
 110 PRINT "ソート後:";: FOR I=0 TO 9: PRINT A(I);: NEXT I: PRINT
 120 END
 ` },
-    { title: '文字列関数', code: `10 A$="N88-BASIC"
+    { title: '文字列関数', code: `10 A$="MY-BASIC"
 20 PRINT "長さ=";LEN(A$)
 30 PRINT "左3文字=";LEFT$(A$,3)
 40 PRINT "右5文字=";RIGHT$(A$,5)
@@ -144,7 +144,7 @@
 60 PAINT (320,230),2,6
 70 CIRCLE (320,230),60,5
 80 LINE (100,150)-(540,390),7,B
-90 LOCATE 30,12: COLOR 7: PRINT "N88-BASIC GRAPHICS"
+90 LOCATE 30,12: COLOR 7: PRINT "N88互換BASIC GRAPHICS"
 100 END
 ` },
     { title: 'サインカーブ', code: `10 SCREEN 3: CLS
@@ -356,9 +356,9 @@ END
   ];
 
   S.smile = [
-    { title: 'Hello, World', code: `' はじめての smile BASIC
+    { title: 'Hello, World', code: `' はじめての SmileBASIC互換
 PRINT "Hello, World!"
-PRINT "こんにちは smile BASIC"
+PRINT "こんにちは SmileBASIC互換"
 COLOR 6
 PRINT "COLOR で文字の色を変えます"
 COLOR 15

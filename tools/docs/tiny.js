@@ -5,7 +5,7 @@ module.exports = {
     {
       id: 'about', title: 'Tiny BASIC とは',
       html: `
-<p>Tiny BASIC は、まだパソコンのメモリが 4KB 前後しかなかった 1975 年ごろ、「小さなマイコンでも動くBASIC」として考えられた言語です。多くの処理系が作られ、その後の <a href="manual-n88.html">N88-BASIC</a> などパソコン用BASICの先祖にあたります。</p>
+<p>Tiny BASIC は、まだパソコンのメモリが 4KB 前後しかなかった 1975 年ごろ、「小さなマイコンでも動くBASIC」として考えられた言語です。多くの処理系が作られ、その後の <a href="manual-n88.html">N88互換BASIC</a> などパソコン用BASICの先祖にあたります。</p>
 <p>機能をぎりぎりまで削っているので、<b>FOR も、文字列変数も、小数もありません</b>。そのかわり、覚えることが少なく、「プログラムは上から順に実行され、IF と GOTO で流れが変わる」という基本がそのまま見えます。</p>
 ${h.tip('Tiny BASIC は実装ごとに細部が違います。このシミュレータは、よく知られた Tiny BASIC の文法(PRINT / IF / GOTO / GOSUB / RETURN / INPUT / LET / END / REM / RND)に、描画用の拡張命令を加えたものです。')}`,
     },
@@ -178,7 +178,7 @@ ${h.ex(`10 REM 動く点(WAIT でゆっくり)
 ${h.table(['メッセージ', '原因と対処'], [
   ['行番号がありません', 'すべての行の先頭に行番号が必要です。「行番号をふる」を使うと便利です。'],
   ['Tiny BASICの変数名は A〜Z の1文字です', '<code>AB</code> や <code>SUM</code> は使えません。1文字の変数にします。'],
-  ['〜は N88-BASIC・… のコマンドです', 'FOR、WHILE、DIM などは Tiny BASIC にはありません。<code>IF</code> と <code>GOTO</code> で書き換えます。'],
+  ['〜は N88互換BASIC・… のコマンドです', 'FOR、WHILE、DIM などは Tiny BASIC にはありません。<code>IF</code> と <code>GOTO</code> で書き換えます。'],
   ['オーバーフロー (Overflow)', '計算結果が -32767〜32767 を超えました。'],
   ['0で割りました (Division by zero)', '0 で割っています。'],
   ['未定義の行番号です', '<code>GOTO</code> / <code>GOSUB</code> で存在しない行を指定しています。'],
@@ -195,7 +195,7 @@ ${h.table(['メッセージ', '原因と対処'], [
 <li>整数は -32767〜32767 の範囲です。</li>
 <li>PLOT / LINE / CIRCLE / COLOR / CLS / WAIT はこのシミュレータの拡張で、実機の Tiny BASIC にはありません。</li>
 </ul>
-<p>各BASICの違いは <a href="compare.html">方言の比較</a> にまとめています。もっと機能がほしくなったら <a href="manual-n88.html">N88-BASIC</a> や <a href="manual-full.html">Full BASIC</a> へ進みましょう。</p>`,
+<p>各BASICの違いは <a href="compare.html">方言の比較</a> にまとめています。もっと機能がほしくなったら <a href="manual-n88.html">N88互換BASIC</a> や <a href="manual-full.html">Full BASIC</a> へ進みましょう。</p>`,
     },
   ],
 };

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>方言の比較 | MACS Project</title>
-<meta name="description" content="Tiny BASIC・N88-BASIC・Full BASIC・smile BASIC の違いを一覧で比較">
+<meta name="description" content="Tiny BASIC・N88互換BASIC・Full BASIC・SmileBASIC互換 の違いを一覧で比較">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -22,18 +22,18 @@
 <main class="wrap">
 
 <h1>方言の比較</h1>
-<p class="lead">Tiny BASIC・N88-BASIC・Full BASIC・smile BASIC の違いを、一覧表と「同じプログラムを4つの方言で書いた例」で比べます。</p>
+<p class="lead">Tiny BASIC・N88互換BASIC・Full BASIC・SmileBASIC互換 の違いを、一覧表と「同じプログラムを4つの方言で書いた例」で比べます。</p>
 <div class="cards">
   <a class="card d-tiny" href="manual-tiny.html"><h3>Tiny BASIC</h3><p>最小のBASIC。行番号・整数・IF/GOTO/GOSUB。「プログラムとは何か」を学ぶ入口。</p></a>
-  <a class="card d-n88" href="manual-n88.html"><h3>N88-BASIC</h3><p>行番号つきの定番BASIC。色・図形・音・文字列がそろったレトロPCの味。</p></a>
+  <a class="card d-n88" href="manual-n88.html"><h3>N88互換BASIC</h3><p>行番号つきの定番BASIC。色・図形・音・文字列がそろったレトロPCの味。</p></a>
   <a class="card d-full" href="manual-full.html"><h3>Full BASIC</h3><p>規格化された構造化BASIC。行番号なし、SUB/FUNCTION、数学向きの図形。</p></a>
-  <a class="card d-smile" href="manual-smile.html"><h3>smile BASIC</h3><p>ゲーム向けの現代的BASIC。ラベル・DEF・配列・VSYNC・RGB。</p></a>
+  <a class="card d-smile" href="manual-smile.html"><h3>SmileBASIC互換</h3><p>ゲーム向けの現代的BASIC。ラベル・DEF・配列・VSYNC・RGB。</p></a>
 </div>
 <div class="note">表の印: <b>●</b> 使える　<b>△</b> 一部だけ(拡張や制限つき)　<b>×</b> 使えない。印のない欄は書き方の違いです。このシミュレータが再現している範囲での比較です。</div>
 <h2>1. 一覧表</h2>
 
 <h3>基本</h3>
-<table class="doc cmp"><thead><tr><th>項目</th><th class="d-tiny">Tiny BASIC</th><th class="d-n88">N88-BASIC</th><th class="d-full">Full BASIC</th><th class="d-smile">smile BASIC</th></tr></thead><tbody>
+<table class="doc cmp"><thead><tr><th>項目</th><th class="d-tiny">Tiny BASIC</th><th class="d-n88">N88互換BASIC</th><th class="d-full">Full BASIC</th><th class="d-smile">SmileBASIC互換</th></tr></thead><tbody>
 <tr><th scope="row">時代・出どころ</th><td class="">1975年ごろ。Tiny BASIC 仕様(最小のBASIC)</td><td class="">1980年代のNEC PC-8801/9801 向けBASICを参考にした互換(Microsoft BASIC系の文法)</td><td class="">1980年代に規格化(ANSI/ISO、JIS X 3003)。教育用</td><td class="">2010年代〜のゲーム向け現代的BASIC(SmileBASIC を参考にした互換)</td></tr>
 <tr><th scope="row">行番号</th><td class="">必須</td><td class="">必須</td><td class="part">省略できる(付けても可)</td><td class="yes">使わない(ラベル <code>@名前</code>)</td></tr>
 <tr><th scope="row">1行に複数の文(<code>:</code>)</th><td class="no">不可</td><td class="yes">可</td><td class="yes">可</td><td class="yes">可</td></tr>
@@ -43,7 +43,7 @@
 </tbody></table>
 
 <h3>変数と型</h3>
-<table class="doc cmp"><thead><tr><th>項目</th><th class="d-tiny">Tiny BASIC</th><th class="d-n88">N88-BASIC</th><th class="d-full">Full BASIC</th><th class="d-smile">smile BASIC</th></tr></thead><tbody>
+<table class="doc cmp"><thead><tr><th>項目</th><th class="d-tiny">Tiny BASIC</th><th class="d-n88">N88互換BASIC</th><th class="d-full">Full BASIC</th><th class="d-smile">SmileBASIC互換</th></tr></thead><tbody>
 <tr><th scope="row">変数名</th><td class="">A〜Z の1文字だけ</td><td class="">長い名前(型の記号つき)</td><td class="">長い名前</td><td class="">長い名前</td></tr>
 <tr><th scope="row">数</th><td class="">整数のみ(-32767〜32767)</td><td class="">整数 <code>%</code>・単精度・倍精度 <code>#</code></td><td class="">実数(倍精度)</td><td class="">整数・実数(<code>5/2</code> = 2.5)</td></tr>
 <tr><th scope="row">文字列</th><td class="no">なし</td><td class="yes"><code>A$</code></td><td class="yes"><code>a$</code></td><td class="yes"><code>A$</code></td></tr>
@@ -54,7 +54,7 @@
 </tbody></table>
 
 <h3>演算子</h3>
-<table class="doc cmp"><thead><tr><th>項目</th><th class="d-tiny">Tiny BASIC</th><th class="d-n88">N88-BASIC</th><th class="d-full">Full BASIC</th><th class="d-smile">smile BASIC</th></tr></thead><tbody>
+<table class="doc cmp"><thead><tr><th>項目</th><th class="d-tiny">Tiny BASIC</th><th class="d-n88">N88互換BASIC</th><th class="d-full">Full BASIC</th><th class="d-smile">SmileBASIC互換</th></tr></thead><tbody>
 <tr><th scope="row">割り算</th><td class="">整数(切り捨て)</td><td class="">実数(<code>\</code> で整数の割り算)</td><td class="">実数</td><td class="">実数(<code>DIV</code> で整数の割り算)</td></tr>
 <tr><th scope="row">真・偽の値</th><td class="">真 = 1</td><td class="">真 = <b>-1</b>、偽 = 0</td><td class="">真 = 1</td><td class="">真 = 1</td></tr>
 <tr><th scope="row">等しい</th><td class=""><code>=</code></td><td class=""><code>=</code></td><td class=""><code>=</code></td><td class=""><code>==</code>(<code>=</code>でも可)</td></tr>
@@ -65,7 +65,7 @@
 </tbody></table>
 
 <h3>出力・入力</h3>
-<table class="doc cmp"><thead><tr><th>項目</th><th class="d-tiny">Tiny BASIC</th><th class="d-n88">N88-BASIC</th><th class="d-full">Full BASIC</th><th class="d-smile">smile BASIC</th></tr></thead><tbody>
+<table class="doc cmp"><thead><tr><th>項目</th><th class="d-tiny">Tiny BASIC</th><th class="d-n88">N88互換BASIC</th><th class="d-full">Full BASIC</th><th class="d-smile">SmileBASIC互換</th></tr></thead><tbody>
 <tr><th scope="row">数の表示</th><td class="">空白なし(<code>PRINT 5</code> → <code>5</code>)</td><td class="">前後に空白(<code> 5 </code>)。<code>.5</code> と書く</td><td class="">前後に空白(<code> 5 </code>)</td><td class="">空白なし(<code>5</code>)</td></tr>
 <tr><th scope="row"><code>PRINT</code> のカンマ</th><td class="">8桁ごと</td><td class="">14桁ごと</td><td class="">16桁ごと</td><td class="">4桁ごと</td></tr>
 <tr><th scope="row">書式つき表示</th><td class="no">なし</td><td class="yes"><code>PRINT USING</code></td><td class="yes"><code>PRINT USING</code></td><td class="yes"><code>FORMAT$()</code></td></tr>
@@ -77,7 +77,7 @@
 </tbody></table>
 
 <h3>制御構造</h3>
-<table class="doc cmp"><thead><tr><th>項目</th><th class="d-tiny">Tiny BASIC</th><th class="d-n88">N88-BASIC</th><th class="d-full">Full BASIC</th><th class="d-smile">smile BASIC</th></tr></thead><tbody>
+<table class="doc cmp"><thead><tr><th>項目</th><th class="d-tiny">Tiny BASIC</th><th class="d-n88">N88互換BASIC</th><th class="d-full">Full BASIC</th><th class="d-smile">SmileBASIC互換</th></tr></thead><tbody>
 <tr><th scope="row">IF</th><td class=""><code>IF 条件 THEN 文</code>(ELSEなし)</td><td class=""><code>IF … THEN … ELSE …</code>(1行)</td><td class="">ブロック <code>IF … END IF</code> と 1行形式</td><td class="">ブロック <code>IF … ENDIF</code> と 1行形式</td></tr>
 <tr><th scope="row">多分岐</th><td class="no">なし</td><td class=""><code>ON 式 GOTO</code></td><td class=""><code>SELECT CASE</code>・<code>ON GOTO</code></td><td class=""><code>SWITCH</code>・<code>ON GOTO</code></td></tr>
 <tr><th scope="row">くり返し</th><td class="part"><code>IF</code> と <code>GOTO</code> だけ</td><td class=""><code>FOR/NEXT</code>・<code>WHILE/WEND</code></td><td class=""><code>FOR/NEXT</code>・<code>DO/LOOP</code>(<code>EXIT</code>)</td><td class=""><code>FOR/NEXT</code>・<code>WHILE/WEND</code>・<code>REPEAT/UNTIL</code>(<code>BREAK</code> <code>CONTINUE</code>)</td></tr>
@@ -89,7 +89,7 @@
 </tbody></table>
 
 <h3>関数</h3>
-<table class="doc cmp"><thead><tr><th>項目</th><th class="d-tiny">Tiny BASIC</th><th class="d-n88">N88-BASIC</th><th class="d-full">Full BASIC</th><th class="d-smile">smile BASIC</th></tr></thead><tbody>
+<table class="doc cmp"><thead><tr><th>項目</th><th class="d-tiny">Tiny BASIC</th><th class="d-n88">N88互換BASIC</th><th class="d-full">Full BASIC</th><th class="d-smile">SmileBASIC互換</th></tr></thead><tbody>
 <tr><th scope="row">乱数</th><td class=""><code>RND(n)</code> → 1〜n の整数</td><td class=""><code>RND(1)</code> → 0以上1未満</td><td class=""><code>RND</code> → 0以上1未満</td><td class=""><code>RND(n)</code> → 0〜n-1 の整数、<code>RNDF()</code> → 実数</td></tr>
 <tr><th scope="row">数学関数</th><td class="part"><code>ABS</code> だけ</td><td class=""><code>SIN COS TAN ATN SQR EXP LOG INT FIX SGN ABS</code></td><td class="">多数(<code>IP FP MAX MIN MOD ROUND LOG10 …</code>)</td><td class="">多数(<code>FLOOR CEIL ROUND POW CLAMP …</code>)</td></tr>
 <tr><th scope="row">文字列関数</th><td class="no">なし</td><td class=""><code>LEFT$ RIGHT$ MID$ LEN INSTR STR$ VAL CHR$ ASC …</code></td><td class=""><code>LEFT$ RIGHT$ MID$ LEN POS UCASE$ …</code></td><td class=""><code>LEFT$ RIGHT$ MID$ LEN INSTR SUBST$ FORMAT$ …</code></td></tr>
@@ -98,7 +98,7 @@
 </tbody></table>
 
 <h3>グラフィックなど</h3>
-<table class="doc cmp"><thead><tr><th>項目</th><th class="d-tiny">Tiny BASIC</th><th class="d-n88">N88-BASIC</th><th class="d-full">Full BASIC</th><th class="d-smile">smile BASIC</th></tr></thead><tbody>
+<table class="doc cmp"><thead><tr><th>項目</th><th class="d-tiny">Tiny BASIC</th><th class="d-n88">N88互換BASIC</th><th class="d-full">Full BASIC</th><th class="d-smile">SmileBASIC互換</th></tr></thead><tbody>
 <tr><th scope="row">グラフィック画面</th><td class="part">拡張命令のみ(640×400)</td><td class="yes">640×400・8色</td><td class="yes">正方形 400×400</td><td class="yes">400×240・RGB色</td></tr>
 <tr><th scope="row">座標系</th><td class="">左上原点・ドット</td><td class="">左上原点・ドット</td><td class=""><b>好きな座標系</b>(<code>SET WINDOW</code>)・上が +y</td><td class="">左上原点・ドット</td></tr>
 <tr><th scope="row">点</th><td class=""><code>PLOT x,y</code></td><td class=""><code>PSET (x,y),色</code></td><td class=""><code>PLOT POINTS: x,y</code></td><td class=""><code>GPSET x,y,色</code></td></tr>
@@ -124,7 +124,7 @@
 50 IF I&lt;=10 THEN GOTO 30
 60 PRINT S
 70 END</pre></div></div>
-<div class="col d-n88"><h4>N88-BASIC</h4><div class="ex"><div class="ex-title"><span>1 から 10 の合計</span><a class="try" href="index.html?d=n88&code=10%20S%3D0%0A20%20FOR%20I%3D1%20TO%2010%0A30%20%20%20S%3DS%2BI%0A40%20NEXT%20I%0A50%20PRINT%20S">シミュレータで試す ▶</a></div><pre class="code">10 S=0
+<div class="col d-n88"><h4>N88互換BASIC</h4><div class="ex"><div class="ex-title"><span>1 から 10 の合計</span><a class="try" href="index.html?d=n88&code=10%20S%3D0%0A20%20FOR%20I%3D1%20TO%2010%0A30%20%20%20S%3DS%2BI%0A40%20NEXT%20I%0A50%20PRINT%20S">シミュレータで試す ▶</a></div><pre class="code">10 S=0
 20 FOR I=1 TO 10
 30   S=S+I
 40 NEXT I
@@ -135,7 +135,7 @@ FOR i = 1 TO 10
 NEXT i
 PRINT s
 END</pre></div></div>
-<div class="col d-smile"><h4>smile BASIC</h4><div class="ex"><div class="ex-title"><span>1 から 10 の合計</span><a class="try" href="index.html?d=smile&code=S%3D0%0AFOR%20I%3D1%20TO%2010%0A%20%20S%3DS%2BI%0ANEXT%0APRINT%20S">シミュレータで試す ▶</a></div><pre class="code">S=0
+<div class="col d-smile"><h4>SmileBASIC互換</h4><div class="ex"><div class="ex-title"><span>1 から 10 の合計</span><a class="try" href="index.html?d=smile&code=S%3D0%0AFOR%20I%3D1%20TO%2010%0A%20%20S%3DS%2BI%0ANEXT%0APRINT%20S">シミュレータで試す ▶</a></div><pre class="code">S=0
 FOR I=1 TO 10
   S=S+I
 NEXT
@@ -148,7 +148,7 @@ PRINT S</pre></div></div>
 20 IF N-N/2*2=0 THEN PRINT "偶数"
 30 IF N-N/2*2&lt;&gt;0 THEN PRINT "奇数"
 40 END</pre></div></div>
-<div class="col d-n88"><h4>N88-BASIC</h4><div class="ex"><div class="ex-title"><span>偶数か奇数か</span><a class="try" href="index.html?d=n88&code=10%20N%3D7%0A20%20IF%20N%20MOD%202%3D0%20THEN%20PRINT%20%22%E5%81%B6%E6%95%B0%22%20ELSE%20PRINT%20%22%E5%A5%87%E6%95%B0%22">シミュレータで試す ▶</a></div><pre class="code">10 N=7
+<div class="col d-n88"><h4>N88互換BASIC</h4><div class="ex"><div class="ex-title"><span>偶数か奇数か</span><a class="try" href="index.html?d=n88&code=10%20N%3D7%0A20%20IF%20N%20MOD%202%3D0%20THEN%20PRINT%20%22%E5%81%B6%E6%95%B0%22%20ELSE%20PRINT%20%22%E5%A5%87%E6%95%B0%22">シミュレータで試す ▶</a></div><pre class="code">10 N=7
 20 IF N MOD 2=0 THEN PRINT "偶数" ELSE PRINT "奇数"</pre></div></div>
 <div class="col d-full"><h4>Full BASIC</h4><div class="ex"><div class="ex-title"><span>偶数か奇数か</span><a class="try" href="index.html?d=full&code=LET%20n%20%3D%207%0AIF%20MOD(n%2C%202)%20%3D%200%20THEN%0A%20%20%20PRINT%20%22%E5%81%B6%E6%95%B0%22%0AELSE%0A%20%20%20PRINT%20%22%E5%A5%87%E6%95%B0%22%0AEND%20IF%0AEND">シミュレータで試す ▶</a></div><pre class="code">LET n = 7
 IF MOD(n, 2) = 0 THEN
@@ -157,7 +157,7 @@ ELSE
    PRINT "奇数"
 END IF
 END</pre></div></div>
-<div class="col d-smile"><h4>smile BASIC</h4><div class="ex"><div class="ex-title"><span>偶数か奇数か</span><a class="try" href="index.html?d=smile&code=N%3D7%0AIF%20N%20MOD%202%3D%3D0%20THEN%0A%20%20PRINT%20%22%E5%81%B6%E6%95%B0%22%0AELSE%0A%20%20PRINT%20%22%E5%A5%87%E6%95%B0%22%0AENDIF">シミュレータで試す ▶</a></div><pre class="code">N=7
+<div class="col d-smile"><h4>SmileBASIC互換</h4><div class="ex"><div class="ex-title"><span>偶数か奇数か</span><a class="try" href="index.html?d=smile&code=N%3D7%0AIF%20N%20MOD%202%3D%3D0%20THEN%0A%20%20PRINT%20%22%E5%81%B6%E6%95%B0%22%0AELSE%0A%20%20PRINT%20%22%E5%A5%87%E6%95%B0%22%0AENDIF">シミュレータで試す ▶</a></div><pre class="code">N=7
 IF N MOD 2==0 THEN
   PRINT "偶数"
 ELSE
@@ -176,7 +176,7 @@ ENDIF</pre></div></div>
 70 LET A=A+1
 80 IF A&lt;=3 THEN GOTO 20
 90 END</pre></div></div>
-<div class="col d-n88"><h4>N88-BASIC</h4><div class="ex"><div class="ex-title"><span>九九の表(3の段まで)</span><a class="try" href="index.html?d=n88&code=10%20FOR%20A%3D1%20TO%203%0A20%20%20%20FOR%20B%3D1%20TO%209%0A30%20%20%20%20%20PRINT%20USING%20%22%23%23%23%22%3BA*B%3B%0A40%20%20%20NEXT%20B%0A50%20%20%20PRINT%0A60%20NEXT%20A">シミュレータで試す ▶</a></div><pre class="code">10 FOR A=1 TO 3
+<div class="col d-n88"><h4>N88互換BASIC</h4><div class="ex"><div class="ex-title"><span>九九の表(3の段まで)</span><a class="try" href="index.html?d=n88&code=10%20FOR%20A%3D1%20TO%203%0A20%20%20%20FOR%20B%3D1%20TO%209%0A30%20%20%20%20%20PRINT%20USING%20%22%23%23%23%22%3BA*B%3B%0A40%20%20%20NEXT%20B%0A50%20%20%20PRINT%0A60%20NEXT%20A">シミュレータで試す ▶</a></div><pre class="code">10 FOR A=1 TO 3
 20   FOR B=1 TO 9
 30     PRINT USING "###";A*B;
 40   NEXT B
@@ -189,7 +189,7 @@ ENDIF</pre></div></div>
    PRINT
 NEXT a
 END</pre></div></div>
-<div class="col d-smile"><h4>smile BASIC</h4><div class="ex"><div class="ex-title"><span>九九の表(3の段まで)</span><a class="try" href="index.html?d=smile&code=FOR%20A%3D1%20TO%203%0A%20%20FOR%20B%3D1%20TO%209%0A%20%20%20%20PRINT%20FORMAT%24(%22%253d%22%2CA*B)%3B%0A%20%20NEXT%0A%20%20PRINT%0ANEXT">シミュレータで試す ▶</a></div><pre class="code">FOR A=1 TO 3
+<div class="col d-smile"><h4>SmileBASIC互換</h4><div class="ex"><div class="ex-title"><span>九九の表(3の段まで)</span><a class="try" href="index.html?d=smile&code=FOR%20A%3D1%20TO%203%0A%20%20FOR%20B%3D1%20TO%209%0A%20%20%20%20PRINT%20FORMAT%24(%22%253d%22%2CA*B)%3B%0A%20%20NEXT%0A%20%20PRINT%0ANEXT">シミュレータで試す ▶</a></div><pre class="code">FOR A=1 TO 3
   FOR B=1 TO 9
     PRINT FORMAT$("%3d",A*B);
   NEXT
@@ -205,14 +205,14 @@ NEXT</pre></div></div>
 40 END
 100 LET R=N*N
 110 RETURN</pre></div></div>
-<div class="col d-n88"><h4>N88-BASIC</h4><div class="ex"><div class="ex-title"><span>2乗する(サブルーチン/関数)</span><a class="try" href="index.html?d=n88&code=10%20DEF%20FNSQ(X)%3DX*X%0A20%20PRINT%20FNSQ(5)">シミュレータで試す ▶</a></div><pre class="code">10 DEF FNSQ(X)=X*X
+<div class="col d-n88"><h4>N88互換BASIC</h4><div class="ex"><div class="ex-title"><span>2乗する(サブルーチン/関数)</span><a class="try" href="index.html?d=n88&code=10%20DEF%20FNSQ(X)%3DX*X%0A20%20PRINT%20FNSQ(5)">シミュレータで試す ▶</a></div><pre class="code">10 DEF FNSQ(X)=X*X
 20 PRINT FNSQ(5)</pre></div></div>
 <div class="col d-full"><h4>Full BASIC</h4><div class="ex"><div class="ex-title"><span>2乗する(サブルーチン/関数)</span><a class="try" href="index.html?d=full&code=FUNCTION%20sq(x)%0A%20%20%20LET%20sq%20%3D%20x%20*%20x%0AEND%20FUNCTION%0APRINT%20sq(5)%0AEND">シミュレータで試す ▶</a></div><pre class="code">FUNCTION sq(x)
    LET sq = x * x
 END FUNCTION
 PRINT sq(5)
 END</pre></div></div>
-<div class="col d-smile"><h4>smile BASIC</h4><div class="ex"><div class="ex-title"><span>2乗する(サブルーチン/関数)</span><a class="try" href="index.html?d=smile&code=DEF%20SQ(X)%0A%20%20RETURN%20X*X%0AEND%0APRINT%20SQ(5)">シミュレータで試す ▶</a></div><pre class="code">DEF SQ(X)
+<div class="col d-smile"><h4>SmileBASIC互換</h4><div class="ex"><div class="ex-title"><span>2乗する(サブルーチン/関数)</span><a class="try" href="index.html?d=smile&code=DEF%20SQ(X)%0A%20%20RETURN%20X*X%0AEND%0APRINT%20SQ(5)">シミュレータで試す ▶</a></div><pre class="code">DEF SQ(X)
   RETURN X*X
 END
 PRINT SQ(5)</pre></div></div>
@@ -230,7 +230,7 @@ PRINT SQ(5)</pre></div></div>
 80 IF I&lt;3 THEN GOTO 60
 90 PRINT S
 100 END</pre></div></div>
-<div class="col d-n88"><h4>N88-BASIC</h4><div class="ex"><div class="ex-title"><span>配列の合計</span><a class="try" href="index.html?d=n88&code=10%20DIM%20A(2)%0A20%20A(0)%3D3%3A%20A(1)%3D5%3A%20A(2)%3D7%0A30%20FOR%20I%3D0%20TO%202%3A%20S%3DS%2BA(I)%3A%20NEXT%0A40%20PRINT%20S">シミュレータで試す ▶</a></div><pre class="code">10 DIM A(2)
+<div class="col d-n88"><h4>N88互換BASIC</h4><div class="ex"><div class="ex-title"><span>配列の合計</span><a class="try" href="index.html?d=n88&code=10%20DIM%20A(2)%0A20%20A(0)%3D3%3A%20A(1)%3D5%3A%20A(2)%3D7%0A30%20FOR%20I%3D0%20TO%202%3A%20S%3DS%2BA(I)%3A%20NEXT%0A40%20PRINT%20S">シミュレータで試す ▶</a></div><pre class="code">10 DIM A(2)
 20 A(0)=3: A(1)=5: A(2)=7
 30 FOR I=0 TO 2: S=S+A(I): NEXT
 40 PRINT S</pre></div></div>
@@ -243,7 +243,7 @@ FOR i = 0 TO 2
 NEXT i
 PRINT s
 END</pre></div></div>
-<div class="col d-smile"><h4>smile BASIC</h4><div class="ex"><div class="ex-title"><span>配列の合計</span><a class="try" href="index.html?d=smile&code=DIM%20A%5B3%5D%0AA%5B0%5D%3D3%3AA%5B1%5D%3D5%3AA%5B2%5D%3D7%0AFOR%20I%3D0%20TO%202%3AS%3DS%2BA%5BI%5D%3ANEXT%0APRINT%20S">シミュレータで試す ▶</a></div><pre class="code">DIM A[3]
+<div class="col d-smile"><h4>SmileBASIC互換</h4><div class="ex"><div class="ex-title"><span>配列の合計</span><a class="try" href="index.html?d=smile&code=DIM%20A%5B3%5D%0AA%5B0%5D%3D3%3AA%5B1%5D%3D5%3AA%5B2%5D%3D7%0AFOR%20I%3D0%20TO%202%3AS%3DS%2BA%5BI%5D%3ANEXT%0APRINT%20S">シミュレータで試す ▶</a></div><pre class="code">DIM A[3]
 A[0]=3:A[1]=5:A[2]=7
 FOR I=0 TO 2:S=S+A[I]:NEXT
 PRINT S</pre></div></div>
@@ -255,32 +255,32 @@ PRINT S</pre></div></div>
 20 COLOR 6
 30 CIRCLE 320,200,100
 40 END</pre></div></div>
-<div class="col d-n88"><h4>N88-BASIC</h4><div class="ex"><div class="ex-title"><span>円をかく</span><a class="try" href="index.html?d=n88&code=10%20CLS%0A20%20CIRCLE%20(320%2C200)%2C100%2C6">シミュレータで試す ▶</a></div><pre class="code">10 CLS
+<div class="col d-n88"><h4>N88互換BASIC</h4><div class="ex"><div class="ex-title"><span>円をかく</span><a class="try" href="index.html?d=n88&code=10%20CLS%0A20%20CIRCLE%20(320%2C200)%2C100%2C6">シミュレータで試す ▶</a></div><pre class="code">10 CLS
 20 CIRCLE (320,200),100,6</pre></div></div>
 <div class="col d-full"><h4>Full BASIC</h4><div class="ex"><div class="ex-title"><span>円をかく</span><a class="try" href="index.html?d=full&code=SET%20WINDOW%20-1%2C%201%2C%20-1%2C%201%0ASET%20COLOR%20%22YELLOW%22%0ABOX%20CIRCLE%20-0.8%2C%200.8%2C%20-0.8%2C%200.8%0AEND">シミュレータで試す ▶</a></div><pre class="code">SET WINDOW -1, 1, -1, 1
 SET COLOR "YELLOW"
 BOX CIRCLE -0.8, 0.8, -0.8, 0.8
 END</pre></div></div>
-<div class="col d-smile"><h4>smile BASIC</h4><div class="ex"><div class="ex-title"><span>円をかく</span><a class="try" href="index.html?d=smile&code=GCLS%0AGCIRCLE%20200%2C120%2C100%2C%23YELLOW">シミュレータで試す ▶</a></div><pre class="code">GCLS
+<div class="col d-smile"><h4>SmileBASIC互換</h4><div class="ex"><div class="ex-title"><span>円をかく</span><a class="try" href="index.html?d=smile&code=GCLS%0AGCIRCLE%20200%2C120%2C100%2C%23YELLOW">シミュレータで試す ▶</a></div><pre class="code">GCLS
 GCIRCLE 200,120,100,#YELLOW</pre></div></div>
 </div>
 <h2>3. 方言をまたいで書き換えるときのポイント</h2>
-<table class="doc"><thead><tr><th>ポイント</th><th>内容</th></tr></thead><tbody><tr><td><b>行番号 ⇔ ラベル</b></td><td>N88-BASIC の <code>GOTO 100</code> は、smile BASIC では <code>GOTO @LABEL</code>(<code>@LABEL</code> を飛び先の行に書く)にします。Full BASIC は行番号を省略して構造化(<code>DO</code> / <code>IF</code> ブロック)で書き換えるのがおすすめです。</td></tr><tr><td><b>真偽の値</b></td><td>N88-BASIC の「真」は <b>-1</b>、他は <b>1</b>。<code>IF A THEN</code> のように 0 かどうかだけを見る使い方は共通ですが、<code>X = (A>B)</code> のように値を取り出すと結果が変わります。</td></tr><tr><td><b>乱数</b></td><td>N88-BASIC の <code>INT(RND(1)*6)+1</code> は、smile BASIC では <code>RND(6)+1</code>、Tiny BASIC では <code>RND(6)</code> です。</td></tr><tr><td><b>文字の位置</b></td><td><code>MID$</code> の位置は N88-BASIC / Full BASIC が <b>1</b> から、smile BASIC が <b>0</b> から。<code>INSTR</code> が「見つからない」ときは N88 が 0、smile が -1 です。</td></tr><tr><td><b>配列の大きさ</b></td><td><code>DIM A(10)</code> は N88-BASIC / Full BASIC で <b>11 個</b>(0〜10)、<code>DIM A[10]</code> は smile BASIC で <b>10 個</b>(0〜9)。</td></tr><tr><td><b>数の表示</b></td><td>N88-BASIC と Full BASIC の <code>PRINT</code> は数の前後に空白を入れます(<code>PRINT 5</code> は <code> 5 </code>)。見た目をそろえたいときは <code>STR$</code> と <code>MID$</code> を使うか、<code>PRINT USING</code> を使いましょう。</td></tr><tr><td><b>グラフィックの座標</b></td><td>Full BASIC だけは「好きな座標系」(数学と同じで上が +y)で描きます。ほかは左上が (0,0) のドット座標です。</td></tr><tr><td><b>色</b></td><td>Tiny / N88 / Full は 0〜7 の色番号(Full は色名も)、smile BASIC は <code>RGB(r,g,b)</code> か <code>#RED</code> などの定数です。</td></tr></tbody></table>
+<table class="doc"><thead><tr><th>ポイント</th><th>内容</th></tr></thead><tbody><tr><td><b>行番号 ⇔ ラベル</b></td><td>N88互換BASIC の <code>GOTO 100</code> は、SmileBASIC互換 では <code>GOTO @LABEL</code>(<code>@LABEL</code> を飛び先の行に書く)にします。Full BASIC は行番号を省略して構造化(<code>DO</code> / <code>IF</code> ブロック)で書き換えるのがおすすめです。</td></tr><tr><td><b>真偽の値</b></td><td>N88互換BASIC の「真」は <b>-1</b>、他は <b>1</b>。<code>IF A THEN</code> のように 0 かどうかだけを見る使い方は共通ですが、<code>X = (A>B)</code> のように値を取り出すと結果が変わります。</td></tr><tr><td><b>乱数</b></td><td>N88互換BASIC の <code>INT(RND(1)*6)+1</code> は、SmileBASIC互換 では <code>RND(6)+1</code>、Tiny BASIC では <code>RND(6)</code> です。</td></tr><tr><td><b>文字の位置</b></td><td><code>MID$</code> の位置は N88互換BASIC / Full BASIC が <b>1</b> から、SmileBASIC互換 が <b>0</b> から。<code>INSTR</code> が「見つからない」ときは N88 が 0、smile が -1 です。</td></tr><tr><td><b>配列の大きさ</b></td><td><code>DIM A(10)</code> は N88互換BASIC / Full BASIC で <b>11 個</b>(0〜10)、<code>DIM A[10]</code> は SmileBASIC互換 で <b>10 個</b>(0〜9)。</td></tr><tr><td><b>数の表示</b></td><td>N88互換BASIC と Full BASIC の <code>PRINT</code> は数の前後に空白を入れます(<code>PRINT 5</code> は <code> 5 </code>)。見た目をそろえたいときは <code>STR$</code> と <code>MID$</code> を使うか、<code>PRINT USING</code> を使いましょう。</td></tr><tr><td><b>グラフィックの座標</b></td><td>Full BASIC だけは「好きな座標系」(数学と同じで上が +y)で描きます。ほかは左上が (0,0) のドット座標です。</td></tr><tr><td><b>色</b></td><td>Tiny / N88 / Full は 0〜7 の色番号(Full は色名も)、SmileBASIC互換 は <code>RGB(r,g,b)</code> か <code>#RED</code> などの定数です。</td></tr></tbody></table>
 <h2>4. どれを選ぶ?</h2>
 <ul>
 <li><b>プログラムの動く仕組みを最小の道具で学びたい</b> → Tiny BASIC</li>
-<li><b>昔のパソコンの雰囲気で、色や図形や音を楽しみたい</b> → N88-BASIC</li>
+<li><b>昔のパソコンの雰囲気で、色や図形や音を楽しみたい</b> → N88互換BASIC</li>
 <li><b>きれいな構造のプログラムや、数学・理科のグラフを描きたい</b> → Full BASIC</li>
-<li><b>ゲームやアニメーションを作りたい</b> → smile BASIC</li>
+<li><b>ゲームやアニメーションを作りたい</b> → SmileBASIC互換</li>
 </ul>
 </main>
 <footer class="site-footer">
   <div class="wrap">
     <span>© MACS Project</span>
-    <span>マニュアル: <a href="manual-tiny.html">Tiny BASIC</a><a href="manual-n88.html">N88-BASIC</a><a href="manual-full.html">Full BASIC</a><a href="manual-smile.html">smile BASIC</a></span>
+    <span>マニュアル: <a href="manual-tiny.html">Tiny BASIC</a><a href="manual-n88.html">N88互換BASIC</a><a href="manual-full.html">Full BASIC</a><a href="manual-smile.html">SmileBASIC互換</a></span>
     <span><a href="compare.html">方言の比較</a> / <a href="index.html">シミュレータ</a></span>
   </div>
-  <div class="wrap"><p class="legal">「N88-BASIC」「PC-8801」「PC-9801」は日本電気株式会社(NEC)の、「SmileBASIC」は株式会社スマイルブームの、「Microsoft」は Microsoft Corporation の、「Nintendo」は任天堂株式会社の商標または登録商標です。このサイトは個人・学習用の<b>非公式</b>のシミュレータで、これらの会社とは関係がなく、承認・提携・推奨を受けたものではありません。「N88-BASIC」「smile BASIC」の名前は、文法や使い方を参考にした互換実装であることを示すために使っています。各社の製品・ソフトウェア・画像・マニュアルの内容は含まれていません(画面の絵・サンプル・説明文はすべて独自に作成したものです)。</p></div>
+  <div class="wrap"><p class="legal">「N88-BASIC」「PC-8801」「PC-9801」は日本電気株式会社(NEC)の、「SmileBASIC」は株式会社スマイルブームの、「Microsoft」は Microsoft Corporation のの商標または登録商標です。このサイトは個人・学習用の<b>非公式</b>のシミュレータで、これらの会社とは関係がなく、承認・提携・推奨を受けたものではありません。このサイトの「N88互換BASIC」「SmileBASIC互換」は、それらの文法や使い方を参考にした互換実装であることを示す名前です。各社の製品・ソフトウェア・画像・マニュアルの内容は含まれていません(画面の絵・サンプル・説明文はすべて独自に作成したものです)。</p></div>
 </footer>
 </body>
 </html>

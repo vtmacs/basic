@@ -1,4 +1,4 @@
-/* MACS BASIC Simulator - スプライト / BG (smile BASIC)。DOM非依存で、表示用ピクセルへ直接合成する。
+/* MACS BASIC Simulator - スプライト / BG (SmileBASIC互換)。DOM非依存で、表示用ピクセルへ直接合成する。
  *  スプライトの絵: グラフィックページ4 (GRP4)、BGタイルの絵: グラフィックページ5 (GRP5)
  *  どちらも 16x16 の升目に 左上から右へ 32個ずつ番号が付く(番号 n → u=(n%32)*16, v=floor(n/32)*16)。 */
 (function (root) {

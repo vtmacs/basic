@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>N88-BASIC マニュアル | MACS Project</title>
+<title>N88互換BASIC マニュアル | MACS Project</title>
 <meta name="description" content="NEC の PC-8801 / PC-9801 シリーズ向けBASICの文法を参考にした、非公式の互換実装です。行番号つきの手軽な書き方に、色・図形・音・文字列処理がそろった、日本のパソコン黎明期の定番です。">
 <link rel="stylesheet" href="css/style.css">
 </head>
@@ -21,15 +21,15 @@
 </header>
 <main class="wrap">
 
-<h1>N88-BASIC マニュアル</h1>
+<h1>N88互換BASIC マニュアル</h1>
 <p class="lead">NEC の PC-8801 / PC-9801 シリーズ向けBASICの文法を参考にした、非公式の互換実装です。行番号つきの手軽な書き方に、色・図形・音・文字列処理がそろった、日本のパソコン黎明期の定番です。</p>
 <div class="doc-layout">
-  <nav class="toc" aria-label="目次"><b>目次</b><a href="#about">N88-BASIC とは</a><a href="#start">画面とはじめかた</a><a href="#program">プログラムの書き方</a><a href="#data">変数・型・演算子</a><a href="#io">入出力の命令</a><a href="#control">制御の命令</a><a href="#vars">データと変数の命令</a><a href="#functions">関数</a><a href="#graphics">グラフィック</a><a href="#file">ファイル</a><a href="#samples">もう少し大きなプログラム</a><a href="#errors">エラーメッセージ</a><a href="#limits">制限事項</a><a href="compare.html">▶ 方言の比較</a><a href="index.html#n88">▶ シミュレータで試す</a></nav>
+  <nav class="toc" aria-label="目次"><b>目次</b><a href="#about">N88互換BASIC とは</a><a href="#start">画面とはじめかた</a><a href="#program">プログラムの書き方</a><a href="#data">変数・型・演算子</a><a href="#io">入出力の命令</a><a href="#control">制御の命令</a><a href="#vars">データと変数の命令</a><a href="#functions">関数</a><a href="#graphics">グラフィック</a><a href="#file">ファイル</a><a href="#samples">もう少し大きなプログラム</a><a href="#errors">エラーメッセージ</a><a href="#limits">制限事項</a><a href="compare.html">▶ 方言の比較</a><a href="index.html#n88">▶ シミュレータで試す</a></nav>
   <article>
-<section id="about"><h2>N88-BASIC とは</h2>
+<section id="about"><h2>N88互換BASIC とは</h2>
 
-<p>N88-BASIC は、NEC のパソコン PC-8801 シリーズ(のちに PC-9801 シリーズ)に搭載された BASIC で、マイクロソフト社の BASIC を元にしています。このシミュレータは、その文法や使い方を参考に独自に作った<b>非公式の互換実装</b>で、NEC やマイクロソフト社とは関係がありません。行番号で書くスタイルは <a href="manual-tiny.html">Tiny BASIC</a> と同じですが、変数の型、配列、文字列、FOR/WHILE、ON GOTO、DATA/READ、グラフィック命令などが加わっています。</p>
-<div class="note tip">このシミュレータの N88-BASIC は、よく使われる命令を中心に再現した学習用のものです(実機のソフトウェアや画像は含みません)。ディスクやカセットの命令、スプライト、PEEK/POKE などの機種依存の機能は含みません。</div>
+<p>N88互換BASIC が参考にしている N88-BASIC は、NEC のパソコン PC-8801 シリーズ(のちに PC-9801 シリーズ)に搭載された BASIC で、マイクロソフト社の BASIC を元にしています。このシミュレータは、その文法や使い方を参考に独自に作った<b>非公式の互換実装</b>で、NEC やマイクロソフト社とは関係がありません。行番号で書くスタイルは <a href="manual-tiny.html">Tiny BASIC</a> と同じですが、変数の型、配列、文字列、FOR/WHILE、ON GOTO、DATA/READ、グラフィック命令などが加わっています。</p>
+<div class="note tip">このシミュレータの N88互換BASIC は、よく使われる命令を中心に再現した学習用のものです(実機のソフトウェアや画像は含みません)。ディスクやカセットの命令、スプライト、PEEK/POKE などの機種依存の機能は含みません。</div>
 </section>
 <section id="start"><h2>画面とはじめかた</h2>
 
@@ -40,9 +40,9 @@
 <li><code>INKEY$</code> でキー入力を読むときは、画面をクリックしてからキーを押します。</li>
 <li>すべての行は行番号で始めます(「行番号をふる」ボタンで自動で付けられます)。</li>
 </ul>
-<div class="ex"><div class="ex-title"><span>Hello, World</span><a class="try" href="index.html?d=n88&code=10%20CLS%0A20%20PRINT%20%22Hello%2C%20World!%22%0A30%20PRINT%20%22%E3%81%93%E3%82%93%E3%81%AB%E3%81%A1%E3%81%AF%20N88-BASIC%22%0A40%20END">シミュレータで試す ▶</a></div><pre class="code">10 CLS
+<div class="ex"><div class="ex-title"><span>Hello, World</span><a class="try" href="index.html?d=n88&code=10%20CLS%0A20%20PRINT%20%22Hello%2C%20World!%22%0A30%20PRINT%20%22%E3%81%93%E3%82%93%E3%81%AB%E3%81%A1%E3%81%AF%20N88%E4%BA%92%E6%8F%9BBASIC%22%0A40%20END">シミュレータで試す ▶</a></div><pre class="code">10 CLS
 20 PRINT "Hello, World!"
-30 PRINT "こんにちは N88-BASIC"
+30 PRINT "こんにちは N88互換BASIC"
 40 END</pre></div>
 </section>
 <section id="program"><h2>プログラムの書き方</h2>
@@ -128,7 +128,7 @@
 <table class="doc"><thead><tr><th>関数</th><th>書式</th><th>説明</th></tr></thead><tbody><tr><td><code>ABS</code></td><td><code>ABS(x)</code></td><td>絶対値</td></tr><tr><td><code>SGN</code></td><td><code>SGN(x)</code></td><td>符号(-1, 0, 1)</td></tr><tr><td><code>INT</code></td><td><code>INT(x)</code></td><td>x を超えない最大の整数(<code>INT(-1.5)</code> = -2)</td></tr><tr><td><code>FIX</code></td><td><code>FIX(x)</code></td><td>小数点以下を切り捨て(<code>FIX(-1.5)</code> = -1)</td></tr><tr><td><code>CINT</code></td><td><code>CINT(x)</code></td><td>四捨五入して整数に</td></tr><tr><td><code>SQR</code></td><td><code>SQR(x)</code></td><td>平方根</td></tr><tr><td><code>SIN COS TAN</code></td><td><code>SIN(x)</code></td><td>三角関数(ラジアン)</td></tr><tr><td><code>ATN</code></td><td><code>ATN(x)</code></td><td>アークタンジェント</td></tr><tr><td><code>EXP LOG</code></td><td><code>EXP(x) LOG(x)</code></td><td>指数関数・自然対数</td></tr><tr><td><code>RND</code></td><td><code>RND(1)</code></td><td>0以上1未満の乱数。<code>RND(0)</code> は直前の値、負の数で乱数列を初期化。整数の乱数は <code>INT(RND(1)*6)+1</code>。</td></tr><tr><td><code>TIMER</code></td><td><code>TIMER</code></td><td>実行開始からの秒数</td></tr><tr><td><code>POINT</code></td><td><code>POINT(x,y)</code></td><td>画面上の点の色番号</td></tr></tbody></table>
 <h3>文字列の関数</h3>
 <table class="doc"><thead><tr><th>関数</th><th>書式</th><th>説明</th></tr></thead><tbody><tr><td><code>LEN</code></td><td><code>LEN(a$)</code></td><td>文字数</td></tr><tr><td><code>LEFT$</code></td><td><code>LEFT$(a$,n)</code></td><td>左から n 文字</td></tr><tr><td><code>RIGHT$</code></td><td><code>RIGHT$(a$,n)</code></td><td>右から n 文字</td></tr><tr><td><code>MID$</code></td><td><code>MID$(a$,p[,n])</code></td><td>p 文字目(1から数える)から n 文字</td></tr><tr><td><code>INSTR</code></td><td><code>INSTR([開始,]a$,b$)</code></td><td>a$ の中で b$ が最初に現れる位置(なければ 0)</td></tr><tr><td><code>STR$</code></td><td><code>STR$(x)</code></td><td>数を文字列に(正の数は先頭に空白)</td></tr><tr><td><code>VAL</code></td><td><code>VAL(a$)</code></td><td>文字列を数に(数でなければ 0)</td></tr><tr><td><code>CHR$</code></td><td><code>CHR$(n)</code></td><td>文字コードから文字</td></tr><tr><td><code>ASC</code></td><td><code>ASC(a$)</code></td><td>先頭文字の文字コード</td></tr><tr><td><code>HEX$ OCT$ BIN$</code></td><td><code>HEX$(n)</code></td><td>16進・8進・2進の文字列</td></tr><tr><td><code>SPACE$ STRING$</code></td><td><code>SPACE$(n)  STRING$(n,c)</code></td><td>n 個の空白、n 個の同じ文字</td></tr><tr><td><code>TIME$ DATE$</code></td><td><code>TIME$  DATE$</code></td><td>現在の時刻・日付</td></tr></tbody></table>
-<div class="ex"><div class="ex-title"><span>文字列関数</span><a class="try" href="index.html?d=n88&code=10%20A%24%3D%22N88-BASIC%22%0A20%20PRINT%20LEN(A%24)%3BLEFT%24(A%24%2C3)%3BRIGHT%24(A%24%2C5)%3BMID%24(A%24%2C5%2C2)%0A30%20PRINT%20INSTR(A%24%2C%22-%22)%3BSTR%24(3)%3BVAL(%2212%22)%2B1%0A40%20PRINT%20CHR%24(65)%3BASC(%22a%22)%3BHEX%24(255)%3BSTRING%24(5%2C%22*%22)%0A50%20FOR%20I%3DLEN(A%24)%20TO%201%20STEP%20-1%3A%20PRINT%20MID%24(A%24%2CI%2C1)%3B%3A%20NEXT%20I%3A%20PRINT%0A60%20END">シミュレータで試す ▶</a></div><pre class="code">10 A$="N88-BASIC"
+<div class="ex"><div class="ex-title"><span>文字列関数</span><a class="try" href="index.html?d=n88&code=10%20A%24%3D%22MY-BASIC%22%0A20%20PRINT%20LEN(A%24)%3BLEFT%24(A%24%2C3)%3BRIGHT%24(A%24%2C5)%3BMID%24(A%24%2C5%2C2)%0A30%20PRINT%20INSTR(A%24%2C%22-%22)%3BSTR%24(3)%3BVAL(%2212%22)%2B1%0A40%20PRINT%20CHR%24(65)%3BASC(%22a%22)%3BHEX%24(255)%3BSTRING%24(5%2C%22*%22)%0A50%20FOR%20I%3DLEN(A%24)%20TO%201%20STEP%20-1%3A%20PRINT%20MID%24(A%24%2CI%2C1)%3B%3A%20NEXT%20I%3A%20PRINT%0A60%20END">シミュレータで試す ▶</a></div><pre class="code">10 A$="MY-BASIC"
 20 PRINT LEN(A$);LEFT$(A$,3);RIGHT$(A$,5);MID$(A$,5,2)
 30 PRINT INSTR(A$,"-");STR$(3);VAL("12")+1
 40 PRINT CHR$(65);ASC("a");HEX$(255);STRING$(5,"*")
@@ -139,7 +139,7 @@
 
 <p>座標は<b>左上が (0,0)</b>で、右へ x、下へ y が増えます(640 × 400)。色は色番号(0〜7)。色を省略すると <code>COLOR</code> で決めた色になります。</p>
 <table class="doc"><thead><tr><th>命令</th><th>書式</th><th>説明</th></tr></thead><tbody><tr><td><code>PSET</code></td><td><code>PSET (x,y)[,色]</code></td><td>点を打ちます。<code>PSET STEP(dx,dy)</code> で直前の位置からの相対位置。</td></tr><tr><td><code>PRESET</code></td><td><code>PRESET (x,y)</code></td><td>点を背景色で消します。</td></tr><tr><td><code>LINE</code></td><td><code>LINE [(x1,y1)]-(x2,y2)[,色[,B|BF]]</code></td><td>線。<code>B</code> で四角形の枠、<code>BF</code> で塗りつぶした四角形。始点を省略すると直前の位置から。</td></tr><tr><td><code>CIRCLE</code></td><td><code>CIRCLE (x,y),半径[,色[,開始角,終了角[,比率]]]</code></td><td>円・円弧・楕円。角度はラジアン(右が0、反時計回り)。比率が1より小さいと横長の楕円。角度に負の符号を付けると中心への線も引きます。</td></tr><tr><td><code>PAINT</code></td><td><code>PAINT (x,y)[,塗り色[,境界色]]</code></td><td>(x,y) をふくむ閉じた領域を塗ります。境界色を指定した場合は、その色の線まで塗ります。</td></tr><tr><td><code>POINT</code></td><td><code>POINT(x,y)</code></td><td>(x,y) の色番号を返す関数。</td></tr></tbody></table>
-<div class="ex"><div class="ex-title"><span>図形</span><a class="try" href="index.html?d=n88&code=10%20SCREEN%203%3A%20CLS%0A20%20FOR%20I%3D0%20TO%207%0A30%20%20%20LINE%20(I*80%2C0)-(I*80%2B79%2C60)%2CI%2CBF%0A40%20NEXT%20I%0A50%20CIRCLE%20(320%2C230)%2C120%2C6%0A60%20PAINT%20(320%2C230)%2C2%2C6%0A70%20CIRCLE%20(320%2C230)%2C60%2C5%0A80%20LINE%20(100%2C150)-(540%2C390)%2C7%2CB%0A90%20LOCATE%2030%2C12%3A%20COLOR%207%3A%20PRINT%20%22N88-BASIC%20GRAPHICS%22%0A100%20END">シミュレータで試す ▶</a></div><pre class="code">10 SCREEN 3: CLS
+<div class="ex"><div class="ex-title"><span>図形</span><a class="try" href="index.html?d=n88&code=10%20SCREEN%203%3A%20CLS%0A20%20FOR%20I%3D0%20TO%207%0A30%20%20%20LINE%20(I*80%2C0)-(I*80%2B79%2C60)%2CI%2CBF%0A40%20NEXT%20I%0A50%20CIRCLE%20(320%2C230)%2C120%2C6%0A60%20PAINT%20(320%2C230)%2C2%2C6%0A70%20CIRCLE%20(320%2C230)%2C60%2C5%0A80%20LINE%20(100%2C150)-(540%2C390)%2C7%2CB%0A90%20LOCATE%2030%2C12%3A%20COLOR%207%3A%20PRINT%20%22N88%E4%BA%92%E6%8F%9BBASIC%20GRAPHICS%22%0A100%20END">シミュレータで試す ▶</a></div><pre class="code">10 SCREEN 3: CLS
 20 FOR I=0 TO 7
 30   LINE (I*80,0)-(I*80+79,60),I,BF
 40 NEXT I
@@ -147,7 +147,7 @@
 60 PAINT (320,230),2,6
 70 CIRCLE (320,230),60,5
 80 LINE (100,150)-(540,390),7,B
-90 LOCATE 30,12: COLOR 7: PRINT "N88-BASIC GRAPHICS"
+90 LOCATE 30,12: COLOR 7: PRINT "N88互換BASIC GRAPHICS"
 100 END</pre></div>
 <div class="ex"><div class="ex-title"><span>サインカーブ</span><a class="try" href="index.html?d=n88&code=10%20SCREEN%203%3A%20CLS%0A20%20LINE%20(0%2C200)-(639%2C200)%2C7%0A30%20FOR%20X%3D0%20TO%20639%0A40%20%20%20Y%3D200-SIN(X%2F639*4*3.14159)*150%0A50%20%20%20PSET%20(X%2CY)%2C6%0A60%20NEXT%20X%0A70%20END">シミュレータで試す ▶</a></div><pre class="code">10 SCREEN 3: CLS
 20 LINE (0,200)-(639,200),7
@@ -268,10 +268,10 @@
 <footer class="site-footer">
   <div class="wrap">
     <span>© MACS Project</span>
-    <span>マニュアル: <a href="manual-tiny.html">Tiny BASIC</a><a href="manual-n88.html" aria-current="page">N88-BASIC</a><a href="manual-full.html">Full BASIC</a><a href="manual-smile.html">smile BASIC</a></span>
+    <span>マニュアル: <a href="manual-tiny.html">Tiny BASIC</a><a href="manual-n88.html" aria-current="page">N88互換BASIC</a><a href="manual-full.html">Full BASIC</a><a href="manual-smile.html">SmileBASIC互換</a></span>
     <span><a href="compare.html">方言の比較</a> / <a href="index.html">シミュレータ</a></span>
   </div>
-  <div class="wrap"><p class="legal">「N88-BASIC」「PC-8801」「PC-9801」は日本電気株式会社(NEC)の、「SmileBASIC」は株式会社スマイルブームの、「Microsoft」は Microsoft Corporation の、「Nintendo」は任天堂株式会社の商標または登録商標です。このサイトは個人・学習用の<b>非公式</b>のシミュレータで、これらの会社とは関係がなく、承認・提携・推奨を受けたものではありません。「N88-BASIC」「smile BASIC」の名前は、文法や使い方を参考にした互換実装であることを示すために使っています。各社の製品・ソフトウェア・画像・マニュアルの内容は含まれていません(画面の絵・サンプル・説明文はすべて独自に作成したものです)。</p></div>
+  <div class="wrap"><p class="legal">「N88-BASIC」「PC-8801」「PC-9801」は日本電気株式会社(NEC)の、「SmileBASIC」は株式会社スマイルブームの、「Microsoft」は Microsoft Corporation のの商標または登録商標です。このサイトは個人・学習用の<b>非公式</b>のシミュレータで、これらの会社とは関係がなく、承認・提携・推奨を受けたものではありません。このサイトの「N88互換BASIC」「SmileBASIC互換」は、それらの文法や使い方を参考にした互換実装であることを示す名前です。各社の製品・ソフトウェア・画像・マニュアルの内容は含まれていません(画面の絵・サンプル・説明文はすべて独自に作成したものです)。</p></div>
 </footer>
 </body>
 </html>

@@ -1,6 +1,6 @@
 # MACS BASIC シミュレータ
 
-Tiny BASIC / N88-BASIC / Full BASIC / smile BASIC の4つの方言をブラウザで動かせる、依存ライブラリなしの静的サイトです。
+Tiny BASIC / N88互換BASIC / Full BASIC / SmileBASIC互換 の4つの方言をブラウザで動かせる、依存ライブラリなしの静的サイトです。
 `index.html` を開く(または `/basic/` に配置する)だけで動きます。ビルド不要。
 
 | ページ | 内容 |
@@ -18,7 +18,7 @@ js/screen.js                              文字グリッド+ピクセルフレ�
 js/basic-core.js                          方言定義・字句解析・組込み関数・PRINT USING
 js/basic-compiler.js                      ソース → 命令列(クロージャ)へのコンパイラ
 js/basic-vm.js                            実行系(変数/配列/呼び出し/INPUT/グラフィック/エラー処理/ファイル)
-js/sprites.js                             smile BASIC のスプライト・BG・標準の絵・合成
+js/sprites.js                             SmileBASIC互換 のスプライト・BG・標準の絵・合成
 js/samples.js                             サンプルプログラム
 js/app.js                                 UI(エディタ・入力欄・キー/マウス・音)
 tools/build-docs.js, tools/docs/*.js      マニュアル・比較ページの生成元
@@ -48,7 +48,7 @@ node tests/ui-test.js    # ブラウザ操作テスト(Playwright が必要)
 
 ## 商標・権利について
 
-- 「N88-BASIC」「PC-8801」「PC-9801」は日本電気株式会社の、「SmileBASIC」は株式会社スマイルブームの、「Microsoft」は Microsoft Corporation の、「Nintendo」は任天堂株式会社の商標または登録商標です。
-- このプロジェクトは非公式で、これらの会社とは関係がなく、承認・提携を受けていません。「N88-BASIC」「smile BASIC」の名前は、文法や使い方を参考にした**互換実装**であることを示すために使っています(表示名は `js/app.js` の `LABELS`、`tools/build-docs.js` の `LABEL` と、`tools/docs/*.js` の本文にあります)。
+- 「N88-BASIC」「PC-8801」「PC-9801」は日本電気株式会社の、「SmileBASIC」は株式会社スマイルブームの、「Microsoft」は Microsoft Corporation のの商標または登録商標です。
+- このプロジェクトは非公式で、これらの会社とは関係がなく、承認・提携を受けていません。このサイトの「N88互換BASIC」「SmileBASIC互換」は、それらの文法や使い方を参考にした**互換実装**であることを示す名前です(表示名は `js/app.js` の `LABELS`、`tools/build-docs.js` の `LABEL` と、`tools/docs/*.js` の本文にあります)。
 - 各社の製品・ROM・フォント・画像・マニュアルの文章は一切含みません。標準のスプライト/タイルの絵(`js/sprites.js`)、サンプル、マニュアルの文章はすべてこのプロジェクト独自のものです。
 - 同じ注記は、全ページのフッターに表示されます(`index.html` と `tools/build-docs.js` の `LEGAL`)。

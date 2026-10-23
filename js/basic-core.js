@@ -28,7 +28,7 @@
       kw: words('REM LET PRINT IF GOTO GOSUB RETURN INPUT END STOP CLEAR CLS COLOR PLOT LINE CIRCLE WAIT'),
     },
     n88: {
-      id: 'n88', label: 'N88-BASIC', lineNo: 'req', colon: true, intOnly: false, suffix: '$%!#',
+      id: 'n88', label: 'N88互換BASIC', lineNo: 'req', colon: true, intOnly: false, suffix: '$%!#',
       apos: true, bang: false, brackets: false, trueVal: -1, numStyle: 'ms', digits: 7, zone: 14,
       cols: 80, rows: 25, gw: 640, gh: 400, bg: 0x000000, fg: 0xffffff, pal: PAL8, arrCount: false,
       kw: words(`REM LET PRINT IF GOTO GOSUB RETURN ON INPUT LINE FOR NEXT WHILE WEND DATA READ RESTORE DIM ERASE
@@ -44,7 +44,7 @@
         READ RESTORE DIM OPTION RANDOMIZE DEF SUB FUNCTION CALL DECLARE END STOP CLEAR SET PLOT BOX WAIT PAUSE`),
     },
     smile: {
-      id: 'smile', label: 'smile BASIC', lineNo: 'none', colon: true, intOnly: false, suffix: '',
+      id: 'smile', label: 'SmileBASIC互換', lineNo: 'none', colon: true, intOnly: false, suffix: '',
       apos: true, bang: false, brackets: true, trueVal: 1, numStyle: 'plain', digits: 15, zone: 4,
       cols: 50, rows: 30, gw: 400, gh: 240, bg: 0x000000, fg: 0xffffff, pal: PAL16, arrCount: true,
       kw: words(`REM PRINT LOCATE COLOR CLS VSYNC WAIT FOR NEXT BREAK CONTINUE WHILE WEND REPEAT UNTIL IF ELSEIF ELSE
@@ -407,7 +407,7 @@
   def('SPVAR', 2, 2, (vm, id, n) => spr(vm).spvar(num(id), num(n)), 'smile');
   def('BGGET', 3, 3, (vm, l, x, y) => spr(vm).bgget(num(l), num(x), num(y)), 'smile');
   def('LOAD', 1, 1, (vm, name) => vm.fsLoad(str(name)), 'smile');
-  // N88-BASIC のファイル関数
+  // N88互換BASIC のファイル関数
   def('EOF', 1, 1, (vm, n) => vm.fileEof(num(n)), 'n88');
   def('LOF', 1, 1, (vm, n) => vm.fileLof(num(n)), 'n88');
   def('LOC', 1, 1, (vm, n) => vm.fileLoc(num(n)), 'n88');
