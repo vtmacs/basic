@@ -7,7 +7,7 @@ const path = require('path');
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const LABEL = { tiny: 'Tiny BASIC', n88: 'N88互換BASIC', full: 'Full BASIC', smile: 'SmileBASIC互換' };
 const ORDER = ['tiny', 'n88', 'full', 'smile'];
-const LEGAL = '<p class="legal">「N88-BASIC」「PC-8801」「PC-9801」は日本電気株式会社(NEC)の、「SmileBASIC」は株式会社スマイルブームの、「Microsoft」は Microsoft Corporation のの商標または登録商標です。このサイトは個人・学習用の<b>非公式</b>のシミュレータで、これらの会社とは関係がなく、承認・提携・推奨を受けたものではありません。このサイトの「N88互換BASIC」「SmileBASIC互換」は、それらの文法や使い方を参考にした互換実装であることを示す名前です。各社の製品・ソフトウェア・画像・マニュアルの内容は含まれていません(画面の絵・サンプル・説明文はすべて独自に作成したものです)。</p>';
+const LEGAL = '<p class="legal">「N88-BASIC」「PC-8801」「PC-9801」は日本電気株式会社(NEC)の、「SmileBASIC」は株式会社スマイルブームの、「Microsoft」は Microsoft Corporation の商標または登録商標です。このサイトは個人・学習用の<b>非公式</b>のシミュレータで、これらの会社とは関係がなく、承認・提携・推奨を受けたものではありません。このサイトの「N88互換BASIC」「SmileBASIC互換」は、それらの文法や使い方を参考にした互換実装であることを示す名前です。各社の製品・ソフトウェア・画像・マニュアルの内容は含まれていません(画面の絵・サンプル・説明文はすべて独自に作成したものです)。</p>';
 
 function makeHelpers(dialect, collected) {
   const h = {};

@@ -48,7 +48,7 @@ node tests/ui-test.js    # ブラウザ操作テスト(Playwright が必要)
 
 ## 商標・権利について
 
-- 「N88-BASIC」「PC-8801」「PC-9801」は日本電気株式会社の、「SmileBASIC」は株式会社スマイルブームの、「Microsoft」は Microsoft Corporation のの商標または登録商標です。
+- 「N88-BASIC」「PC-8801」「PC-9801」は日本電気株式会社の、「SmileBASIC」は株式会社スマイルブームの、「Microsoft」は Microsoft Corporation の商標または登録商標です。
 - このプロジェクトは非公式で、これらの会社とは関係がなく、承認・提携を受けていません。このサイトの「N88互換BASIC」「SmileBASIC互換」は、それらの文法や使い方を参考にした**互換実装**であることを示す名前です(表示名は `js/app.js` の `LABELS`、`tools/build-docs.js` の `LABEL` と、`tools/docs/*.js` の本文にあります)。
 - 各社の製品・ROM・フォント・画像・マニュアルの文章は一切含みません。標準のスプライト/タイルの絵(`js/sprites.js`)、サンプル、マニュアルの文章はすべてこのプロジェクト独自のものです。
 - 同じ注記は、全ページのフッターに表示されます(`index.html` と `tools/build-docs.js` の `LEGAL`)。
