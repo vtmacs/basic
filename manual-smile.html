@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="ja" data-dialect="smile">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>smile BASIC マニュアル | MACS Project</title>
+<meta name="description" content="ゲームを作りたくなる現代的なBASIC(SmileBASIC風)。行番号なし、ラベル、関数(DEF)、配列、VSYNC でのフレーム同期、RGB() での色指定。">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html">MACS Project<small>BASIC シミュレータ</small></a>
+    <nav class="site-nav" aria-label="サイト内メニュー">
+      <a href="index.html#smile">シミュレータ</a>
+      <a href="manual-smile.html" aria-current="page">マニュアル</a>
+      <a href="compare.html">方言の比較</a>
+    </nav>
+  </div>
+  <div class="strip"></div>
+</header>
+<main class="wrap">
+
+<h1>smile BASIC マニュアル</h1>
+<p class="lead">ゲームを作りたくなる現代的なBASIC(SmileBASIC風)。行番号なし、ラベル、関数(DEF)、配列、VSYNC でのフレーム同期、RGB() での色指定。</p>
+<div class="doc-layout">
+  <nav class="toc" aria-label="目次"><b>目次</b><a href="#about">smile BASIC とは</a><a href="#start">画面とはじめかた</a><a href="#program">プログラムの書き方</a><a href="#data">変数・配列・演算子</a><a href="#io">入出力・文字画面</a><a href="#control">制御構造</a><a href="#def">DEF(関数・手続き)</a><a href="#arrays">配列の命令・データ</a><a href="#functions">関数</a><a href="#graphics">グラフィック</a><a href="#game">動かしてみよう(VSYNC・ボタン)</a><a href="#errors">エラーメッセージ</a><a href="#limits">制限事項</a><a href="compare.html">▶ 方言の比較</a><a href="index.html#smile">▶ シミュレータで試す</a></nav>
+  <article>
+<section id="about"><h2>smile BASIC とは</h2>
+
+<p>smile BASIC は、ニンテンドー3DS/Switch の「SmileBASIC」のように、<b>ゲームやグラフィックを手軽に作れる</b>ことを目指した現代的なBASICです。行番号は使わず、飛び先には <code>@LOOP</code> のような<b>ラベル</b>を使い、<code>DEF</code> で関数を作り、配列は <code>A[3]</code> のように <code>[ ]</code> で書きます。</p>
+<div class="note tip">このシミュレータの smile BASIC は SmileBASIC の文法を参考にした再現で、<b>スプライト・BG・音楽・ファイル・複数の画面</b>などは含みません。文字画面(コンソール)と、図形を描くグラフィック画面を中心にしています。</div>
+</section>
+<section id="start"><h2>画面とはじめかた</h2>
+
+<ul>
+<li>グラフィック画面は <b>400 × 240 ドット</b>(左上が (0,0))。その上に <b>50桁 × 30行</b>の文字画面(コンソール)が重なります。</li>
+<li>実行は <b>「▶ 実行」</b>(<kbd>Ctrl</kbd>+<kbd>Enter</kbd>)。ずっと動き続けるプログラムは「■ 停止」で止めます。</li>
+<li>キー操作: <kbd>←↑↓→</kbd> が十字キー、<kbd>Z</kbd><kbd>X</kbd><kbd>A</kbd><kbd>S</kbd> が A/B/X/Y ボタン、<kbd>Q</kbd><kbd>W</kbd> が L/R ボタン。画面をマウスでさわると <code>TOUCH</code> で座標が分かります。</li>
+</ul>
+<div class="ex"><div class="ex-title"><span>Hello, World</span><a class="try" href="index.html?d=smile&code='%20%E3%81%AF%E3%81%98%E3%82%81%E3%81%A6%E3%81%AE%20smile%20BASIC%0APRINT%20%22Hello%2C%20World!%22%0ACOLOR%206%0APRINT%20%22COLOR%20%E3%81%A7%E6%96%87%E5%AD%97%E3%81%AE%E8%89%B2%E3%82%92%E5%A4%89%E3%81%88%E3%81%BE%E3%81%99%22%0ACOLOR%2015">シミュレータで試す ▶</a></div><pre class="code">' はじめての smile BASIC
+PRINT "Hello, World!"
+COLOR 6
+PRINT "COLOR で文字の色を変えます"
+COLOR 15</pre></div>
+</section>
+<section id="program"><h2>プログラムの書き方</h2>
+
+<ul>
+<li><b>行番号は使いません</b>。1行に1つの文が基本で、<code>:</code> で区切れば複数書けます。</li>
+<li>コメントは <code>'</code> から行末まで(または <code>REM</code>)。<code>?</code> は <code>PRINT</code> の省略形です。</li>
+<li>飛び先のラベルは <code>@名前</code>。<code>GOTO @LOOP</code>、<code>GOSUB @SUB1</code> のように使います。</li>
+<li>大文字・小文字は区別されません。文字列は <code>"..."</code>。</li>
+<li>ブロックは <code>IF … ENDIF</code>、<code>FOR … NEXT</code>、<code>WHILE … WEND</code>、<code>REPEAT … UNTIL</code>、<code>DEF … END</code> など。</li>
+</ul>
+</section>
+<section id="data"><h2>変数・配列・演算子</h2>
+
+<h3>変数</h3>
+<p>変数名は英字で始まる英数字と <code>_</code>。名前の最後に <code>$</code> を付けると文字列です。<code>VAR</code> で宣言できます(<code>VAR A=3, B$="x"</code>)。宣言しなくても代入すれば使えます。数値は整数でも小数でも構いません(<code>5/2</code> は 2.5)。</p>
+<h3>定数</h3>
+<p><code>#TRUE</code>(1) <code>#FALSE</code>(0) <code>#PI</code>、色 <code>#RED</code> <code>#GREEN</code> <code>#BLUE</code> <code>#YELLOW</code> <code>#CYAN</code> <code>#MAGENTA</code> <code>#WHITE</code> <code>#BLACK</code> <code>#GRAY</code> <code>#ORANGE</code> <code>#PURPLE</code> <code>#PINK</code> <code>#LIME</code> <code>#NAVY</code> <code>#MAROON</code> <code>#OLIVE</code> <code>#TEAL</code> <code>#SILVER</code>、ボタン <code>#UP</code> <code>#DOWN</code> <code>#LEFT</code> <code>#RIGHT</code> <code>#A</code> <code>#B</code> <code>#X</code> <code>#Y</code> <code>#L</code> <code>#R</code>。</p>
+<h3>配列</h3>
+<p><code>DIM A[10]</code> で要素数 10(<code>A[0]</code>〜<code>A[9]</code>)。<code>DIM B[3,4]</code> は2次元。配列リテラル <code>A=[3,1,2]</code> でも作れます。<code>LEN(A)</code> で要素数。範囲外は「添字が範囲外です」エラー。文字列も <code>A$[0]</code> のように1文字を取り出せます。</p>
+<h3>演算子(強さの順)</h3>
+<table class="doc"><thead><tr><th>演算子</th><th>意味</th></tr></thead><tbody><tr><td><code>[ ]</code> <code>( )</code></td><td>添字・関数呼び出し・かっこ</td></tr><tr><td><code>-</code> <code>!</code>(単項)</td><td>符号・論理否定(<code>!0</code> は 1)</td></tr><tr><td><code>* / %</code> <code>DIV</code> <code>MOD</code></td><td>かけ算・割り算、<code>DIV</code> は整数の割り算、<code>MOD</code> と <code>%</code> は余り</td></tr><tr><td><code>+ -</code></td><td>足し算・引き算(<code>+</code> は文字列の連結にも)</td></tr><tr><td><code>&lt;&lt; &gt;&gt;</code></td><td>ビットシフト</td></tr><tr><td><code>== != &lt; &gt; &lt;= &gt;=</code></td><td>比較。真は <b>1</b>、偽は 0。(<code>=</code> でも比較できます)</td></tr><tr><td><code>NOT</code> <code>AND</code> <code>OR</code> <code>XOR</code></td><td>ビット演算(0と1の論理演算としても使えます)</td></tr><tr><td><code>&amp;&amp;</code> <code>||</code></td><td>論理積・論理和(結果は 0 か 1)</td></tr></tbody></table>
+<div class="ex"><div class="ex-title"><span>演算子と配列</span><a class="try" href="index.html?d=smile&code=VAR%20A%3D7%2CB%3D2%0APRINT%20A%2FB%2C%20A%20DIV%20B%2C%20A%20MOD%20B%2C%20A%25B%0APRINT%20A%3D%3D7%2C%20A!%3D7%2C%20A%3E3%20AND%20B%3C3%0APRINT%201%3C%3C4%2C%20255%20AND%2015%0ADIM%20T%5B3%5D%0AT%5B0%5D%3D10%3AT%5B1%5D%3D20%3AT%5B2%5D%3D30%0APRINT%20T%5B1%5D%2BT%5B2%5D%2C%20LEN(T)%0AS%24%3D%22HELLO%22%0APRINT%20S%24%5B1%5D%2C%20LEN(S%24)">シミュレータで試す ▶</a></div><pre class="code">VAR A=7,B=2
+PRINT A/B, A DIV B, A MOD B, A%B
+PRINT A==7, A!=7, A&gt;3 AND B&lt;3
+PRINT 1&lt;&lt;4, 255 AND 15
+DIM T[3]
+T[0]=10:T[1]=20:T[2]=30
+PRINT T[1]+T[2], LEN(T)
+S$="HELLO"
+PRINT S$[1], LEN(S$)</pre></div>
+</section>
+<section id="io"><h2>入出力・文字画面</h2>
+
+<table class="doc"><thead><tr><th>命令</th><th>書式</th><th>説明</th></tr></thead><tbody><tr><td><code>PRINT</code></td><td><code>PRINT 項目 [; | , 項目 ...]</code></td><td>表示。<code>;</code> は続けて、<code>,</code> は4桁ごとの位置へ。行末の <code>;</code> で改行なし。</td></tr><tr><td><code>INPUT</code></td><td><code>INPUT ["メッセージ";] 変数, …</code></td><td>キー入力。<code>;</code> のときは「メッセージ?」、<code>,</code> のときは「メッセージ」だけ。</td></tr><tr><td><code>LINPUT</code></td><td><code>LINPUT ["メッセージ";] 文字列変数</code></td><td>1行をそのまま受け取ります。</td></tr><tr><td><code>INKEY$</code></td><td><code>A$ = INKEY$()</code></td><td>押されたキーを1文字返します(なければ空文字列)。</td></tr><tr><td><code>BUTTON</code></td><td><code>B = BUTTON()</code></td><td>押されているボタンのビット(<code>#UP</code> <code>#DOWN</code> <code>#LEFT</code> <code>#RIGHT</code> <code>#A</code> <code>#B</code> <code>#X</code> <code>#Y</code> <code>#L</code> <code>#R</code>)。<code>IF B AND #LEFT THEN …</code></td></tr><tr><td><code>STICK</code></td><td><code>STICK OUT X,Y</code></td><td>十字キーを -1〜1 の値で取得(右・上が +)。</td></tr><tr><td><code>TOUCH</code></td><td><code>TOUCH OUT T,X,Y</code></td><td>マウス(タッチ)の状態。T は押している間のフレーム数、X,Y は座標。</td></tr><tr><td><code>CLS</code></td><td><code>CLS</code></td><td>文字画面を消します(図形は消えません)。</td></tr><tr><td><code>LOCATE</code></td><td><code>LOCATE x, y</code></td><td>文字の表示位置(左上が 0,0)。</td></tr><tr><td><code>COLOR</code></td><td><code>COLOR 文字色 [, 背景色]</code></td><td>文字の色(0〜15。下の表。背景の 0 は透明)。</td></tr><tr><td><code>VSYNC / WAIT</code></td><td><code>VSYNC [n]  WAIT n</code></td><td>画面の更新(1/60秒)を n 回待ちます。アニメーションの基本。</td></tr><tr><td><code>BEEP</code></td><td><code>BEEP</code></td><td>ビープ音。</td></tr><tr><td><code>RANDOMIZE</code></td><td><code>RANDOMIZE [種]</code></td><td>乱数の種を決めます。</td></tr></tbody></table>
+<table class="doc"><thead><tr><th>COLOR</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th></tr></thead><tbody><tr><td>色</td><td>黒</td><td>栗</td><td>赤</td><td>紫</td><td>緑</td><td>黄緑</td><td>オリーブ</td><td>黄</td><td>紺</td><td>青</td><td>青緑</td><td>水色</td><td>灰</td><td>銀</td><td>白</td></tr></tbody></table>
+<div class="ex"><div class="ex-title"><span>INPUT / COLOR</span><a class="try" href="index.html?d=smile&code=INPUT%20%22%E3%81%8A%E5%90%8D%E5%89%8D%E3%81%AF%22%3BN%24%0ALOCATE%200%2C3%0AFOR%20I%3D1%20TO%2015%0A%20%20COLOR%20I%0A%20%20PRINT%20N%24%3B%22%20%22%3B%0ANEXT%0ACOLOR%2015%0APRINT%0APRINT%20%22%E3%81%93%E3%82%93%E3%81%AB%E3%81%A1%E3%81%AF%E3%80%81%22%3BN%24%3B%22%E3%81%95%E3%82%93%22">シミュレータで試す ▶</a></div><pre class="code">INPUT "お名前は";N$
+LOCATE 0,3
+FOR I=1 TO 15
+  COLOR I
+  PRINT N$;" ";
+NEXT
+COLOR 15
+PRINT
+PRINT "こんにちは、";N$;"さん"</pre></div>
+</section>
+<section id="control"><h2>制御構造</h2>
+
+<table class="doc"><thead><tr><th>命令</th><th>書式</th><th>説明</th></tr></thead><tbody><tr><td><code>IF</code></td><td><code>IF 条件 THEN 文 [ELSE 文]</code></td><td>1行形式。<code>THEN</code> のあとに文を書きます。</td></tr><tr><td><code>IF … ENDIF</code></td><td><code>IF 条件 THEN … ELSEIF 条件 THEN … ELSE … ENDIF</code></td><td>ブロック形式(<code>THEN</code> のあとで改行)。</td></tr><tr><td><code>SWITCH</code></td><td><code>SWITCH 式 / CASE 値,値 / DEFAULT / ENDSWITCH</code></td><td>値による多分岐(上から順に1つだけ実行)。</td></tr><tr><td><code>FOR / NEXT</code></td><td><code>FOR 変数=初期値 TO 終了値 [STEP 増分] … NEXT</code></td><td>くり返し。<code>BREAK</code> で抜ける、<code>CONTINUE</code> で次へ。</td></tr><tr><td><code>WHILE / WEND</code></td><td><code>WHILE 条件 … WEND</code></td><td>条件が真の間くり返し。</td></tr><tr><td><code>REPEAT / UNTIL</code></td><td><code>REPEAT … UNTIL 条件</code></td><td>先に実行して、条件が真になるまでくり返し。</td></tr><tr><td><code>GOTO / GOSUB</code></td><td><code>GOTO @ラベル  GOSUB @ラベル … RETURN</code></td><td>ラベルへ飛ぶ・サブルーチンを呼ぶ。</td></tr><tr><td><code>ON … GOTO / GOSUB</code></td><td><code>ON 式 GOTO @A,@B,@C</code></td><td>式の値(1,2,…)で飛び先を選ぶ。</td></tr><tr><td><code>END / STOP</code></td><td><code>END</code></td><td>プログラムの終了(DEF の中の <code>END</code> は DEF の終わり)。</td></tr></tbody></table>
+<div class="ex"><div class="ex-title"><span>IF ブロック</span><a class="try" href="index.html?d=smile&code=FOR%20I%3D1%20TO%2020%0A%20%20IF%20I%20MOD%2015%3D%3D0%20THEN%0A%20%20%20%20PRINT%20%22FizzBuzz%22%0A%20%20ELSEIF%20I%20MOD%203%3D%3D0%20THEN%0A%20%20%20%20PRINT%20%22Fizz%22%0A%20%20ELSEIF%20I%20MOD%205%3D%3D0%20THEN%0A%20%20%20%20PRINT%20%22Buzz%22%0A%20%20ELSE%0A%20%20%20%20PRINT%20I%0A%20%20ENDIF%0ANEXT">シミュレータで試す ▶</a></div><pre class="code">FOR I=1 TO 20
+  IF I MOD 15==0 THEN
+    PRINT "FizzBuzz"
+  ELSEIF I MOD 3==0 THEN
+    PRINT "Fizz"
+  ELSEIF I MOD 5==0 THEN
+    PRINT "Buzz"
+  ELSE
+    PRINT I
+  ENDIF
+NEXT</pre></div>
+<div class="ex"><div class="ex-title"><span>SWITCH</span><a class="try" href="index.html?d=smile&code=FOR%20I%3D1%20TO%206%0A%20%20SWITCH%20I%0A%20%20CASE%201%2C2%0A%20%20%20%20PRINT%20I%3B%22%20%E3%81%AF%E5%B0%8F%E3%81%95%E3%81%84%22%0A%20%20CASE%203%0A%20%20%20%20PRINT%20I%3B%22%20%E3%81%AF%E7%9C%9F%E3%82%93%E4%B8%AD%22%0A%20%20DEFAULT%0A%20%20%20%20PRINT%20I%3B%22%20%E3%81%AF%E5%A4%A7%E3%81%8D%E3%81%84%22%0A%20%20ENDSWITCH%0ANEXT">シミュレータで試す ▶</a></div><pre class="code">FOR I=1 TO 6
+  SWITCH I
+  CASE 1,2
+    PRINT I;" は小さい"
+  CASE 3
+    PRINT I;" は真ん中"
+  DEFAULT
+    PRINT I;" は大きい"
+  ENDSWITCH
+NEXT</pre></div>
+</section>
+<section id="def"><h2>DEF(関数・手続き)</h2>
+
+<ul>
+<li><code>DEF 名前(仮引数, …)</code> … <code>END</code> で定義します。<code>RETURN 値</code> で値を返し、<code>RETURN</code> だけなら値なしで戻ります。</li>
+<li>値を返す関数は式の中で <code>名前(引数)</code>、値を返さない手続きは文として <code>名前 引数, …</code> と呼び出せます(括弧は付けても構いません)。</li>
+<li>DEF の中の変数は<b>その DEF だけのもの</b>(ローカル)です。外側(グローバル)で作った変数は<b>読む</b>ことはできますが、代入すると DEF の中だけの新しい変数になります。外へ値を返したいときは <code>RETURN</code> を使います。</li>
+<li>配列は参照で渡されます(DEF の中で変更すると呼び出し元にも反映)。再帰呼び出しもできます。</li>
+</ul>
+<div class="ex"><div class="ex-title"><span>DEF と配列</span><a class="try" href="index.html?d=smile&code=DEF%20FACT(N)%0A%20%20IF%20N%3C%3D1%20THEN%20RETURN%201%0A%20%20RETURN%20N*FACT(N-1)%0AEND%0A%0ADEF%20SHOW%20A%0A%20%20VAR%20I%0A%20%20FOR%20I%3D0%20TO%20LEN(A)-1%0A%20%20%20%20PRINT%20A%5BI%5D%3B%22%20%22%3B%0A%20%20NEXT%0A%20%20PRINT%0AEND%0A%0ADIM%20A%5B5%5D%0AVAR%20I%0AFOR%20I%3D0%20TO%204%3AA%5BI%5D%3DFACT(I%2B1)%3ANEXT%0ASHOW%20A%0APUSH%20A%2C720%0APRINT%20%22%E8%A6%81%E7%B4%A0%E6%95%B0%3D%22%3BLEN(A)%0ARSORT%20A%0ASHOW%20A">シミュレータで試す ▶</a></div><pre class="code">DEF FACT(N)
+  IF N&lt;=1 THEN RETURN 1
+  RETURN N*FACT(N-1)
+END
+
+DEF SHOW A
+  VAR I
+  FOR I=0 TO LEN(A)-1
+    PRINT A[I];" ";
+  NEXT
+  PRINT
+END
+
+DIM A[5]
+VAR I
+FOR I=0 TO 4:A[I]=FACT(I+1):NEXT
+SHOW A
+PUSH A,720
+PRINT "要素数=";LEN(A)
+RSORT A
+SHOW A</pre></div>
+</section>
+<section id="arrays"><h2>配列の命令・データ</h2>
+
+<table class="doc"><thead><tr><th>命令</th><th>書式</th><th>説明</th></tr></thead><tbody><tr><td><code>DIM</code></td><td><code>DIM A[n]  DIM B[n,m]</code></td><td>配列を作ります(要素数 n)。</td></tr><tr><td><code>VAR</code></td><td><code>VAR A=値, B$=値</code></td><td>変数の宣言と初期値。</td></tr><tr><td><code>PUSH / POP</code></td><td><code>PUSH A,値  X=POP(A)</code></td><td>配列の最後に追加 / 最後を取り出す。</td></tr><tr><td><code>UNSHIFT / SHIFT</code></td><td><code>UNSHIFT A,値  X=SHIFT(A)</code></td><td>配列の先頭に追加 / 先頭を取り出す。</td></tr><tr><td><code>SORT / RSORT</code></td><td><code>SORT A  RSORT A</code></td><td>昇順・降順に並べ替えます。</td></tr><tr><td><code>INC / DEC</code></td><td><code>INC 変数[,n]  DEC 変数[,n]</code></td><td>変数を増やす・減らす(省略時は 1)。</td></tr><tr><td><code>SWAP</code></td><td><code>SWAP A,B</code></td><td>2つの変数(配列の要素でも可)を入れ替えます。</td></tr><tr><td><code>DATA / READ / RESTORE</code></td><td><code>DATA 値,…  READ 変数,…  RESTORE @ラベル</code></td><td>データの埋め込みと読み込み。</td></tr></tbody></table>
+<div class="ex"><div class="ex-title"><span>ラベルと DATA / READ</span><a class="try" href="index.html?d=smile&code=%40LOOP%0AREAD%20N%24%2CP%0AIF%20N%24%3D%3D%22END%22%20THEN%20GOTO%20%40OWARI%0APRINT%20N%24%3B%22%E3%81%AF%22%3BP%3B%22%E5%86%86%22%0AGOTO%20%40LOOP%0A%40OWARI%0APRINT%20%22%E3%81%8A%E3%81%97%E3%81%BE%E3%81%84%22%0ADATA%20%22%E3%82%8A%E3%82%93%E3%81%94%22%2C120%2C%22%E3%81%BF%E3%81%8B%E3%82%93%22%2C80%2C%22%E3%81%B6%E3%81%A9%E3%81%86%22%2C450%2C%22END%22%2C0">シミュレータで試す ▶</a></div><pre class="code">@LOOP
+READ N$,P
+IF N$=="END" THEN GOTO @OWARI
+PRINT N$;"は";P;"円"
+GOTO @LOOP
+@OWARI
+PRINT "おしまい"
+DATA "りんご",120,"みかん",80,"ぶどう",450,"END",0</pre></div>
+</section>
+<section id="functions"><h2>関数</h2>
+
+<h3>数値</h3>
+<table class="doc"><thead><tr><th>関数</th><th>書式</th><th>説明</th></tr></thead><tbody><tr><td><code>ABS SGN</code></td><td><code>ABS(x)</code></td><td>絶対値・符号</td></tr><tr><td><code>FLOOR CEIL ROUND</code></td><td><code>FLOOR(x)</code></td><td>切り捨て(小さい方へ)・切り上げ・四捨五入</td></tr><tr><td><code>SQR POW</code></td><td><code>SQR(x)  POW(x,y)</code></td><td>平方根・べき乗</td></tr><tr><td><code>SIN COS TAN</code></td><td><code>SIN(x)</code></td><td>三角関数(ラジアン)</td></tr><tr><td><code>ASIN ACOS ATAN</code></td><td><code>ATAN(y[,x])</code></td><td>逆三角関数</td></tr><tr><td><code>SINH COSH TANH</code></td><td><code>SINH(x)</code></td><td>双曲線関数</td></tr><tr><td><code>EXP LOG</code></td><td><code>LOG(x[,底])</code></td><td>指数・対数</td></tr><tr><td><code>DEG RAD</code></td><td><code>DEG(x)</code></td><td>ラジアン⇔度</td></tr><tr><td><code>PI</code></td><td><code>PI()</code></td><td>円周率</td></tr><tr><td><code>MAX MIN</code></td><td><code>MAX(a,b,…)</code></td><td>最大・最小(配列も渡せます)</td></tr><tr><td><code>CLAMP</code></td><td><code>CLAMP(x,min,max)</code></td><td>範囲に収める</td></tr><tr><td><code>RND</code></td><td><code>RND(n)</code></td><td>0〜n-1 のランダムな整数</td></tr><tr><td><code>RNDF</code></td><td><code>RNDF()</code></td><td>0以上1未満のランダムな実数</td></tr><tr><td><code>MAINCNT / MILLISEC</code></td><td><code>MAINCNT</code></td><td>開始からのフレーム数(1/60秒)/ ミリ秒</td></tr></tbody></table>
+<h3>文字列</h3>
+<table class="doc"><thead><tr><th>関数</th><th>書式</th><th>説明</th></tr></thead><tbody><tr><td><code>LEN</code></td><td><code>LEN(a$)</code></td><td>文字数(配列なら要素数)</td></tr><tr><td><code>LEFT$ RIGHT$</code></td><td><code>LEFT$(a$,n)</code></td><td>左・右から n 文字</td></tr><tr><td><code>MID$</code></td><td><code>MID$(a$,開始,n)</code></td><td><b>0から数えて</b>、開始位置から n 文字</td></tr><tr><td><code>INSTR</code></td><td><code>INSTR([開始,]a$,b$)</code></td><td>a$ の中の b$ の位置(0から数え、なければ -1)</td></tr><tr><td><code>SUBST$</code></td><td><code>SUBST$(a$,開始,n,b$)</code></td><td>一部を置きかえる</td></tr><tr><td><code>STR$ VAL</code></td><td><code>STR$(x)  VAL(a$)</code></td><td>数⇔文字列(<code>VAL("&amp;HFF")</code> も可)</td></tr><tr><td><code>CHR$ ASC</code></td><td><code>CHR$(n)  ASC(a$)</code></td><td>文字コード</td></tr><tr><td><code>HEX$ BIN$</code></td><td><code>HEX$(n[,桁])</code></td><td>16進・2進の文字列</td></tr><tr><td><code>FORMAT$</code></td><td><code>FORMAT$("%05d|%.2f|%s", 7, 3.14159, "a")</code></td><td>書式つき文字列(<code>%d %f %s %x %c</code>)</td></tr><tr><td><code>TIME$ DATE$</code></td><td><code>TIME$  DATE$</code></td><td>現在の時刻・日付</td></tr></tbody></table>
+<div class="ex"><div class="ex-title"><span>文字列と数値の関数</span><a class="try" href="index.html?d=smile&code=A%24%3D%22HELLO%20WORLD%22%0APRINT%20LEN(A%24)%3B%22%20%22%3BMID%24(A%24%2C6%2C5)%3B%22%20%22%3BINSTR(A%24%2C%22WORLD%22)%0APRINT%20SUBST%24(A%24%2C0%2C5%2C%22HI%22)%0APRINT%20FORMAT%24(%22%2505d%7C%256.2f%7C%25s%7C%25x%22%2C42%2C3.14159%2C%22ok%22%2C255)%0APRINT%20RND(6)%2B1%2C%20RNDF()%0APRINT%20FLOOR(-1.5)%2C%20CEIL(1.2)%2C%20ROUND(2.5)%2C%20POW(2%2C8)">シミュレータで試す ▶</a></div><pre class="code">A$="HELLO WORLD"
+PRINT LEN(A$);" ";MID$(A$,6,5);" ";INSTR(A$,"WORLD")
+PRINT SUBST$(A$,0,5,"HI")
+PRINT FORMAT$("%05d|%6.2f|%s|%x",42,3.14159,"ok",255)
+PRINT RND(6)+1, RNDF()
+PRINT FLOOR(-1.5), CEIL(1.2), ROUND(2.5), POW(2,8)</pre></div>
+</section>
+<section id="graphics"><h2>グラフィック</h2>
+
+<p>グラフィックは 400 × 240 ドット。座標は<b>左上が (0,0)</b>で、右へ x、下へ y が増えます。色は <code>RGB(赤,緑,青)</code>(各 0〜255)か、<code>#RED</code> などの定数で指定します。色を省略すると <code>GCOLOR</code> で決めた色(最初は白)になります。</p>
+<table class="doc"><thead><tr><th>命令</th><th>書式</th><th>説明</th></tr></thead><tbody><tr><td><code>RGB</code></td><td><code>RGB(r,g,b)</code></td><td>色を作る関数。</td></tr><tr><td><code>GCOLOR</code></td><td><code>GCOLOR 色</code></td><td>図形の標準の色。</td></tr><tr><td><code>GCLS</code></td><td><code>GCLS [色]</code></td><td>グラフィック画面を指定の色(省略時は黒)で塗りつぶします。</td></tr><tr><td><code>GPSET</code></td><td><code>GPSET x,y[,色]</code></td><td>点を打ちます。</td></tr><tr><td><code>GLINE</code></td><td><code>GLINE x1,y1,x2,y2[,色]</code></td><td>線を引きます。</td></tr><tr><td><code>GBOX</code></td><td><code>GBOX x1,y1,x2,y2[,色]</code></td><td>四角形の枠。</td></tr><tr><td><code>GFILL</code></td><td><code>GFILL x1,y1,x2,y2[,色]</code></td><td>塗りつぶした四角形。</td></tr><tr><td><code>GCIRCLE</code></td><td><code>GCIRCLE x,y,r[,色]</code></td><td>円。<code>GCIRCLE x,y,r,開始角,終了角,フラグ[,色]</code> で円弧(角度は度)。</td></tr><tr><td><code>GPAINT</code></td><td><code>GPAINT x,y[,色]</code></td><td>その点とつながった同じ色の領域を塗りつぶします。</td></tr><tr><td><code>GPRINT</code></td><td><code>GPRINT x,y,"文字"</code></td><td>グラフィック画面の座標に文字を描きます。</td></tr><tr><td><code>GSPOIT</code></td><td><code>GSPOIT(x,y)</code></td><td>点の色を返す関数。</td></tr><tr><td><code>ACLS</code></td><td><code>ACLS</code></td><td>文字画面とグラフィック画面を初期状態に戻します。</td></tr><tr><td><code>XSCREEN / DISPLAY</code></td><td><code>XSCREEN …</code></td><td>互換のために受け付けます(何もしません)。</td></tr></tbody></table>
+<div class="ex"><div class="ex-title"><span>図形</span><a class="try" href="index.html?d=smile&code=GCLS%20RGB(0%2C0%2C64)%0AFOR%20I%3D0%20TO%2011%0A%20%20GCIRCLE%20200%2C120%2C10%2BI*9%2CRGB(255-I*20%2C128%2BI*10%2CI*20)%0ANEXT%0AGFILL%2010%2C10%2C60%2C40%2C%23RED%0AGBOX%2010%2C10%2C60%2C40%2C%23WHITE%0AGLINE%200%2C0%2C399%2C239%2C%23YELLOW%0AGLINE%200%2C239%2C399%2C0%2C%23YELLOW%0ALOCATE%202%2C28%0APRINT%20%22GRAPHICS%22">シミュレータで試す ▶</a></div><pre class="code">GCLS RGB(0,0,64)
+FOR I=0 TO 11
+  GCIRCLE 200,120,10+I*9,RGB(255-I*20,128+I*10,I*20)
+NEXT
+GFILL 10,10,60,40,#RED
+GBOX 10,10,60,40,#WHITE
+GLINE 0,0,399,239,#YELLOW
+GLINE 0,239,399,0,#YELLOW
+LOCATE 2,28
+PRINT "GRAPHICS"</pre></div>
+<div class="ex"><div class="ex-title"><span>星空</span><a class="try" href="index.html?d=smile&code=GCLS%20RGB(0%2C0%2C30)%0AVAR%20I%2CX%2CY%2CC%0AFOR%20I%3D0%20TO%20300%0A%20%20X%3DRND(400)%3AY%3DRND(240)%3AC%3DRND(200)%2B55%0A%20%20GPSET%20X%2CY%2CRGB(C%2CC%2CC)%0ANEXT%0AGCIRCLE%20320%2C60%2C25%2C%23YELLOW%0AGPAINT%20320%2C60%2C%23YELLOW%0AGPRINT%2010%2C10%2C%22STARS%22">シミュレータで試す ▶</a></div><pre class="code">GCLS RGB(0,0,30)
+VAR I,X,Y,C
+FOR I=0 TO 300
+  X=RND(400):Y=RND(240):C=RND(200)+55
+  GPSET X,Y,RGB(C,C,C)
+NEXT
+GCIRCLE 320,60,25,#YELLOW
+GPAINT 320,60,#YELLOW
+GPRINT 10,10,"STARS"</pre></div>
+</section>
+<section id="game"><h2>動かしてみよう(VSYNC・ボタン)</h2>
+
+<p>画面を1コマずつ描き直し、<code>VSYNC</code> で次のフレームまで待つのが、アニメーションとゲームの基本の形です。</p>
+<div class="ex"><div class="ex-title"><span>ボールの動き</span><a class="try" href="index.html?d=smile&code='%20%E5%AE%9F%E8%A1%8C%E3%81%99%E3%82%8B%E3%81%A8%E8%B7%B3%E3%81%AD%E7%B6%9A%E3%81%91%E3%81%BE%E3%81%99%E3%80%82%E2%86%90%E2%86%92%E3%82%AD%E3%83%BC%E3%81%A7%E6%93%8D%E4%BD%9C%E3%80%82%E3%80%8C%E5%81%9C%E6%AD%A2%E3%80%8D%E3%81%A7%E7%B5%82%E4%BA%86%0AVAR%20X%3D200%2CY%3D40%2CVX%3D3%2CVY%3D0%2CB%0AWHILE%201%0A%20%20B%3DBUTTON()%0A%20%20IF%20B%20AND%20%23LEFT%20THEN%20VX%3DVX-0.3%0A%20%20IF%20B%20AND%20%23RIGHT%20THEN%20VX%3DVX%2B0.3%0A%20%20VY%3DVY%2B0.4%0A%20%20X%3DX%2BVX%3AY%3DY%2BVY%0A%20%20IF%20X%3C10%20THEN%20X%3D10%3AVX%3D-VX%0A%20%20IF%20X%3E390%20THEN%20X%3D390%3AVX%3D-VX%0A%20%20IF%20Y%3E225%20THEN%20Y%3D225%3AVY%3D-VY*0.9%0A%20%20GCLS%20RGB(0%2C0%2C50)%0A%20%20GFILL%200%2C230%2C399%2C239%2C%23GREEN%0A%20%20GCIRCLE%20X%2CY%2C10%2C%23WHITE%0A%20%20GPAINT%20X%2CY%2C%23RED%0A%20%20LOCATE%200%2C0%3APRINT%20%22LEFT%2FRIGHT%20KEY%22%0A%20%20VSYNC%201%0AWEND">シミュレータで試す ▶</a></div><pre class="code">' 実行すると跳ね続けます。←→キーで操作。「停止」で終了
+VAR X=200,Y=40,VX=3,VY=0,B
+WHILE 1
+  B=BUTTON()
+  IF B AND #LEFT THEN VX=VX-0.3
+  IF B AND #RIGHT THEN VX=VX+0.3
+  VY=VY+0.4
+  X=X+VX:Y=Y+VY
+  IF X&lt;10 THEN X=10:VX=-VX
+  IF X&gt;390 THEN X=390:VX=-VX
+  IF Y&gt;225 THEN Y=225:VY=-VY*0.9
+  GCLS RGB(0,0,50)
+  GFILL 0,230,399,239,#GREEN
+  GCIRCLE X,Y,10,#WHITE
+  GPAINT X,Y,#RED
+  LOCATE 0,0:PRINT "LEFT/RIGHT KEY"
+  VSYNC 1
+WEND</pre></div>
+<div class="ex"><div class="ex-title"><span>TOUCH で絵をかく</span><a class="try" href="index.html?d=smile&code='%20%E7%94%BB%E9%9D%A2%E3%82%92%E3%83%9E%E3%82%A6%E3%82%B9%E3%81%A7%E3%81%AA%E3%81%9E%E3%81%A3%E3%81%A6%E7%B5%B5%E3%82%92%E3%81%8B%E3%81%8F%0AGCLS%20RGB(20%2C20%2C40)%0AVAR%20T%2CX%2CY%2CPX%2CPY%2CC%0APX%3D-1%0AWHILE%201%0A%20%20TOUCH%20OUT%20T%2CX%2CY%0A%20%20IF%20T%3E0%20THEN%0A%20%20%20%20C%3DRGB(RND(256)%2CRND(256)%2C255)%0A%20%20%20%20IF%20PX%3E%3D0%20THEN%20GLINE%20PX%2CPY%2CX%2CY%2CC%0A%20%20%20%20PX%3DX%3APY%3DY%0A%20%20ELSE%0A%20%20%20%20PX%3D-1%0A%20%20ENDIF%0A%20%20VSYNC%0AWEND">シミュレータで試す ▶</a></div><pre class="code">' 画面をマウスでなぞって絵をかく
+GCLS RGB(20,20,40)
+VAR T,X,Y,PX,PY,C
+PX=-1
+WHILE 1
+  TOUCH OUT T,X,Y
+  IF T&gt;0 THEN
+    C=RGB(RND(256),RND(256),255)
+    IF PX&gt;=0 THEN GLINE PX,PY,X,Y,C
+    PX=X:PY=Y
+  ELSE
+    PX=-1
+  ENDIF
+  VSYNC
+WEND</pre></div>
+</section>
+<section id="errors"><h2>エラーメッセージ</h2>
+
+<table class="doc"><thead><tr><th>メッセージ</th><th>原因</th></tr></thead><tbody><tr><td>構文エラー (Syntax error)</td><td>文の書き方が違います。</td></tr><tr><td>〜がありません (ブロックが閉じられていません)</td><td><code>ENDIF</code> / <code>WEND</code> / <code>NEXT</code> / <code>UNTIL</code> / <code>END</code>(DEF)の閉じ忘れ。</td></tr><tr><td>未定義のラベルです</td><td><code>GOTO @XXX</code> のラベルが存在しません。</td></tr><tr><td>〜は定義されていません</td><td><code>DEF</code> が見つかりません(つづりを確認)。</td></tr><tr><td>型が一致しません (Type mismatch)</td><td><code>A="x"</code> のように、数の変数に文字列を入れた(文字列変数には <code>$</code> が必要)。</td></tr><tr><td>添字が範囲外です (Subscript out of range)</td><td>配列・文字列の範囲を超えた。</td></tr><tr><td>配列が定義されていません</td><td><code>DIM</code> しないで <code>A[0]</code> を使った。</td></tr><tr><td>0で割りました (Division by zero)</td><td>0 で割った。</td></tr><tr><td>〜は〜のコマンドです (smile BASICでは使えません)</td><td>他の方言の命令を使った。smile BASIC での書き方に直します。</td></tr></tbody></table>
+</section>
+<section id="limits"><h2>制限事項</h2>
+
+<ul>
+<li>スプライト(SPSET など)、BG、音楽(BGMPLAY)、効果音の細かい制御、ファイル(LOAD/SAVE)、複数のグラフィックページ、OUT 引数つきの DEF、マルチタスク、キーボードの KEYBOARD などは未対応です。</li>
+<li><code>COLOR</code> の16色パレットは本シミュレータのものです(実機とは色が少し違います)。<code>RGB()</code> は 24 ビットの色を返します。</li>
+<li><code>BUTTON()</code> の割り当て・<code>STICK</code> の値はキーボード用の簡易的なものです。</li>
+<li>関数(式の中で呼ぶ DEF)の中では <code>INPUT</code> や <code>VSYNC</code> のように「待つ」命令は使えません(手続きとして呼ぶ DEF の中なら使えます)。</li>
+<li>文字は 8×8 ドット相当の升目に描かれ、フォントは実機と異なります。</li>
+</ul>
+<p>他の方言との違いは <a href="compare.html">方言の比較</a> をご覧ください。</p>
+</section>
+  </article>
+</div>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <span>© MACS Project</span>
+    <span>マニュアル: <a href="manual-tiny.html">Tiny BASIC</a><a href="manual-n88.html">N88-BASIC</a><a href="manual-full.html">Full BASIC</a><a href="manual-smile.html" aria-current="page">smile BASIC</a></span>
+    <span><a href="compare.html">方言の比較</a> / <a href="index.html">シミュレータ</a></span>
+  </div>
+</footer>
+</body>
+</html>

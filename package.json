@@ -1,0 +1,10 @@
+{
+  "name": "macs-basic-simulator",
+  "version": "1.0.0",
+  "description": "Tiny BASIC / N88-BASIC / Full BASIC / smile BASIC simulator (static site, no dependencies)",
+  "private": true,
+  "scripts": {
+    "build": "node tools/build-docs.js",
+    "test": "node tests/run-tests.js && node tests/samples.js && node tests/doc-examples.js"
+  }
+}

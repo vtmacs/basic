@@ -1,0 +1,46 @@
+# MACS BASIC シミュレータ
+
+Tiny BASIC / N88-BASIC / Full BASIC / smile BASIC の4つの方言をブラウザで動かせる、依存ライブラリなしの静的サイトです。
+`index.html` を開く(または `/basic/` に配置する)だけで動きます。ビルド不要。
+
+| ページ | 内容 |
+| --- | --- |
+| `index.html` | シミュレータ本体(方言タブ・エディタ・文字/グラフィック画面・サンプル・保存/読込) |
+| `manual-tiny.html` `manual-n88.html` `manual-full.html` `manual-smile.html` | 方言ごとのマニュアル |
+| `compare.html` | 方言の比較(一覧表・同じプログラムの4方言版・移植のポイント) |
+
+## 構成
+
+```
+index.html, manual-*.html, compare.html   ページ(manual/compare は tools/ から生成)
+css/style.css                             共通CSS。<html data-dialect="..."> で方言ごとに配色が変わる
+js/screen.js                              文字グリッド+ピクセルフレームバッファ(DOM非依存)
+js/basic-core.js                          方言定義・字句解析・組込み関数・PRINT USING
+js/basic-compiler.js                      ソース → 命令列(クロージャ)へのコンパイラ
+js/basic-vm.js                            実行系(変数/配列/呼び出し/INPUT/グラフィック/エラー処理)
+js/samples.js                             サンプルプログラム
+js/app.js                                 UI(エディタ・入力欄・キー/マウス・音)
+tools/build-docs.js, tools/docs/*.js      マニュアル・比較ページの生成元
+tests/                                    テスト
+```
+
+## マニュアルの更新
+
+本文は `tools/docs/*.js` にあります。編集したら次で HTML を作り直します。
+
+```
+node tools/build-docs.js
+```
+
+本文中のサンプルプログラムはすべて `tests/doc-examples.js` で実際に実行され、エラーにならないことが確認されます。
+
+## テスト
+
+```
+npm test                 # 言語仕様の回帰テスト + サンプル + マニュアル内サンプル
+node tests/ui-test.js    # ブラウザ操作テスト(Playwright が必要)
+```
+
+## 方言の追加
+
+`js/basic-core.js` の `DIALECTS` に定義を足し、`js/basic-compiler.js` の `H`(文ハンドラ)と `js/basic-core.js` の `FN`(関数表)で使えるキーワードを増やします。

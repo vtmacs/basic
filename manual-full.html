@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="ja" data-dialect="full">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Full BASIC マニュアル | MACS Project</title>
+<meta name="description" content="JIS X 3003 / ISO 10279 で標準化された構造化BASIC。行番号なしで、IF…END IF・SELECT CASE・DO…LOOP・SUB / FUNCTION を使ってスッキリ書けます。">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html">MACS Project<small>BASIC シミュレータ</small></a>
+    <nav class="site-nav" aria-label="サイト内メニュー">
+      <a href="index.html#full">シミュレータ</a>
+      <a href="manual-full.html" aria-current="page">マニュアル</a>
+      <a href="compare.html">方言の比較</a>
+    </nav>
+  </div>
+  <div class="strip"></div>
+</header>
+<main class="wrap">
+
+<h1>Full BASIC マニュアル</h1>
+<p class="lead">JIS X 3003 / ISO 10279 で標準化された構造化BASIC。行番号なしで、IF…END IF・SELECT CASE・DO…LOOP・SUB / FUNCTION を使ってスッキリ書けます。</p>
+<div class="doc-layout">
+  <nav class="toc" aria-label="目次"><b>目次</b><a href="#about">Full BASIC とは</a><a href="#start">画面とはじめかた</a><a href="#program">プログラムの書き方</a><a href="#data">変数・演算子</a><a href="#io">入出力</a><a href="#control">制御構造</a><a href="#sub">サブプログラム(SUB / FUNCTION)</a><a href="#functions">関数</a><a href="#graphics">グラフィック</a><a href="#errors">エラーメッセージ</a><a href="#limits">制限事項</a><a href="compare.html">▶ 方言の比較</a><a href="index.html#full">▶ シミュレータで試す</a></nav>
+  <article>
+<section id="about"><h2>Full BASIC とは</h2>
+
+<p>Full BASIC は、各社バラバラだったBASICを整理するために国際規格(ANSI/ISO)と日本工業規格(JIS)として定められた BASIC です。<b>構造化プログラミング</b>(ブロックを使って見通しよく書く)を前提にしていて、行番号に頼らずに書けるのが大きな特徴です。日本では教育用に使われてきました。</p>
+<p>このシミュレータでは、規格にある基本構文と、グラフィックス(<code>SET WINDOW</code>・<code>PLOT</code>・<code>BOX</code>)を中心に再現しています。</p>
+<div class="note tip">規格の Full BASIC では行番号が必須ですが、このシミュレータでは<b>行番号は省略できます</b>(付けても構いません。GOTO / GOSUB の飛び先に使います)。</div>
+</section>
+<section id="start"><h2>画面とはじめかた</h2>
+
+<ul>
+<li>画面は正方形の <b>400 × 400 ドット</b>のグラフィック面と、<b>50桁 × 25行</b>の文字画面です(白い紙のような見た目)。</li>
+<li>実行は <b>「▶ 実行」</b>(<kbd>Ctrl</kbd>+<kbd>Enter</kbd>)。<code>INPUT</code> の入力は画面下の入力欄から。</li>
+<li>変数や命令は大文字・小文字を区別しません。変数名は英字で始まる英数字と <code>_</code>、文字列変数は末尾に <code>$</code> を付けます。</li>
+</ul>
+<div class="ex"><div class="ex-title"><span>Hello, World</span><a class="try" href="index.html?d=full&code=!%20%E3%81%AF%E3%81%98%E3%82%81%E3%81%A6%E3%81%AE%20Full%20BASIC%0APRINT%20%22Hello%2C%20World!%22%0APRINT%20%22%E3%81%93%E3%82%93%E3%81%AB%E3%81%A1%E3%81%AF%20Full%20BASIC%22%0AEND">シミュレータで試す ▶</a></div><pre class="code">! はじめての Full BASIC
+PRINT "Hello, World!"
+PRINT "こんにちは Full BASIC"
+END</pre></div>
+</section>
+<section id="program"><h2>プログラムの書き方</h2>
+
+<ul>
+<li>1行に1つの文が基本です。複数書くときは <code>:</code> で区切ります(<code>LET a = 1 : LET b = 2</code>)。</li>
+<li>コメントは <code>!</code> から行末まで、または <code>REM</code>。</li>
+<li>変数への代入は <code>LET 変数 = 式</code>。<code>LET</code> は省略もできます。</li>
+<li>文字列の連結は <code>&amp;</code>(<code>+</code> でも連結できます)。</li>
+<li>サブプログラム(<code>SUB</code> / <code>FUNCTION</code>)は、メインの <code>END</code> のあとに書くのが普通です。メインとして実行される途中にあっても、呼び出されるまで実行されません。</li>
+</ul>
+<div class="ex"><div class="ex-title"><span>代入と文字列</span><a class="try" href="index.html?d=full&code=LET%20a%20%3D%203%0ALET%20b%24%20%3D%20%22abc%22%0ALET%20c%24%20%3D%20b%24%20%26%20%22def%22%0APRINT%20a%20*%202%3B%20c%24%20%20%20%20%20%20!%20%E3%82%B3%E3%83%A1%E3%83%B3%E3%83%88%0AEND">シミュレータで試す ▶</a></div><pre class="code">LET a = 3
+LET b$ = "abc"
+LET c$ = b$ &amp; "def"
+PRINT a * 2; c$      ! コメント
+END</pre></div>
+</section>
+<section id="data"><h2>変数・演算子</h2>
+
+<h3>型</h3>
+<table class="doc"><thead><tr><th>型</th><th>名前の例</th><th>説明</th></tr></thead><tbody><tr><td>数値</td><td><code>total</code> <code>x1</code></td><td>実数(倍精度)。整数も実数も同じ数値として扱います。</td></tr><tr><td>文字列</td><td><code>name$</code></td><td>名前の最後に <code>$</code>。</td></tr><tr><td>配列</td><td><code>a(10)</code> <code>m(3,4)</code></td><td><code>DIM</code> で宣言。宣言なしで使うと 0〜10 になります。</td></tr></tbody></table>
+<h3>演算子(強さの順)</h3>
+<table class="doc"><thead><tr><th>演算子</th><th>意味</th></tr></thead><tbody><tr><td><code>^</code></td><td>べき乗</td></tr><tr><td><code>-</code>(単項)</td><td>符号</td></tr><tr><td><code>* /</code></td><td>かけ算・割り算</td></tr><tr><td><code>+ - &amp;</code></td><td>足し算・引き算・文字列の連結</td></tr><tr><td><code>= &lt;&gt; &lt; &gt; &lt;= &gt;=</code></td><td>比較。真は <b>1</b>、偽は 0</td></tr><tr><td><code>NOT</code> <code>AND</code> <code>OR</code></td><td>論理演算(条件を組み合わせる)</td></tr></tbody></table>
+<p>剰余(あまり)は演算子ではなく関数 <code>MOD(a,b)</code> を使います。</p>
+<h3>配列</h3>
+<p><code>DIM a(10)</code> は <code>a(0)</code>〜<code>a(10)</code>。<code>DIM a(-2 TO 2)</code> のように下限も指定できます。<code>OPTION BASE 1</code> で下限の標準を 1 にできます。</p>
+<div class="ex"><div class="ex-title"><span>配列と関数</span><a class="try" href="index.html?d=full&code=OPTION%20BASE%201%0ADIM%20a(5)%2C%20n%24(3)%0AFOR%20i%20%3D%201%20TO%205%0A%20%20%20LET%20a(i)%20%3D%20i%20%5E%202%0ANEXT%20i%0ALET%20n%24(1)%20%3D%20%22%E8%B5%A4%22%0APRINT%20a(3)%3B%20n%24(1)%0APRINT%20MOD(17%2C%205)%3B%20MAX(3%2C%209%2C%204)%3B%20INT(-2.5)%3B%20IP(-2.5)%0AEND">シミュレータで試す ▶</a></div><pre class="code">OPTION BASE 1
+DIM a(5), n$(3)
+FOR i = 1 TO 5
+   LET a(i) = i ^ 2
+NEXT i
+LET n$(1) = "赤"
+PRINT a(3); n$(1)
+PRINT MOD(17, 5); MAX(3, 9, 4); INT(-2.5); IP(-2.5)
+END</pre></div>
+</section>
+<section id="io"><h2>入出力</h2>
+
+<table class="doc"><thead><tr><th>命令</th><th>書式</th><th>説明</th></tr></thead><tbody><tr><td><code>PRINT</code></td><td><code>PRINT 項目 [; | , 項目 ...]</code></td><td>表示。<code>;</code> は続けて、<code>,</code> は16桁ごとの位置へ。行末の <code>;</code> で改行なし。数は前後に空白がつきます(正の数は先頭に空白)。</td></tr><tr><td><code>PRINT USING</code></td><td><code>PRINT USING "書式": 項目, …</code></td><td>書式つき表示(<code>#</code> が数字、<code>.</code> が小数点)。</td></tr><tr><td><code>TAB</code></td><td><code>TAB(n)</code></td><td>PRINT の中で n 桁目へ移動。</td></tr><tr><td><code>INPUT</code></td><td><code>INPUT [PROMPT "メッセージ":] 変数, …</code></td><td>キー入力。複数の変数はカンマ区切りで入力。</td></tr><tr><td><code>LINE INPUT</code></td><td><code>LINE INPUT [PROMPT "…":] 文字列変数</code></td><td>1行をそのまま文字列で受け取ります。</td></tr><tr><td><code>SET CURSOR</code></td><td><code>SET CURSOR 行, 桁</code></td><td>文字の表示位置(1から数えます)。</td></tr><tr><td><code>CLEAR</code></td><td><code>CLEAR</code></td><td>画面(文字・図形)を消去します。</td></tr><tr><td><code>WAIT DELAY</code></td><td><code>WAIT DELAY 秒</code></td><td>指定の秒数だけ待ちます。</td></tr><tr><td><code>RANDOMIZE</code></td><td><code>RANDOMIZE</code></td><td>乱数の種を現在時刻で変えます。</td></tr><tr><td><code>DATA / READ / RESTORE</code></td><td><code>DATA 値, … / READ 変数, …</code></td><td>データの埋め込みと読み込み。</td></tr></tbody></table>
+<div class="ex"><div class="ex-title"><span>INPUT</span><a class="try" href="index.html?d=full&code=INPUT%20PROMPT%20%22%E4%BA%BA%E6%95%B0%E3%81%AF%3F%20%22%3A%20n%0ALET%20total%20%3D%200%0AFOR%20i%20%3D%201%20TO%20n%0A%20%20%20INPUT%20PROMPT%20%22%E7%82%B9%E6%95%B0%3F%20%22%3A%20x%0A%20%20%20LET%20total%20%3D%20total%20%2B%20x%0ANEXT%20i%0AIF%20n%20%3E%200%20THEN%20PRINT%20%22%E5%B9%B3%E5%9D%87%E7%82%B9%20%3D%22%3B%20total%20%2F%20n%0AEND">シミュレータで試す ▶</a></div><pre class="code">INPUT PROMPT "人数は? ": n
+LET total = 0
+FOR i = 1 TO n
+   INPUT PROMPT "点数? ": x
+   LET total = total + x
+NEXT i
+IF n &gt; 0 THEN PRINT "平均点 ="; total / n
+END</pre></div>
+</section>
+<section id="control"><h2>制御構造</h2>
+
+<table class="doc"><thead><tr><th>命令</th><th>書式</th><th>説明</th></tr></thead><tbody><tr><td><code>IF … END IF</code></td><td><code>IF 条件 THEN … [ELSEIF 条件 THEN …] [ELSE …] END IF</code></td><td>条件による分岐。1行形式 <code>IF 条件 THEN 文</code> も使えます。</td></tr><tr><td><code>SELECT CASE</code></td><td><code>SELECT CASE 式 / CASE 値, 値 / CASE a TO b / CASE IS &amp;gt;= 値 / CASE ELSE / END SELECT</code></td><td>値による多分岐。</td></tr><tr><td><code>FOR … NEXT</code></td><td><code>FOR 変数 = 初期値 TO 終了値 [STEP 増分] … NEXT 変数</code></td><td>くり返し。<code>EXIT FOR</code> で途中で抜けます。</td></tr><tr><td><code>DO … LOOP</code></td><td><code>DO [WHILE|UNTIL 条件] … LOOP [WHILE|UNTIL 条件]</code></td><td>条件によるくり返し。<code>EXIT DO</code> で抜けます。</td></tr><tr><td><code>GOTO / GOSUB / RETURN</code></td><td><code>GOTO 行番号</code></td><td>行番号を付けたときだけ使えます。</td></tr><tr><td><code>ON … GOTO / GOSUB</code></td><td><code>ON 式 GOTO 行1, 行2, …</code></td><td>式の値(1,2,…)で飛び先を選びます。</td></tr><tr><td><code>END / STOP</code></td><td><code>END</code></td><td>プログラムの終了。</td></tr></tbody></table>
+<div class="ex"><div class="ex-title"><span>IF / ELSEIF</span><a class="try" href="index.html?d=full&code=FOR%20i%20%3D%201%20TO%2015%0A%20%20%20IF%20MOD(i%2C%2015)%20%3D%200%20THEN%0A%20%20%20%20%20%20PRINT%20%22FizzBuzz%22%0A%20%20%20ELSEIF%20MOD(i%2C%203)%20%3D%200%20THEN%0A%20%20%20%20%20%20PRINT%20%22Fizz%22%0A%20%20%20ELSEIF%20MOD(i%2C%205)%20%3D%200%20THEN%0A%20%20%20%20%20%20PRINT%20%22Buzz%22%0A%20%20%20ELSE%0A%20%20%20%20%20%20PRINT%20i%0A%20%20%20END%20IF%0ANEXT%20i%0AEND">シミュレータで試す ▶</a></div><pre class="code">FOR i = 1 TO 15
+   IF MOD(i, 15) = 0 THEN
+      PRINT "FizzBuzz"
+   ELSEIF MOD(i, 3) = 0 THEN
+      PRINT "Fizz"
+   ELSEIF MOD(i, 5) = 0 THEN
+      PRINT "Buzz"
+   ELSE
+      PRINT i
+   END IF
+NEXT i
+END</pre></div>
+<div class="ex"><div class="ex-title"><span>SELECT CASE</span><a class="try" href="index.html?d=full&code=FOR%20score%20%3D%2040%20TO%20100%20STEP%2015%0A%20%20%20SELECT%20CASE%20score%0A%20%20%20CASE%20IS%20%3E%3D%2090%0A%20%20%20%20%20%20LET%20g%24%20%3D%20%22A%22%0A%20%20%20CASE%2070%20TO%2089%0A%20%20%20%20%20%20LET%20g%24%20%3D%20%22B%22%0A%20%20%20CASE%2050%2C%2060%0A%20%20%20%20%20%20LET%20g%24%20%3D%20%22C%22%0A%20%20%20CASE%20ELSE%0A%20%20%20%20%20%20LET%20g%24%20%3D%20%22D%22%0A%20%20%20END%20SELECT%0A%20%20%20PRINT%20score%3B%20%22%20-%3E%20%22%3B%20g%24%0ANEXT%20score%0AEND">シミュレータで試す ▶</a></div><pre class="code">FOR score = 40 TO 100 STEP 15
+   SELECT CASE score
+   CASE IS &gt;= 90
+      LET g$ = "A"
+   CASE 70 TO 89
+      LET g$ = "B"
+   CASE 50, 60
+      LET g$ = "C"
+   CASE ELSE
+      LET g$ = "D"
+   END SELECT
+   PRINT score; " -&gt; "; g$
+NEXT score
+END</pre></div>
+<div class="ex"><div class="ex-title"><span>DO WHILE(コラッツ予想)</span><a class="try" href="index.html?d=full&code=LET%20n%20%3D%20100%0ALET%20count%20%3D%200%0ADO%20WHILE%20n%20%3E%201%0A%20%20%20IF%20MOD(n%2C%202)%20%3D%200%20THEN%0A%20%20%20%20%20%20LET%20n%20%3D%20n%20%2F%202%0A%20%20%20ELSE%0A%20%20%20%20%20%20LET%20n%20%3D%203%20*%20n%20%2B%201%0A%20%20%20END%20IF%0A%20%20%20LET%20count%20%3D%20count%20%2B%201%0ALOOP%0APRINT%20%22%E3%82%B9%E3%83%86%E3%83%83%E3%83%97%E6%95%B0%20%3D%22%3B%20count%0AEND">シミュレータで試す ▶</a></div><pre class="code">LET n = 100
+LET count = 0
+DO WHILE n &gt; 1
+   IF MOD(n, 2) = 0 THEN
+      LET n = n / 2
+   ELSE
+      LET n = 3 * n + 1
+   END IF
+   LET count = count + 1
+LOOP
+PRINT "ステップ数 ="; count
+END</pre></div>
+</section>
+<section id="sub"><h2>サブプログラム(SUB / FUNCTION)</h2>
+
+<ul>
+<li><code>SUB 名前(仮引数, …)</code> … <code>END SUB</code> は <code>CALL 名前(実引数, …)</code> で呼び出します。</li>
+<li><code>FUNCTION 名前(仮引数, …)</code> … <code>END FUNCTION</code> は式の中から呼び出せます。<b>関数の値は、関数名に代入</b>します(<code>LET 名前 = 値</code>)。</li>
+<li>引数に<b>変数だけ</b>を渡すと、SUB の中での変更が呼び出し元に反映されます(参照渡し)。式を渡したときは値だけが渡されます。</li>
+<li>配列は仮引数に <code>a()</code> と書いて渡せます。</li>
+<li>サブプログラムの内部は独立していて、<b>外側の変数は見えません</b>。必要な値は引数で渡します。再帰呼び出しもできます。</li>
+<li><code>EXIT SUB</code> / <code>EXIT FUNCTION</code> でその場で戻ります。<code>DEF 名前(仮引数) = 式</code> で1行の関数も定義できます。</li>
+</ul>
+<div class="ex"><div class="ex-title"><span>FUNCTION / SUB / DEF</span><a class="try" href="index.html?d=full&code=PRINT%20%225!%20%3D%22%3B%20fact(5)%0APRINT%20%22%E5%8D%8A%E5%BE%842%E3%81%AE%E5%86%86%E3%81%AE%E9%9D%A2%E7%A9%8D%20%3D%22%3B%20area(2)%0ALET%20a%20%3D%2010%0ALET%20b%20%3D%2020%0ACALL%20swap(a%2C%20b)%0APRINT%20%22a%20%3D%22%3B%20a%3B%20%22%20b%20%3D%22%3B%20b%0AEND%0A%0AFUNCTION%20fact(n)%0A%20%20%20IF%20n%20%3C%3D%201%20THEN%0A%20%20%20%20%20%20LET%20fact%20%3D%201%0A%20%20%20ELSE%0A%20%20%20%20%20%20LET%20fact%20%3D%20n%20*%20fact(n%20-%201)%0A%20%20%20END%20IF%0AEND%20FUNCTION%0A%0ADEF%20area(r)%20%3D%20PI%20*%20r%20%5E%202%0A%0ASUB%20swap(x%2C%20y)%0A%20%20%20LET%20t%20%3D%20x%0A%20%20%20LET%20x%20%3D%20y%0A%20%20%20LET%20y%20%3D%20t%0AEND%20SUB">シミュレータで試す ▶</a></div><pre class="code">PRINT "5! ="; fact(5)
+PRINT "半径2の円の面積 ="; area(2)
+LET a = 10
+LET b = 20
+CALL swap(a, b)
+PRINT "a ="; a; " b ="; b
+END
+
+FUNCTION fact(n)
+   IF n &lt;= 1 THEN
+      LET fact = 1
+   ELSE
+      LET fact = n * fact(n - 1)
+   END IF
+END FUNCTION
+
+DEF area(r) = PI * r ^ 2
+
+SUB swap(x, y)
+   LET t = x
+   LET x = y
+   LET y = t
+END SUB</pre></div>
+</section>
+<section id="functions"><h2>関数</h2>
+
+<h3>数値</h3>
+<table class="doc"><thead><tr><th>関数</th><th>書式</th><th>説明</th></tr></thead><tbody><tr><td><code>ABS SGN</code></td><td><code>ABS(x)</code></td><td>絶対値・符号</td></tr><tr><td><code>INT</code></td><td><code>INT(x)</code></td><td>x を超えない最大の整数</td></tr><tr><td><code>IP FP</code></td><td><code>IP(x)  FP(x)</code></td><td>整数部分・小数部分(<code>IP(-2.5)</code> = -2)</td></tr><tr><td><code>CEIL</code></td><td><code>CEIL(x)</code></td><td>切り上げ</td></tr><tr><td><code>ROUND</code></td><td><code>ROUND(x[,n])</code></td><td>四捨五入(n は小数点以下の桁数)</td></tr><tr><td><code>TRUNCATE</code></td><td><code>TRUNCATE(x[,n])</code></td><td>切り捨て</td></tr><tr><td><code>SQR</code></td><td><code>SQR(x)</code></td><td>平方根</td></tr><tr><td><code>SIN COS TAN ATN</code></td><td><code>SIN(x)</code></td><td>三角関数(ラジアン)</td></tr><tr><td><code>ACOS ASIN SINH COSH TANH</code></td><td><code>ACOS(x)</code></td><td>逆三角関数・双曲線関数</td></tr><tr><td><code>EXP LOG LOG10 LOG2</code></td><td><code>LOG(x)</code></td><td>指数・対数(LOG は自然対数)</td></tr><tr><td><code>DEG RAD</code></td><td><code>DEG(x)  RAD(x)</code></td><td>ラジアン⇔度</td></tr><tr><td><code>PI</code></td><td><code>PI</code></td><td>円周率</td></tr><tr><td><code>MAX MIN</code></td><td><code>MAX(a,b,…)</code></td><td>最大・最小</td></tr><tr><td><code>MOD</code></td><td><code>MOD(a,b)</code></td><td>剰余(結果は b と同じ符号)</td></tr><tr><td><code>REMAINDER</code></td><td><code>REMAINDER(a,b)</code></td><td>剰余(結果は a と同じ符号)</td></tr><tr><td><code>RND</code></td><td><code>RND</code></td><td>0以上1未満の乱数</td></tr><tr><td><code>TIME</code></td><td><code>TIME</code></td><td>真夜中からの秒数</td></tr></tbody></table>
+<h3>文字列</h3>
+<table class="doc"><thead><tr><th>関数</th><th>書式</th><th>説明</th></tr></thead><tbody><tr><td><code>LEN</code></td><td><code>LEN(a$)</code></td><td>文字数</td></tr><tr><td><code>LEFT$ RIGHT$</code></td><td><code>LEFT$(a$,n)</code></td><td>左・右から n 文字</td></tr><tr><td><code>MID$</code></td><td><code>MID$(a$,p[,n])</code></td><td>p 文字目(1から)から n 文字</td></tr><tr><td><code>POS</code></td><td><code>POS(a$,b$[,開始])</code></td><td>a$ の中の b$ の位置(なければ 0)</td></tr><tr><td><code>STR$ VAL</code></td><td><code>STR$(x)  VAL(a$)</code></td><td>数⇔文字列</td></tr><tr><td><code>CHR$ ORD</code></td><td><code>CHR$(n)  ORD(a$)</code></td><td>文字コード</td></tr><tr><td><code>UCASE$ LCASE$</code></td><td><code>UCASE$(a$)</code></td><td>大文字・小文字に</td></tr><tr><td><code>LTRIM$ RTRIM$</code></td><td><code>LTRIM$(a$)</code></td><td>前・後ろの空白を取る</td></tr><tr><td><code>RPT$</code></td><td><code>RPT$(a$,n)</code></td><td>n 回くり返す</td></tr><tr><td><code>TIME$ DATE$</code></td><td><code>TIME$  DATE$</code></td><td>現在の時刻・日付</td></tr></tbody></table>
+</section>
+<section id="graphics"><h2>グラフィック</h2>
+
+<p>Full BASIC のグラフィックは、まず <code>SET WINDOW</code> で<b>自分の好きな座標系</b>を決めてから描きます。座標は<b>数学と同じ向き(右が x、上が y)</b>で、画面全体(正方形)が窓になります。窓を決めないと (0,0)〜(1,1) になります。</p>
+<table class="doc"><thead><tr><th>命令</th><th>書式</th><th>説明</th></tr></thead><tbody><tr><td><code>SET WINDOW</code></td><td><code>SET WINDOW 左, 右, 下, 上</code></td><td>座標系を決めます。<code>SET WINDOW -5, 5, -5, 5</code> なら中心が (0,0)。</td></tr><tr><td><code>SET COLOR</code></td><td><code>SET COLOR 色</code></td><td>描く色。0〜7、色名(<code>"RED"</code>)、<code>MIX(r,g,b)</code>。</td></tr><tr><td><code>PLOT POINTS</code></td><td><code>PLOT POINTS: x,y; x,y; …</code></td><td>点を打ちます。</td></tr><tr><td><code>PLOT LINES</code></td><td><code>PLOT LINES: x,y; x,y; …</code></td><td>点を順につないだ折れ線を描きます。</td></tr><tr><td><code>PLOT AREA</code></td><td><code>PLOT AREA: x,y; x,y; …</code></td><td>多角形を塗りつぶします。</td></tr><tr><td><code>PLOT TEXT</code></td><td><code>PLOT TEXT, AT x,y: "文字"</code></td><td>図形画面に文字を描きます。</td></tr><tr><td><code>BOX LINES</code></td><td><code>BOX LINES 左, 右, 下, 上</code></td><td>四角形の枠。</td></tr><tr><td><code>BOX AREA</code></td><td><code>BOX AREA 左, 右, 下, 上</code></td><td>塗りつぶした四角形。</td></tr><tr><td><code>BOX CIRCLE / ELLIPSE</code></td><td><code>BOX CIRCLE 左, 右, 下, 上</code></td><td>四角形にぴったり入る円・楕円の枠。</td></tr><tr><td><code>BOX DISK</code></td><td><code>BOX DISK 左, 右, 下, 上</code></td><td>塗りつぶした円・楕円(このシミュレータの拡張)。</td></tr><tr><td><code>CLEAR</code></td><td><code>CLEAR</code></td><td>画面を消します。</td></tr></tbody></table>
+<table class="doc"><thead><tr><th>色</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th></tr></thead><tbody><tr><td>番号</td><td>黒</td><td>青</td><td>赤</td><td>紫</td><td>緑</td><td>水色</td><td>黄</td><td>白</td></tr><tr><td>色名</td><td>"BLACK"</td><td>"BLUE"</td><td>"RED"</td><td>"MAGENTA"</td><td>"GREEN"</td><td>"CYAN"</td><td>"YELLOW"</td><td>"WHITE"</td></tr></tbody></table>
+<p><code>MIX(r,g,b)</code> は赤・緑・青の割合(0〜1)で色を作ります(<code>MIX(1,0.5,0)</code> はオレンジ)。</p>
+<div class="ex"><div class="ex-title"><span>グラフ</span><a class="try" href="index.html?d=full&code=SET%20WINDOW%20-7%2C%207%2C%20-1.5%2C%201.5%0ASET%20COLOR%20%22BLUE%22%0APLOT%20LINES%3A%20-7%2C%200%3B%207%2C%200%0APLOT%20LINES%3A%200%2C%20-1.5%3B%200%2C%201.5%0ASET%20COLOR%20%22RED%22%0AFOR%20x%20%3D%20-6.5%20TO%206.5%20STEP%200.05%0A%20%20%20PLOT%20LINES%3A%20x%2C%20SIN(x)%3B%20x%20%2B%200.05%2C%20SIN(x%20%2B%200.05)%0ANEXT%20x%0AEND">シミュレータで試す ▶</a></div><pre class="code">SET WINDOW -7, 7, -1.5, 1.5
+SET COLOR "BLUE"
+PLOT LINES: -7, 0; 7, 0
+PLOT LINES: 0, -1.5; 0, 1.5
+SET COLOR "RED"
+FOR x = -6.5 TO 6.5 STEP 0.05
+   PLOT LINES: x, SIN(x); x + 0.05, SIN(x + 0.05)
+NEXT x
+END</pre></div>
+<div class="ex"><div class="ex-title"><span>図形</span><a class="try" href="index.html?d=full&code=SET%20WINDOW%200%2C%2010%2C%200%2C%2010%0ASET%20COLOR%20%22YELLOW%22%0ABOX%20AREA%201%2C%204%2C%201%2C%204%0ASET%20COLOR%20%22RED%22%0ABOX%20LINES%201%2C%204%2C%201%2C%204%0ASET%20COLOR%20%22BLUE%22%0ABOX%20CIRCLE%205%2C%209%2C%201%2C%205%0ASET%20COLOR%20%22GREEN%22%0APLOT%20AREA%3A%202%2C%206%3B%205%2C%209%3B%208%2C%206%0APLOT%20TEXT%2C%20AT%201%2C%209.5%3A%20%22Full%20BASIC%22%0AEND">シミュレータで試す ▶</a></div><pre class="code">SET WINDOW 0, 10, 0, 10
+SET COLOR "YELLOW"
+BOX AREA 1, 4, 1, 4
+SET COLOR "RED"
+BOX LINES 1, 4, 1, 4
+SET COLOR "BLUE"
+BOX CIRCLE 5, 9, 1, 5
+SET COLOR "GREEN"
+PLOT AREA: 2, 6; 5, 9; 8, 6
+PLOT TEXT, AT 1, 9.5: "Full BASIC"
+END</pre></div>
+<div class="ex"><div class="ex-title"><span>放射状の線</span><a class="try" href="index.html?d=full&code=SET%20WINDOW%20-1.2%2C%201.2%2C%20-1.2%2C%201.2%0AFOR%20k%20%3D%200%20TO%2012%0A%20%20%20SET%20COLOR%20MOD(k%2C%206)%20%2B%201%0A%20%20%20LET%20t%20%3D%20k%20*%203.14159265%20%2F%206%0A%20%20%20PLOT%20LINES%3A%200%2C%200%3B%20COS(t)%2C%20SIN(t)%0ANEXT%20k%0ASET%20COLOR%20%22BLACK%22%0ABOX%20CIRCLE%20-1%2C%201%2C%20-1%2C%201%0AEND">シミュレータで試す ▶</a></div><pre class="code">SET WINDOW -1.2, 1.2, -1.2, 1.2
+FOR k = 0 TO 12
+   SET COLOR MOD(k, 6) + 1
+   LET t = k * 3.14159265 / 6
+   PLOT LINES: 0, 0; COS(t), SIN(t)
+NEXT k
+SET COLOR "BLACK"
+BOX CIRCLE -1, 1, -1, 1
+END</pre></div>
+</section>
+<section id="errors"><h2>エラーメッセージ</h2>
+
+<table class="doc"><thead><tr><th>メッセージ</th><th>原因</th></tr></thead><tbody><tr><td>構文エラー (Syntax error)</td><td>文の書き方が違います。</td></tr><tr><td>〜がありません (ブロックが閉じられていません)</td><td><code>END IF</code>、<code>NEXT</code>、<code>LOOP</code>、<code>END SELECT</code>、<code>END SUB</code> などの閉じ忘れ。</td></tr><tr><td>〜は定義されていません</td><td><code>CALL</code> / 関数呼び出しの名前が見つかりません。</td></tr><tr><td>引数の数が合いません</td><td>SUB / FUNCTION の仮引数と実引数の数がちがう。</td></tr><tr><td>型が一致しません (Type mismatch)</td><td>文字列と数を混ぜた(<code>LET a = "x"</code> など)。</td></tr><tr><td>添字が範囲外です (Subscript out of range)</td><td>配列の範囲を超えた。</td></tr><tr><td>0で割りました (Division by zero)</td><td>0 で割った。</td></tr><tr><td>不正な関数呼び出しです</td><td><code>SQR(-1)</code> や <code>LOG(0)</code> など、関数の範囲外。</td></tr></tbody></table>
+</section>
+<section id="limits"><h2>制限事項</h2>
+
+<ul>
+<li>規格にある MAT 文(行列演算)、PICTURE / DRAW、ファイル入出力、EXTYPE(例外処理)、文字列の SET TEXT 系の命令、<code>OPTION ARITHMETIC DECIMAL</code> などは未対応です。</li>
+<li>数値はすべて倍精度で計算します(規格の10進演算は行いません)。</li>
+<li>行番号は省略可能で、規格より緩くしています。変数は宣言なしで使え、未代入の数値は 0、文字列は空です。</li>
+<li>グラフィックの窓は画面全体(正方形)に固定で、<code>SET VIEWPORT</code> は未対応です。</li>
+</ul>
+<p>他の方言との違いは <a href="compare.html">方言の比較</a> をご覧ください。</p>
+</section>
+  </article>
+</div>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <span>© MACS Project</span>
+    <span>マニュアル: <a href="manual-tiny.html">Tiny BASIC</a><a href="manual-n88.html">N88-BASIC</a><a href="manual-full.html" aria-current="page">Full BASIC</a><a href="manual-smile.html">smile BASIC</a></span>
+    <span><a href="compare.html">方言の比較</a> / <a href="index.html">シミュレータ</a></span>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ja" data-dialect="tiny">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tiny BASIC マニュアル | MACS Project</title>
+<meta name="description" content="1975年ごろに生まれた、数KBのメモリでも動く最小のBASIC。行番号・整数・IF/GOTO/GOSUB だけで、プログラミングの原点を体験できます。">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html">MACS Project<small>BASIC シミュレータ</small></a>
+    <nav class="site-nav" aria-label="サイト内メニュー">
+      <a href="index.html#tiny">シミュレータ</a>
+      <a href="manual-tiny.html" aria-current="page">マニュアル</a>
+      <a href="compare.html">方言の比較</a>
+    </nav>
+  </div>
+  <div class="strip"></div>
+</header>
+<main class="wrap">
+
+<h1>Tiny BASIC マニュアル</h1>
+<p class="lead">1975年ごろに生まれた、数KBのメモリでも動く最小のBASIC。行番号・整数・IF/GOTO/GOSUB だけで、プログラミングの原点を体験できます。</p>
+<div class="doc-layout">
+  <nav class="toc" aria-label="目次"><b>目次</b><a href="#about">Tiny BASIC とは</a><a href="#start">画面とはじめかた</a><a href="#program">プログラムの書き方</a><a href="#data">変数・数・演算子</a><a href="#statements">命令リファレンス</a><a href="#functions">関数</a><a href="#graphics">グラフィック(このシミュレータの拡張)</a><a href="#errors">エラーメッセージ</a><a href="#limits">制限事項・他の方言との違い</a><a href="compare.html">▶ 方言の比較</a><a href="index.html#tiny">▶ シミュレータで試す</a></nav>
+  <article>
+<section id="about"><h2>Tiny BASIC とは</h2>
+
+<p>Tiny BASIC は、まだパソコンのメモリが 4KB 前後しかなかった 1975 年ごろ、「小さなマイコンでも動くBASIC」として考えられた言語です。多くの処理系が作られ、その後の <a href="manual-n88.html">N88-BASIC</a> などパソコン用BASICの先祖にあたります。</p>
+<p>機能をぎりぎりまで削っているので、<b>FOR も、文字列変数も、小数もありません</b>。そのかわり、覚えることが少なく、「プログラムは上から順に実行され、IF と GOTO で流れが変わる」という基本がそのまま見えます。</p>
+<div class="note tip">Tiny BASIC は実装ごとに細部が違います。このシミュレータは、よく知られた Tiny BASIC の文法(PRINT / IF / GOTO / GOSUB / RETURN / INPUT / LET / END / REM / RND)に、描画用の拡張命令を加えたものです。</div>
+</section>
+<section id="start"><h2>画面とはじめかた</h2>
+
+<ul>
+<li>画面は緑色の文字画面(<b>80桁 × 25行</b>)と、重ねて表示される <b>640 × 400 ドット</b> のグラフィック面です。</li>
+<li>左のエディタにプログラムを書き、<b>「▶ 実行」</b>(<kbd>Ctrl</kbd>+<kbd>Enter</kbd>)で実行します。</li>
+<li><code>INPUT</code> で入力待ちになると、画面の下に入力欄が出ます。入力して <kbd>Enter</kbd> を押してください。</li>
+<li>行番号のない行があると、「行番号がありません」というエラーになります。<b>「行番号をふる」</b>ボタンで10ずつ自動で付けられます。</li>
+</ul>
+<div class="ex"><div class="ex-title"><span>Hello, World</span><a class="try" href="index.html?d=tiny&code=10%20REM%20%E3%81%AF%E3%81%98%E3%82%81%E3%81%A6%E3%81%AETiny%20BASIC%0A20%20PRINT%20%22Hello%2C%20World!%22%0A30%20END">シミュレータで試す ▶</a></div><pre class="code">10 REM はじめてのTiny BASIC
+20 PRINT "Hello, World!"
+30 END</pre></div>
+</section>
+<section id="program"><h2>プログラムの書き方</h2>
+
+<ul>
+<li>すべての行は <b>行番号</b>(正の整数)で始めます。実行は行番号の小さい順です。入力順は関係ありません。</li>
+<li>同じ行番号を2回書いたときは、あとの行が有効になります。<code>20</code> のように番号だけの行は、その行の削除を意味します。</li>
+<li><b>1行に書ける文は1つ</b>だけです(<code>:</code> で区切って複数の文を書くことはできません)。</li>
+<li>大文字・小文字は区別されません。</li>
+<li>プログラムの最後は <code>END</code> を書くか、最終行まで実行すると終了します。</li>
+<li>文字列(<code>"..."</code>)は <code>PRINT</code> と <code>INPUT</code> のメッセージとして使います。</li>
+</ul>
+<div class="ex"><div class="ex-title"><span>入力の順序と実行の順序</span><a class="try" href="index.html?d=tiny&code=10%20REM%20%E8%A1%8C%E7%95%AA%E5%8F%B7%E3%81%AF%E9%A3%9B%E3%81%B3%E9%A3%9B%E3%81%B3%E3%81%AB%E4%BB%98%E3%81%91%E3%82%8B%E3%81%A8%E3%80%81%E3%81%82%E3%81%A8%E3%81%A7%E9%96%93%E3%81%AB%E8%BF%BD%E5%8A%A0%E3%81%A7%E3%81%8D%E3%82%8B%0A20%20PRINT%20%22B%22%0A10%20PRINT%20%22A%22%0A30%20END">シミュレータで試す ▶</a></div><pre class="code">10 REM 行番号は飛び飛びに付けると、あとで間に追加できる
+20 PRINT "B"
+10 PRINT "A"
+30 END</pre></div>
+</section>
+<section id="data"><h2>変数・数・演算子</h2>
+
+<h3>変数</h3>
+<p>変数名は <code>A</code>〜<code>Z</code> の<b>1文字だけ</b>(26個)。値は<b>整数</b>(-32767〜32767)です。文字列変数・小数はありません。</p>
+<p>配列は <code>@(0)</code>〜<code>@(1023)</code> の1本だけ(<code>@(I)</code> のように添字に式が書けます)。</p>
+<table class="doc"><thead><tr><th>種類</th><th>例</th><th>説明</th></tr></thead><tbody><tr><td>数の定数</td><td><code>0</code> <code>123</code> <code>-5</code></td><td>整数のみ</td></tr><tr><td>変数</td><td><code>A</code> <code>X</code> <code>Z</code></td><td>A〜Z の1文字</td></tr><tr><td>配列</td><td><code>@(1)</code> <code>@(I+1)</code></td><td>共通の1次元配列(0〜1023)</td></tr></tbody></table>
+<h3>演算子</h3>
+<table class="doc"><thead><tr><th>演算子</th><th>意味</th><th>例</th></tr></thead><tbody><tr><td><code>+ - * /</code></td><td>足し算・引き算・かけ算・割り算(<b>小数点以下は切り捨て</b>)</td><td><code>7/2</code> → 3、<code>-7/2</code> → -3</td></tr><tr><td><code>( )</code></td><td>計算の順序を決める</td><td><code>(2+3)*4</code> → 20</td></tr><tr><td><code>= &lt;&gt; &gt;&lt; &lt; &gt; &lt;= &gt;=</code></td><td>比較(IF の条件に使う)。真は 1、偽は 0</td><td><code>A&lt;&gt;B</code></td></tr></tbody></table>
+<p>計算結果が <b>-32767〜32767</b> を超えると「オーバーフロー」エラーになります(昔の16ビット整数と同じです)。</p>
+<div class="ex"><div class="ex-title"><span>整数の計算</span><a class="try" href="index.html?d=tiny&code=10%20PRINT%207%2F2%3B%22%20%22%3B-7%2F2%3B%22%20%22%3B2%2B3*4%3B%22%20%22%3B(2%2B3)*4%0A20%20PRINT%20100%2F7*7%0A30%20END">シミュレータで試す ▶</a></div><pre class="code">10 PRINT 7/2;" ";-7/2;" ";2+3*4;" ";(2+3)*4
+20 PRINT 100/7*7
+30 END</pre></div>
+</section>
+<section id="statements"><h2>命令リファレンス</h2>
+
+<table class="doc"><thead><tr><th>命令</th><th>書式</th><th>説明</th></tr></thead><tbody><tr><td><code>REM</code></td><td><code>REM コメント</code></td><td>注釈。実行されません。</td></tr><tr><td><code>LET</code></td><td><code>LET 変数 = 式</code></td><td>変数に値を入れます。<code>LET</code> は省略できます(<code>A=5</code>)。</td></tr><tr><td><code>PRINT</code></td><td><code>PRINT 項目 [; または , 項目 ...]</code></td><td>画面に表示します。項目は式か <code>"文字列"</code>。くわしくは下の説明。</td></tr><tr><td><code>INPUT</code></td><td><code>INPUT 変数 [, 変数 ...]</code></td><td>キーボードから数を入力します。複数のときは <code>3,4</code> のようにカンマで区切って入力。数以外を入れると「再入力」になります。</td></tr><tr><td><code>IF</code></td><td><code>IF 式 比較 式 THEN 文</code></td><td>条件が成り立つときだけ、THEN の後ろの文を実行します。THEN の後に行番号を書くと GOTO と同じ意味になります(<code>IF A=1 THEN 100</code>)。</td></tr><tr><td><code>GOTO</code></td><td><code>GOTO 式</code></td><td>指定の行へ飛びます。行番号は式でも構いません(<code>GOTO A*100</code>)。</td></tr><tr><td><code>GOSUB</code></td><td><code>GOSUB 式</code></td><td>サブルーチン(指定の行から RETURN まで)を呼び出します。</td></tr><tr><td><code>RETURN</code></td><td><code>RETURN</code></td><td>GOSUB の次の文へもどります。</td></tr><tr><td><code>END</code></td><td><code>END</code></td><td>プログラムを終了します。</td></tr><tr><td><code>STOP</code></td><td><code>STOP</code></td><td>プログラムを止めます。</td></tr><tr><td><code>CLEAR</code></td><td><code>CLEAR</code></td><td>すべての変数と配列を 0 にします。</td></tr></tbody></table>
+<h3>PRINT の書き方</h3>
+<ul>
+<li><code>;</code> で区切ると、すき間なく続けて表示します。<code>,</code> で区切ると、次の 8 桁ごとの位置に揃えます。</li>
+<li>行末に <code>;</code> や <code>,</code> を付けると、改行しません。</li>
+<li>数は余計な空白なしで表示されます(<code>PRINT 5</code> → <code>5</code>)。</li>
+<li>何も書かない <code>PRINT</code> は改行だけを行います。</li>
+</ul>
+<div class="ex"><div class="ex-title"><span>PRINT の区切り</span><a class="try" href="index.html?d=tiny&code=10%20PRINT%20%22A%3D%22%3B5%3B%22%20B%3D%22%3B6%0A20%20PRINT%201%2C2%2C3%0A30%20PRINT%20%22AB%22%3B%0A40%20PRINT%20%22CD%22%0A50%20END">シミュレータで試す ▶</a></div><pre class="code">10 PRINT "A=";5;" B=";6
+20 PRINT 1,2,3
+30 PRINT "AB";
+40 PRINT "CD"
+50 END</pre></div>
+<h3>くり返し(FOR がないので IF と GOTO で)</h3>
+<div class="ex"><div class="ex-title"><span>1から10の合計</span><a class="try" href="index.html?d=tiny&code=10%20LET%20S%3D0%0A20%20LET%20I%3D1%0A30%20LET%20S%3DS%2BI%0A40%20LET%20I%3DI%2B1%0A50%20IF%20I%3C%3D10%20THEN%20GOTO%2030%0A60%20PRINT%20%221%E3%81%8B%E3%82%8910%E3%81%AE%E5%90%88%E8%A8%88%E3%81%AF%20%22%3BS%0A70%20END">シミュレータで試す ▶</a></div><pre class="code">10 LET S=0
+20 LET I=1
+30 LET S=S+I
+40 LET I=I+1
+50 IF I&lt;=10 THEN GOTO 30
+60 PRINT "1から10の合計は ";S
+70 END</pre></div>
+<h3>サブルーチン</h3>
+<div class="ex"><div class="ex-title"><span>GOSUB / RETURN</span><a class="try" href="index.html?d=tiny&code=10%20LET%20N%3D1%0A20%20GOSUB%20100%0A30%20LET%20N%3DN%2B1%0A40%20IF%20N%3C%3D5%20THEN%20GOTO%2020%0A50%20END%0A100%20REM%20N%20%E3%81%AE2%E4%B9%97%E3%82%92%E8%A1%A8%E7%A4%BA%E3%81%99%E3%82%8B%E3%82%B5%E3%83%96%E3%83%AB%E3%83%BC%E3%83%81%E3%83%B3%0A110%20PRINT%20N%3B%22%20%E3%81%AE2%E4%B9%97%E3%81%AF%20%22%3BN*N%0A120%20RETURN">シミュレータで試す ▶</a></div><pre class="code">10 LET N=1
+20 GOSUB 100
+30 LET N=N+1
+40 IF N&lt;=5 THEN GOTO 20
+50 END
+100 REM N の2乗を表示するサブルーチン
+110 PRINT N;" の2乗は ";N*N
+120 RETURN</pre></div>
+<h3>入力</h3>
+<div class="ex"><div class="ex-title"><span>INPUT</span><a class="try" href="index.html?d=tiny&code=10%20PRINT%20%222%E3%81%A4%E3%81%AE%E6%95%B0%E3%82%92%E5%85%A5%E5%8A%9B%E3%81%97%E3%81%A6%E3%81%8F%E3%81%A0%E3%81%95%E3%81%84%20(%E4%BE%8B%3A%203%2C4)%22%0A20%20INPUT%20A%2CB%0A30%20PRINT%20A%3B%22%20%2B%20%22%3BB%3B%22%20%3D%20%22%3BA%2BB%0A40%20PRINT%20A%3B%22%20*%20%22%3BB%3B%22%20%3D%20%22%3BA*B%0A50%20END">シミュレータで試す ▶</a></div><pre class="code">10 PRINT "2つの数を入力してください (例: 3,4)"
+20 INPUT A,B
+30 PRINT A;" + ";B;" = ";A+B
+40 PRINT A;" * ";B;" = ";A*B
+50 END</pre></div>
+</section>
+<section id="functions"><h2>関数</h2>
+
+<table class="doc"><thead><tr><th>関数</th><th>書式</th><th>説明</th></tr></thead><tbody><tr><td><code>RND</code></td><td><code>RND(n)</code></td><td>1〜n のランダムな整数。<code>RND(6)</code> でサイコロ。n は 1 以上。</td></tr><tr><td><code>ABS</code></td><td><code>ABS(n)</code></td><td>絶対値。</td></tr><tr><td><code>SIZE</code></td><td><code>SIZE</code></td><td>使える配列の大きさ(1024)。</td></tr></tbody></table>
+<p>SIN や SQR などの関数はありません。必要なときは、自分で計算するプログラムを書きます。</p>
+<div class="ex"><div class="ex-title"><span>RND</span><a class="try" href="index.html?d=tiny&code=10%20REM%20%E3%82%B5%E3%82%A4%E3%82%B3%E3%83%AD%E3%82%925%E5%9B%9E%E3%81%B5%E3%82%8B%0A20%20LET%20I%3D1%0A30%20PRINT%20RND(6)%3B%22%20%22%3B%0A40%20LET%20I%3DI%2B1%0A50%20IF%20I%3C%3D5%20THEN%20GOTO%2030%0A60%20PRINT%0A70%20END">シミュレータで試す ▶</a></div><pre class="code">10 REM サイコロを5回ふる
+20 LET I=1
+30 PRINT RND(6);" ";
+40 LET I=I+1
+50 IF I&lt;=5 THEN GOTO 30
+60 PRINT
+70 END</pre></div>
+<div class="ex"><div class="ex-title"><span>配列 @()</span><a class="try" href="index.html?d=tiny&code=10%20REM%20%E9%85%8D%E5%88%97%20%40()%20%E3%81%AE%E4%BD%BF%E3%81%84%E6%96%B9%0A20%20LET%20I%3D0%0A30%20LET%20%40(I)%3DI*I%0A40%20LET%20I%3DI%2B1%0A50%20IF%20I%3C%3D5%20THEN%20GOTO%2030%0A60%20LET%20I%3D0%0A70%20PRINT%20%40(I)%3B%22%20%22%3B%0A80%20LET%20I%3DI%2B1%0A90%20IF%20I%3C%3D5%20THEN%20GOTO%2070%0A100%20PRINT%0A110%20END">シミュレータで試す ▶</a></div><pre class="code">10 REM 配列 @() の使い方
+20 LET I=0
+30 LET @(I)=I*I
+40 LET I=I+1
+50 IF I&lt;=5 THEN GOTO 30
+60 LET I=0
+70 PRINT @(I);" ";
+80 LET I=I+1
+90 IF I&lt;=5 THEN GOTO 70
+100 PRINT
+110 END</pre></div>
+</section>
+<section id="graphics"><h2>グラフィック(このシミュレータの拡張)</h2>
+
+<p>本来の Tiny BASIC にはグラフィックの命令はありません。このシミュレータでは、「できる限り描ける」ように、次の<b>拡張命令</b>を用意しています。座標は <b>左上が (0,0)</b>、右へ x、下へ y が増え、画面は 640 × 400 ドットです。</p>
+<table class="doc"><thead><tr><th>命令</th><th>書式</th><th>説明</th></tr></thead><tbody><tr><td><code>CLS</code></td><td><code>CLS</code></td><td>文字画面とグラフィック画面を消去します。</td></tr><tr><td><code>COLOR</code></td><td><code>COLOR n</code></td><td>文字と図形の色を決めます(下の色表)。</td></tr><tr><td><code>PLOT</code></td><td><code>PLOT x,y</code></td><td>点を1つ打ちます。</td></tr><tr><td><code>LINE</code></td><td><code>LINE x1,y1,x2,y2</code></td><td>線を引きます。</td></tr><tr><td><code>CIRCLE</code></td><td><code>CIRCLE x,y,r</code></td><td>中心 (x,y)、半径 r の円をかきます。</td></tr><tr><td><code>WAIT</code></td><td><code>WAIT n</code></td><td>n × 0.01 秒 待ちます(アニメーション用)。</td></tr></tbody></table>
+<table class="doc"><thead><tr><th>n</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th></tr></thead><tbody><tr><td>色</td><td>黒</td><td>青</td><td>赤</td><td>紫</td><td>緑</td><td>水色</td><td>黄</td><td>白</td></tr></tbody></table>
+<div class="ex"><div class="ex-title"><span>線と円</span><a class="try" href="index.html?d=tiny&code=10%20REM%20%E7%B7%9A%E3%81%A7%E6%9B%B2%E7%B7%9A%E3%81%AE%E3%82%88%E3%81%86%E3%81%AB%E8%A6%8B%E3%81%9B%E3%82%8B(%E3%82%B9%E3%83%88%E3%83%AA%E3%83%B3%E3%82%B0%E3%82%A2%E3%83%BC%E3%83%88)%0A20%20CLS%0A30%20LET%20I%3D0%0A40%20COLOR%206%0A50%20LINE%200%2CI%2CI%2C399%0A60%20LET%20I%3DI%2B20%0A70%20IF%20I%3C%3D400%20THEN%20GOTO%2050%0A80%20COLOR%202%0A90%20CIRCLE%20320%2C200%2C120%0A100%20END">シミュレータで試す ▶</a></div><pre class="code">10 REM 線で曲線のように見せる(ストリングアート)
+20 CLS
+30 LET I=0
+40 COLOR 6
+50 LINE 0,I,I,399
+60 LET I=I+20
+70 IF I&lt;=400 THEN GOTO 50
+80 COLOR 2
+90 CIRCLE 320,200,120
+100 END</pre></div>
+<div class="ex"><div class="ex-title"><span>WAIT</span><a class="try" href="index.html?d=tiny&code=10%20REM%20%E5%8B%95%E3%81%8F%E7%82%B9(WAIT%20%E3%81%A7%E3%82%86%E3%81%A3%E3%81%8F%E3%82%8A)%0A20%20CLS%0A30%20LET%20X%3D0%0A40%20PLOT%20X%2C200%0A50%20WAIT%202%0A60%20LET%20X%3DX%2B4%0A70%20IF%20X%3C640%20THEN%20GOTO%2040%0A80%20END">シミュレータで試す ▶</a></div><pre class="code">10 REM 動く点(WAIT でゆっくり)
+20 CLS
+30 LET X=0
+40 PLOT X,200
+50 WAIT 2
+60 LET X=X+4
+70 IF X&lt;640 THEN GOTO 40
+80 END</pre></div>
+</section>
+<section id="errors"><h2>エラーメッセージ</h2>
+
+<table class="doc"><thead><tr><th>メッセージ</th><th>原因と対処</th></tr></thead><tbody><tr><td>行番号がありません</td><td>すべての行の先頭に行番号が必要です。「行番号をふる」を使うと便利です。</td></tr><tr><td>Tiny BASICの変数名は A〜Z の1文字です</td><td><code>AB</code> や <code>SUM</code> は使えません。1文字の変数にします。</td></tr><tr><td>〜は N88-BASIC・… のコマンドです</td><td>FOR、WHILE、DIM などは Tiny BASIC にはありません。<code>IF</code> と <code>GOTO</code> で書き換えます。</td></tr><tr><td>オーバーフロー (Overflow)</td><td>計算結果が -32767〜32767 を超えました。</td></tr><tr><td>0で割りました (Division by zero)</td><td>0 で割っています。</td></tr><tr><td>未定義の行番号です</td><td><code>GOTO</code> / <code>GOSUB</code> で存在しない行を指定しています。</td></tr><tr><td>RETURN に対応する GOSUB がありません</td><td>GOSUB を通らずに RETURN を実行しました。<code>END</code> を忘れていないか確認してください。</td></tr><tr><td>再入力してください (Redo from start)</td><td><code>INPUT</code> に数でないものを入力した場合のメッセージです(エラーではなく再入力になります)。</td></tr></tbody></table>
+</section>
+<section id="limits"><h2>制限事項・他の方言との違い</h2>
+
+<ul>
+<li>FOR / NEXT、文字列変数、小数、ELSE、論理演算(AND / OR)、SIN などの数学関数はありません。</li>
+<li>複数文を <code>:</code> で区切って書くことはできません。</li>
+<li>整数は -32767〜32767 の範囲です。</li>
+<li>PLOT / LINE / CIRCLE / COLOR / CLS / WAIT はこのシミュレータの拡張で、実機の Tiny BASIC にはありません。</li>
+</ul>
+<p>各BASICの違いは <a href="compare.html">方言の比較</a> にまとめています。もっと機能がほしくなったら <a href="manual-n88.html">N88-BASIC</a> や <a href="manual-full.html">Full BASIC</a> へ進みましょう。</p>
+</section>
+  </article>
+</div>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <span>© MACS Project</span>
+    <span>マニュアル: <a href="manual-tiny.html" aria-current="page">Tiny BASIC</a><a href="manual-n88.html">N88-BASIC</a><a href="manual-full.html">Full BASIC</a><a href="manual-smile.html">smile BASIC</a></span>
+    <span><a href="compare.html">方言の比較</a> / <a href="index.html">シミュレータ</a></span>
+  </div>
+</footer>
+</body>
+</html>
