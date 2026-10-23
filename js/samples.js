@@ -240,6 +240,57 @@ END SUB
 NEXT score
 END
 ` },
+    { title: '数列の和(Σ)', code: `! 初項 a、公差 d の等差数列の、第 n 項までの和
+INPUT PROMPT "初項 a = ": a
+INPUT PROMPT "公差 d = ": d
+INPUT PROMPT "項数 n = ": n
+LET s = 0
+FOR k = 1 TO n
+   LET s = s + (a + (k - 1) * d)
+NEXT k
+PRINT "和 ="; s
+PRINT "公式 n(2a+(n-1)d)/2 ="; n * (2 * a + (n - 1) * d) / 2
+END
+` },
+    { title: '漸化式とGOTO(自動の行番号)', code: `! 行番号を書かなくても、上から数えた番号(空行を除く)が付く
+! a(n+1) = 2a(n) + 1, a(1) = 1
+LET a = 1
+LET n = 1
+PRINT "a("; n; ") ="; a
+LET a = 2 * a + 1
+LET n = n + 1
+IF n <= 8 THEN GOTO 5
+END
+` },
+    { title: '区分求積法(x^2 の積分)', code: `! 0 から 1 まで x^2 を積分する(正解は 1/3)
+LET n = 1000
+LET s = 0
+FOR i = 0 TO n - 1
+   LET x = i / n
+   LET s = s + x ^ 2 / n
+NEXT i
+PRINT "n ="; n; " のとき"; s
+PRINT "1/3 ="; 1 / 3
+END
+` },
+    { title: '乱数で円周率(モンテカルロ法)', code: `RANDOMIZE
+LET n = 3000
+LET c = 0
+SET WINDOW 0, 1, 0, 1
+FOR i = 1 TO n
+   LET x = RND
+   LET y = RND
+   IF x ^ 2 + y ^ 2 <= 1 THEN
+      LET c = c + 1
+      SET COLOR "RED"
+   ELSE
+      SET COLOR "BLUE"
+   END IF
+   PLOT POINTS: x, y
+NEXT i
+PRINT "円周率の近似値 ="; 4 * c / n
+END
+` },
     { title: 'グラフ(SIN と COS)', code: `SET WINDOW -7, 7, -1.5, 1.5
 SET COLOR "BLUE"
 PLOT LINES: -7, 0; 7, 0

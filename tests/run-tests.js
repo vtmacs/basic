@@ -182,6 +182,9 @@ const px = (r, x, y) => r.screen.point(x, y);
   await T('n88 deep fn', 'n88', '10 DEF FNA(X)=FNA(X+1)\n20 PRINT FNA(0)', /ERR .*(深すぎ|あふれ)/);
   await T('smile recursion 300', 'smile', 'DEF S(N)\nIF N<=0 THEN RETURN 0\nRETURN N+S(N-1)\nEND\nPRINT S(300)', '45150');
   await T('gosub runaway', 'n88', '10 GOSUB 10', /ERR .*深すぎ/);
+  await T('full auto line goto', 'full', 'LET n = 1\nPRINT n\nLET n = n + 1\nIF n <= 3 THEN GOTO 2\nEND', ' 1\n 2\n 3');
+  await T('full auto line skips blanks', 'full', 'PRINT 1\n\n\nGOTO 4\nPRINT 2\nPRINT 3', ' 1\n 3'.replace(' 3', ' 3'));
+  await T('full auto line error number', 'full', 'PRINT 1\n\nPRINT 1 / 0', (r) => r.err && r.err.line === 2 && r.err.srcLine === 3);
 
   console.log(`\n${pass} passed, ${fail} failed`);
   process.exit(fail ? 1 : 0);

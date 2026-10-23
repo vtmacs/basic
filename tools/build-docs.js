@@ -94,6 +94,17 @@ function buildAll(opts) {
   const cmp = require('./docs/compare.js');
   const hh = (dd) => makeHelpers(dd, collected);
   out['compare.html'] = shell({ dialect: null, title: '方言の比較', desc: 'Tiny BASIC・N88-BASIC・Full BASIC・smile BASIC の違いを一覧で比較', nav: 'compare', body: cmp.page(hh, esc, LABEL) });
+  out['manual.html'] = shell({
+    dialect: null, title: 'マニュアル', desc: 'BASICシミュレータのマニュアル一覧', nav: 'manual',
+    body: `<h1>マニュアル</h1>
+<p class="lead">使いたい方言のマニュアルを選んでください。(以前の <code>manual.html</code> は JIS BASIC に準拠した Full BASIC のマニュアルでした。)</p>
+<div class="cards">
+  <a class="card d-tiny" href="manual-tiny.html"><h3>Tiny BASIC</h3><p>最小のBASIC。行番号・整数・IF/GOTO/GOSUB。</p></a>
+  <a class="card d-n88" href="manual-n88.html"><h3>N88-BASIC</h3><p>行番号つきの定番BASIC。色・図形・音・文字列。</p></a>
+  <a class="card d-full" href="manual-full.html"><h3>Full BASIC</h3><p>JIS/ISO規格の構造化BASIC。行番号なしで書ける。</p></a>
+  <a class="card d-smile" href="manual-smile.html"><h3>smile BASIC</h3><p>ゲーム向けの現代的BASIC。ラベル・DEF・VSYNC。</p></a>
+</div>
+<p><a href="compare.html">▶ 4つの方言を一覧で比較する</a>　<a href="index.html">▶ シミュレータへ</a></p>` });
   return { files: out, examples: collected };
 }
 

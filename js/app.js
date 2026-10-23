@@ -86,10 +86,20 @@
     const lh = parseFloat(getComputedStyle(editor).lineHeight) || 21;
     editor.scrollTop = Math.max(0, (n - 4) * lh);
   }
+  // Full BASIC で行番号を書いていないときの「行番号つきリスト」
+  const hasNumbers = (src) => src.split('\n').some((l) => /^\s*\d+(\s|$)/.test(l));
+  function updateListing() {
+    const box = $('#listing');
+    if (dialect !== 'full' || hasNumbers(editor.value)) { box.hidden = true; return; }
+    const lines = editor.value.replace(/\r\n?/g, '\n').split('\n').filter((l) => !/^\s*$/.test(l));
+    $('#listing-body').innerHTML = lines.map((l) => '<li>' + l.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</li>').join('');
+    box.hidden = false;
+  }
   function showError(e) {
     if (e instanceof NS.BasicError) {
       const D = NS.DIALECTS[dialect];
-      const where = e.line ? (D.lineNo === 'none' || e.line === e.srcLine && D.lineNo !== 'req' ? `${e.srcLine || e.line}行目` : `行番号 ${e.line}`) : '';
+      const auto = dialect === 'full' && !hasNumbers(editor.value);
+      const where = e.line ? (auto ? `リストの ${e.line} 行目` : D.lineNo === 'none' || e.line === e.srcLine && D.lineNo !== 'req' ? `${e.srcLine || e.line}行目` : `行番号 ${e.line}`) : '';
       setStatus(`エラー: ${e.msg}${where ? '  (' + where + ')' : ''}`, 'err');
       selectLine(e.srcLine);
     } else {
@@ -237,6 +247,7 @@
     const saved = store.get(codeKey(d));
     editor.value = opt.code != null ? opt.code : saved != null ? saved : (NS.SAMPLES[d] && NS.SAMPLES[d][0].code) || '';
     makeScreen();
+    updateListing();
     setStatus('準備完了');
     if (!opt.initial) history.replaceState(null, '', '#' + d);
   }
@@ -259,10 +270,11 @@
     if (i === '') return;
     if (editor.value.trim() && !confirm('今のプログラムをサンプルで置き換えます。よろしいですか?')) { samplesEl.value = ''; return; }
     editor.value = NS.SAMPLES[dialect][+i].code;
+    updateListing();
     samplesEl.value = '';
     setStatus('サンプルを読み込みました。「実行」を押してください');
   });
-  editor.addEventListener('input', () => store.set(codeKey(dialect), editor.value));
+  editor.addEventListener('input', () => { store.set(codeKey(dialect), editor.value); updateListing(); });
   editor.addEventListener('keydown', (e) => {
     if (e.key === 'Tab' && !e.shiftKey) {
       e.preventDefault();
@@ -280,10 +292,11 @@
       const r = n + ' ' + l; n += 10; return r;
     }).join('\n');
     store.set(codeKey(dialect), editor.value);
+    updateListing();
     setStatus('行番号を振りました');
   });
   $('#clear').addEventListener('click', () => {
-    if (!editor.value.trim() || confirm('プログラムをすべて消去します。よろしいですか?')) { editor.value = ''; store.set(codeKey(dialect), ''); editor.focus(); }
+    if (!editor.value.trim() || confirm('プログラムをすべて消去します。よろしいですか?')) { editor.value = ''; updateListing(); store.set(codeKey(dialect), ''); editor.focus(); }
   });
   $('#save').addEventListener('click', () => {
     const blob = new Blob([editor.value], { type: 'text/plain;charset=utf-8' });
@@ -298,7 +311,7 @@
   $('#file').addEventListener('change', (e) => {
     const f = e.target.files[0]; if (!f) return;
     const r = new FileReader();
-    r.onload = () => { editor.value = String(r.result); store.set(codeKey(dialect), editor.value); setStatus(f.name + ' を読み込みました'); };
+    r.onload = () => { editor.value = String(r.result); updateListing(); store.set(codeKey(dialect), editor.value); setStatus(f.name + ' を読み込みました'); };
     r.readAsText(f);
     e.target.value = '';
   });

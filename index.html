@@ -43,6 +43,10 @@
       </div>
       <label class="sr-only" for="editor">BASICプログラム</label>
       <textarea class="code" id="editor" spellcheck="false" autocomplete="off" autocapitalize="off" wrap="off"></textarea>
+      <details id="listing" class="listing" hidden>
+        <summary>行番号つきリスト(<code>GOTO</code> の行番号はこの番号です)</summary>
+        <ol id="listing-body"></ol>
+      </details>
       <div class="pane-head" style="border-top:1px solid var(--line);border-bottom:0;border-radius:0">
         <button class="btn" id="number" title="行番号のない行に 10 ずつ番号を振ります">行番号をふる</button>
         <button class="btn" id="save">保存</button>

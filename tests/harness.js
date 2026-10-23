@@ -11,7 +11,7 @@ async function exec(dialect, src, opt) {
   const screen = new NS.Screen({ cols: D.cols, rows: D.rows, gw: D.gw, gh: D.gh, bg: D.bg, fg: D.fg });
   const env = NS.makeEnv(screen, opt);
   let t = 0;
-  env.now = () => (t += 1);
+  env.now = () => { t += 1; if (t > 20000 && vmRef) vmRef.stop(); return t; };
   let sleeps = 0, vmRef = null;
   env.sleep = (ms) => { t += ms; if (opt.maxSleeps && ++sleeps > opt.maxSleeps && vmRef) vmRef.stop(); return Promise.resolve(); };
   env.yield = () => Promise.resolve();

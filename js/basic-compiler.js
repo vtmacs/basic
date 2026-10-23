@@ -1345,6 +1345,10 @@
       }
       lines.push({ num, body, src: i + 1 });
     });
+    // Full BASIC で行番号を1つも書いていないときは、空行を除いた上からの順番を自動の行番号にする
+    // (GOTO / GOSUB / RESTORE の飛び先に使える)
+    const autoNumbered = D.id === 'full' && lines.length > 0 && lines.every((l) => l.num === null);
+    if (autoNumbered) lines.forEach((l, i) => { l.num = i + 1; });
     // 行番号順に並べ替え (すべて番号付きのとき)
     if (lines.length && lines.every((l) => l.num !== null)) {
       const m = new Map();
@@ -1372,7 +1376,7 @@
     for (const f of c.fix) f();
     return {
       D, code: c.code, info: c.info, lineMap: c.lineMap, labels: c.labels, routines: c.routines,
-      data: c.data, dataAt: c.dataAt,
+      data: c.data, dataAt: c.dataAt, autoNumbered,
     };
   }
   NS.compile = compile;
