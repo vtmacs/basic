@@ -237,6 +237,45 @@ const px = (r, x, y) => r.screen.point(x, y);
   await T('file persist across runs', 'smile', 'SAVE "TXT:Q","kept"', (r) => r.vm.env.fs.get('TXT:Q') !== null);
   await T('spr n88 err', 'n88', '10 SPSET 0,0', /ERR .*コマンド/);
 
+  // ---------------- N88-BASIC: ファイル
+  await T('n88 file write/read', 'n88', '10 OPEN "T.TXT" FOR OUTPUT AS #1\n20 PRINT #1,"HELLO";1;2\n30 WRITE #1,"A,B",5,"x"\n40 CLOSE #1\n50 OPEN "T.TXT" FOR INPUT AS #1\n60 LINE INPUT #1,A$:PRINT "[";A$;"]"\n70 INPUT #1,B$,C,D$:PRINT B$;C;D$\n80 PRINT EOF(1)\n90 CLOSE', '[HELLO 1  2 ]\nA,B 5 x\n-1');
+  await T('n88 file old syntax', 'n88', '10 OPEN "O",#1,"A.DAT"\n20 PRINT #1,"x"\n30 CLOSE 1\n40 OPEN "I",#2,"A.DAT"\n50 LINE INPUT #2,A$:PRINT A$', 'x');
+  await T('n88 file no space', 'n88', '10 OPEN "A.DAT" FOR OUTPUT AS #1\n20 PRINT#1,5\n30 CLOSE#1\n40 OPEN "A.DAT" FOR INPUT AS #1\n50 INPUT#1,A:PRINT A', ' 5');
+  await T('n88 file append', 'n88', '10 OPEN "L" FOR OUTPUT AS #1:PRINT #1,"1":CLOSE\n20 OPEN "L" FOR APPEND AS #1:PRINT #1,"2":CLOSE\n30 OPEN "L" FOR INPUT AS #1\n40 WHILE NOT EOF(1):LINE INPUT #1,A$:PRINT A$;:WEND\n50 CLOSE', '12');
+  await T('n88 file numbers', 'n88', '10 OPEN "N" FOR OUTPUT AS #1\n20 FOR I=1 TO 3:WRITE #1,I,I*I:NEXT:CLOSE\n30 OPEN "N" FOR INPUT AS #1\n40 WHILE NOT EOF(1)\n50 INPUT #1,A,B:PRINT A;B\n60 WEND', ' 1  1\n 2  4\n 3  9');
+  await T('n88 file missing', 'n88', '10 OPEN "NOPE" FOR INPUT AS #1', /ERR .*見つかりません/);
+  await T('n88 file past end', 'n88', '10 OPEN "E" FOR OUTPUT AS #1:CLOSE\n20 OPEN "E" FOR INPUT AS #1\n30 INPUT #1,A', /ERR .*終わりを過ぎて/);
+  await T('n88 file bad mode', 'n88', '10 OPEN "M" FOR OUTPUT AS #1\n20 INPUT #1,A', /ERR .*この操作はできません/);
+  await T('n88 file not open', 'n88', '10 PRINT #3,"x"', /ERR .*開かれていません/);
+  await T('n88 file already open', 'n88', '10 OPEN "X" FOR OUTPUT AS #1\n20 OPEN "Y" FOR OUTPUT AS #1', /ERR .*既に開かれて/);
+  await T('n88 file autoclose', 'n88', '10 OPEN "Z" FOR OUTPUT AS #1\n20 PRINT #1,"kept"\n30 END', (r) => r.vm.env.fs.get('N88:Z') === 'kept\n');
+  await T('n88 file lof', 'n88', '10 OPEN "Z" FOR OUTPUT AS #1:PRINT #1,"abc":CLOSE\n20 OPEN "Z" FOR INPUT AS #1:PRINT LOF(1);EOF(1)', ' 4  0');
+  await T('n88 input$', 'n88', '10 OPEN "Q" FOR OUTPUT AS #1:PRINT #1,"ABCDEF":CLOSE\n20 OPEN "Q" FOR INPUT AS #1\n30 PRINT INPUT$(3,#1);"/";INPUT$(2,1)', 'ABC/DE');
+  await T('n88 kill name files', 'n88', '10 OPEN "B.TXT" FOR OUTPUT AS #1:CLOSE\n20 OPEN "A.DAT" FOR OUTPUT AS #1:CLOSE\n30 FILES\n40 NAME "A.DAT" AS "C.DAT"\n50 FILES "*.DAT"\n60 KILL "C.DAT"\n70 FILES', /^A\.DAT\nB\.TXT\n2 file\(s\)\nC\.DAT\n1 file\(s\)\nB\.TXT\n1 file\(s\)$/);
+  await T('n88 kill missing', 'n88', '10 KILL "NOPE"', /ERR .*見つかりません/);
+  await T('n88 file drive prefix', 'n88', '10 OPEN "A:DATA.TXT" FOR OUTPUT AS #1:PRINT #1,"1":CLOSE\n20 OPEN "DATA.TXT" FOR INPUT AS #1:INPUT #1,A:PRINT A', ' 1');
+  await T('n88 print using file', 'n88', '10 OPEN "U" FOR OUTPUT AS #1\n20 PRINT #1,USING "###.#";3.14159\n30 CLOSE\n40 OPEN "U" FOR INPUT AS #1:LINE INPUT #1,A$:PRINT "[";A$;"]"', '[  3.1]');
+  await T('n88 random file', 'n88', `10 OPEN "R.DAT" AS #1 LEN=20
+20 FIELD #1, 10 AS N$, 2 AS A$, 8 AS S$
+30 FOR I=1 TO 3
+40 LSET N$="NAME"+STR$(I)
+50 LSET A$=MKI$(I*10)
+60 RSET S$=STR$(I*1.5)
+70 PUT #1,I
+80 NEXT
+90 CLOSE
+100 OPEN "R" ,#1,"R.DAT",20
+110 FIELD #1, 10 AS N$, 2 AS A$, 8 AS S$
+120 GET #1,2
+130 PRINT "[";N$;"]";CVI(A$);"[";S$;"]"
+140 PRINT LOF(1)
+150 GET #1,3:PRINT CVI(A$)`, '[NAME 2    ] 20 [       3]\n 60\n 30');
+  await T('n88 mk cv', 'n88', '10 PRINT CVI(MKI$(-300));CVS(MKS$(1.5));CVD(MKD$(3.25));LEN(MKI$(1));LEN(MKS$(1));LEN(MKD$(1))', '-300 1.5 3.25 2 4 8'.replace(/ /g, '  ').replace(/^-300/, '-300'));
+  await T('n88 field overflow', 'n88', '10 OPEN "R" AS #1 LEN=5\n20 FIELD #1, 10 AS A$', /ERR .*超えて/);
+  await T('n88 lset plain', 'n88', '10 LSET A$="x"\n20 PRINT A$', 'x');
+  await T('smile files unaffected', 'smile', 'SAVE "TXT:A","1"\nFILES', /^TXT:A\n1 file/);
+  await T('smile no open', 'smile', 'OPEN "A" FOR OUTPUT AS #1', /ERR .*コマンド/);
+
   console.log(`\n${pass} passed, ${fail} failed`);
   process.exit(fail ? 1 : 0);
 })();

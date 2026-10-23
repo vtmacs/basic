@@ -169,6 +169,41 @@
 20 PLAY "T120 O4 L4 C D E F G A B >C"
 30 END
 ` },
+    { title: 'ファイルに書いて読む(OPEN・WRITE#・INPUT#)', code: `10 ' 点数をファイルに保存して、読み出して平均を出す
+20 OPEN "SCORE.DAT" FOR OUTPUT AS #1
+30 FOR I=1 TO 5
+40   WRITE #1,"生徒"+STR$(I),50+I*7
+50 NEXT I
+60 CLOSE #1
+70 OPEN "SCORE.DAT" FOR INPUT AS #1
+80 S=0:N=0
+90 WHILE NOT EOF(1)
+100   INPUT #1,NM$,P
+110   PRINT NM$;P
+120   S=S+P:N=N+1
+130 WEND
+140 CLOSE #1
+150 PRINT "平均=";S/N
+160 END
+` },
+    { title: '住所録(ランダムファイル FIELD・GET・PUT)', code: `10 ' 1件24文字のレコードで保存する
+20 OPEN "ADDR.DAT" AS #1 LEN=24
+30 FIELD #1,12 AS N$,10 AS T$,2 AS A$
+40 DATA 山田,0901111111,20,鈴木,0902222222,31,佐藤,0903333333,45
+50 FOR I=1 TO 3
+60   READ NM$,TL$,AG
+70   LSET N$=NM$:LSET T$=TL$:LSET A$=MKI$(AG)
+80   PUT #1,I
+90 NEXT I
+100 PRINT "レコード数=";LOF(1)/24
+110 FOR I=3 TO 1 STEP -1
+120   GET #1,I
+130   PRINT I;N$;T$;CVI(A$);"歳"
+140 NEXT I
+150 CLOSE #1
+160 FILES
+170 END
+` },
   ];
 
   S.full = [

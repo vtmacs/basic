@@ -65,7 +65,7 @@ const ROWS = [
     ['時間待ち', '<code>WAIT</code>(拡張)', 'n:なし(ループで待つ)', '<code>WAIT DELAY 秒</code>', '<code>VSYNC</code>・<code>WAIT</code>(1/60秒単位)'],
     ['音', 'n:なし', 'y:<code>BEEP SOUND PLAY</code>', 'n:なし', 'p:<code>BEEP</code> だけ'],
     ['スプライト・BG', 'n:なし', 'n:なし', 'n:なし', 'y:<code>SPSET SPOFS SPANIM BGPUT BGOFS …</code>'],
-    ['ファイルの保存', 'n:なし', 'n:なし', 'n:なし', 'y:<code>SAVE LOAD FILES</code>(ブラウザに保存)'],
+    ['ファイルの保存', 'n:なし', 'y:<code>OPEN CLOSE PRINT# INPUT# GET PUT</code> など(ブラウザに保存)', 'n:なし', 'y:<code>SAVE LOAD FILES</code>(ブラウザに保存)'],
   ]],
 ];
 

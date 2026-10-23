@@ -227,6 +227,89 @@ ${h.ex(`10 SCREEN 3: CLS
 50 END`, '円弧と楕円')}`,
     },
     {
+      id: 'file', title: 'ファイル',
+      html: `
+<p>データをファイルに保存して、あとで読み込めます。ファイルは<b>お使いのブラウザの中</b>(このサイト用の保存領域)に保存されるので、ページを閉じても残ります。別のパソコンや別のブラウザとは共有されません(ブラウザのサイトデータを消すと一緒に消えます)。</p>
+<ul>
+<li>ファイル名は英数字と <code>_ - .</code> で32文字まで(大文字小文字は区別しません)。<code>"A:DATA.DAT"</code> のようなドライブ名は書いても無視されます。</li>
+<li>ファイル番号は <code>#1</code>〜<code>#15</code>。同時に開けるのは別々の番号・別々のファイルです。</li>
+<li>プログラムが終了(<code>END</code>・エラー・停止)すると、開いているファイルは自動で閉じて保存されます。(実機のように <code>CLOSE</code> を忘れて失う心配はありません。それでも <code>CLOSE</code> を書く習慣をつけましょう。)</li>
+</ul>
+<h3>順番に読み書きする(シーケンシャルファイル)</h3>
+${h.cmds([
+  ['OPEN', 'OPEN "名前" FOR INPUT|OUTPUT|APPEND AS #n', '読み込み(INPUT)、新規書き込み(OUTPUT、同名があれば上書き)、追加書き込み(APPEND)で開きます。古い書き方 <code>OPEN "I",#1,"名前"</code>(モードは <code>I</code> <code>O</code> <code>A</code>)も使えます。'],
+  ['CLOSE', 'CLOSE [#n, #m …]', 'ファイルを閉じて保存します。番号を省くとすべて閉じます。'],
+  ['PRINT #', 'PRINT #n, 項目 [; | , 項目 …]', '画面の <code>PRINT</code> と同じ書式でファイルに書きます(<code>USING</code> も使えます)。'],
+  ['WRITE #', 'WRITE #n, 項目, 項目 …', '<code>INPUT #</code> で読み戻しやすい形(文字列は <code>"…"</code> で囲み、項目はカンマ区切り、数は空白なし)で書きます。'],
+  ['INPUT #', 'INPUT #n, 変数, 変数 …', 'ファイルから項目を読みます。項目はカンマか改行で区切られます。'],
+  ['LINE INPUT #', 'LINE INPUT #n, 文字列変数', '1行をそのまま読みます。'],
+  ['INPUT$', 'INPUT$(文字数, #n)', '指定した文字数だけ読みます。'],
+  ['EOF', 'EOF(n)', 'ファイルの終わりまで読んだら -1(真)。<code>WHILE NOT EOF(1) … WEND</code> で全部読めます。'],
+  ['LOF', 'LOF(n)', 'ファイルの大きさ(文字数)。'],
+  ['LOC', 'LOC(n)', 'ランダムファイルでは最後に読み書きしたレコード番号。'],
+])}
+${h.ex(`10 ' 点数をファイルに保存して、読み出して平均を出す
+20 OPEN "SCORE.DAT" FOR OUTPUT AS #1
+30 FOR I=1 TO 5
+40   WRITE #1,"生徒"+STR$(I),50+I*7
+50 NEXT I
+60 CLOSE #1
+70 OPEN "SCORE.DAT" FOR INPUT AS #1
+80 S=0:N=0
+90 WHILE NOT EOF(1)
+100   INPUT #1,NM$,P
+110   PRINT NM$;P
+120   S=S+P:N=N+1
+130 WEND
+140 CLOSE #1
+150 PRINT "平均=";S/N
+160 END`, 'WRITE # と INPUT #')}
+${h.ex(`10 ' メモを1行ずつ追加していく(何度実行しても増えていく)
+20 OPEN "MEMO.TXT" FOR APPEND AS #1
+30 PRINT #1,"実行した時刻 ";TIME$
+40 CLOSE #1
+50 OPEN "MEMO.TXT" FOR INPUT AS #1
+60 WHILE NOT EOF(1)
+70   LINE INPUT #1,A$
+80   PRINT A$
+90 WEND
+100 CLOSE #1`, 'APPEND と LINE INPUT #')}
+<h3>番号で出し入れする(ランダムファイル)</h3>
+<p>1件ぶんの長さ(レコード長)を決め、<b>何番目のレコード</b>かを指定して読み書きします。<code>OPEN "名前" AS #n LEN=レコード長</code>(または <code>OPEN "R",#n,"名前",レコード長</code>)で開き、<code>FIELD</code> でレコードの中身を文字列変数に割り当てます。</p>
+${h.cmds([
+  ['FIELD', 'FIELD #n, 幅 AS 変数$, 幅 AS 変数$ …', 'レコードを、幅ごとの文字列変数に割り当てます(幅の合計はレコード長以下)。'],
+  ['LSET / RSET', 'LSET 変数$ = 式  /  RSET 変数$ = 式', 'FIELD した変数に、左そろえ(LSET)・右そろえ(RSET)で値を入れます(足りない分は空白、あふれた分は切り捨て)。ふつうの <code>=</code> では書き込めません。'],
+  ['PUT', 'PUT #n[, レコード番号]', 'いまのレコードの内容をファイルへ書きます。番号を省くと前回の次のレコード。'],
+  ['GET', 'GET #n[, レコード番号]', 'レコードを読んで、FIELD の変数に入れます。'],
+  ['MKI$ MKS$ MKD$', 'MKI$(整数)  MKS$(単精度)  MKD$(倍精度)', '数を 2・4・8 文字の文字列に変換します(レコードに数を入れるとき用)。'],
+  ['CVI CVS CVD', 'CVI(文字列)  CVS(文字列)  CVD(文字列)', '上の逆(文字列から数に戻す)。'],
+])}
+${h.ex(`10 ' 1件24文字のレコードで保存する
+20 OPEN "ADDR.DAT" AS #1 LEN=24
+30 FIELD #1,12 AS N$,10 AS T$,2 AS A$
+40 DATA 山田,0901111111,20,鈴木,0902222222,31,佐藤,0903333333,45
+50 FOR I=1 TO 3
+60   READ NM$,TL$,AG
+70   LSET N$=NM$:LSET T$=TL$:LSET A$=MKI$(AG)
+80   PUT #1,I
+90 NEXT I
+100 PRINT "レコード数=";LOF(1)/24
+110 FOR I=3 TO 1 STEP -1
+120   GET #1,I
+130   PRINT I;N$;T$;CVI(A$);"歳"
+140 NEXT I
+150 CLOSE #1
+160 FILES
+170 END`, 'ランダムファイル(住所録)')}
+<h3>ファイルの管理</h3>
+${h.cmds([
+  ['FILES', 'FILES ["パターン"]', 'ファイルの一覧を表示します(<code>FILES "*.DAT"</code> のように <code>*</code> と <code>?</code> が使えます)。'],
+  ['KILL', 'KILL "名前"', 'ファイルを削除します。'],
+  ['NAME', 'NAME "旧" AS "新"', 'ファイル名を変更します。'],
+])}
+<p>よくあるエラー: 「ファイルが見つかりません」(読み込み用に開いたのに無い)、「ファイルの終わりを過ぎて読もうとしました」(<code>EOF</code> を確かめずに読んだ)、「ファイルは既に開かれています」(<code>CLOSE</code> せずに同じ番号・同じファイルを開いた)、「ファイル #n ではこの操作はできません」(書き込み用に開いたファイルを <code>INPUT #</code> した、など)。</p>`,
+    },
+    {
       id: 'samples', title: 'もう少し大きなプログラム',
       html: `
 ${h.ex(`10 RANDOMIZE
@@ -271,7 +354,8 @@ ${h.table(['メッセージ', '番号', '原因'], [
       id: 'limits', title: '制限事項',
       html: `
 <ul>
-<li>ファイル(OPEN/CLOSE/SAVE/LOAD)、PEEK/POKE、OUT/INP、スプライト、GET/PUT@(図形の取り込み)、VIEW/WINDOW、KEY・割り込み(ON KEY/ON TIMER)は未対応です。<code>KEY</code> と <code>CONSOLE</code> は書いても何も起きません。</li>
+<li>プログラム自体の SAVE/LOAD/MERGE(エディタの「保存」「読み込み」を使ってください)、PEEK/POKE、OUT/INP、スプライト、GET@/PUT@(図形の取り込み)、VIEW/WINDOW、KEY・割り込み(ON KEY/ON TIMER)は未対応です。<code>KEY</code> と <code>CONSOLE</code> は書いても何も起きません。</li>
+<li>ファイルはブラウザの中に保存されます。ディスクやカセットなどの装置名は無視され、<code>LOF</code> や <code>LOC</code> の値は実機と少し違います。ランダムファイルの文字列は、日本語も1文字を1つと数えます。</li>
 <li>グラフィックは 640 × 400 ドット・8色固定で、文字層とグラフィック層は別です。<code>CLS</code> は両方を消します。</li>
 <li>単精度/倍精度の違いは表示桁数にだけ現れ、内部では倍精度で計算します(<code>PRINT 1/3</code> は <code>.3333333</code>)。</li>
 <li>キーワードの途中に空白がなくても読める「<code>FORI=1TO10</code>」のような書き方は、キーワードの前後に空白が必要です。</li>

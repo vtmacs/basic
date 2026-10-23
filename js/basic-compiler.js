@@ -278,6 +278,12 @@
         if (v === undefined) this.err(`未定義の定数です: ${name}`, 2);
         return () => v;
       }
+      if (name === 'INPUT$' && D.id === 'n88') {
+        this.expectOp('('); const cnt = this.expr(); let fn = null;
+        if (this.eatOp(',')) { this.eatOp('#'); fn = this.expr(); }
+        this.expectOp(')');
+        return (vm) => vm.fileInputChars(nm(cnt(vm)), fn ? nm(fn(vm)) : null);
+      }
       const f = FN[name];
       if (f && f.d.indexOf(D.id) >= 0) {
         let args = [];
@@ -494,7 +500,8 @@
   // ---- PRINT ----
   H.PRINT = function () {
     const items = [];
-    let using = null;
+    let using = null, nf = null;
+    if (this.isOp('#')) { this.p++; nf = this.expr(); if (!this.eatOp(',')) this.eatOp(';'); } // PRINT #n, ...
     if (this.isId('USING')) {
       this.p++; using = this.expr();
       if (!this.eatOp(';') && !this.eatOp(',')) this.eatOp(':');
@@ -505,12 +512,20 @@
       if (t.t === 'op' && (t.v === ';' || t.v === ',')) { this.p++; items.push({ sep: t.v }); continue; }
       items.push({ e: this.expr() });
     }
-    this.emit((vm) => vm.doPrint(items, using));
+    this.emit((vm) => vm.doPrint(items, using, nf ? vm.fileOut(nm(nf(vm))) : null));
   };
 
   // ---- INPUT ----
   H.INPUT = function () {
     const D = this.D;
+    if (this.isOp('#')) { // INPUT #n, 変数...
+      this.p++;
+      const nf = this.expr(); this.expectOp(',');
+      const lvs = []; do { lvs.push(this.lvalue()); } while (this.eatOp(','));
+      this.endStmt();
+      this.emit((vm) => vm.doInputFile(nm(nf(vm)), lvs));
+      return;
+    }
     let prompt = null, sepSemi = false;
     this.eatOp(';'); // INPUT;"..." (改行しない指定)
     if (this.isId('PROMPT')) { this.p++; prompt = this.expr(); sepSemi = false; this.eatOp(':') || this.eatOp(';') || this.eatOp(','); }
@@ -1146,6 +1161,13 @@
     const D = this.D;
     if (this.isId('INPUT')) { // LINE INPUT
       this.p++;
+      if (this.isOp('#')) {
+        this.p++;
+        const nf = this.expr(); this.expectOp(',');
+        const lvf = this.lvalue();
+        this.emit((vm) => vm.doLineInputFile(nm(nf(vm)), lvf));
+        return;
+      }
       let prompt = null;
       this.eatOp(';');
       if (this.peek().t === 'str') { prompt = this.expr(); this.eatOp(';') || this.eatOp(','); }
@@ -1414,6 +1436,15 @@
   H.DELETE = function () { const n = this.expr(); this.emit((vm) => vm.fsDelete(n(vm))); };
   H.RENAME = function () { const a = this.expr(); this.expectOp(','); const b = this.expr(); this.emit((vm) => vm.fsRename(a(vm), b(vm))); };
   H.FILES = function () {
+    if (this.D.id === 'n88') {
+      const pat = this.atEnd() ? null : this.expr();
+      this.emit((vm) => {
+        const names = vm.fsList(pat ? String(pat(vm)) : null);
+        for (const n of names) vm.screen.write(n + '\n');
+        vm.screen.write(names.length + ' file(s)\n');
+      });
+      return;
+    }
     const lv = this.atEnd() ? null : this.lvalue();
     this.emit((vm) => {
       const names = vm.fsList();
@@ -1421,6 +1452,77 @@
       else { for (const n of names) vm.screen.write(n + '\n'); vm.screen.write(names.length + ' file(s)\n'); }
     });
   };
+
+
+  // ---- ファイル (N88-BASIC) ----
+  H.OPEN = function () {
+    const e1 = this.expr();
+    let mode, name, no, len = null;
+    if (this.eatOp(',')) { // OPEN "O",#1,"FILE"[,レコード長]
+      this.eatOp('#'); no = this.expr(); this.expectOp(',');
+      name = this.expr();
+      if (this.eatOp(',')) len = this.expr();
+      mode = e1;
+    } else { // OPEN "FILE" [FOR INPUT|OUTPUT|APPEND] AS #1 [LEN=n]
+      name = e1;
+      let m = 'R';
+      if (this.eatId('FOR')) {
+        const w = this.next();
+        if (w.t !== 'id' || ['INPUT', 'OUTPUT', 'APPEND'].indexOf(w.v) < 0) this.syntax('FOR の後は INPUT / OUTPUT / APPEND');
+        m = w.v[0];
+      }
+      mode = () => m;
+      this.expectId('AS'); this.eatOp('#'); no = this.expr();
+      if (this.isId('LEN') && this.isOp('=', 1)) { this.p += 2; len = this.expr(); }
+    }
+    this.endStmt();
+    const modeFn = typeof mode === 'function' ? mode : mode;
+    this.emit((vm) => vm.openFile(nm(no(vm)), name(vm), modeFn(vm), len ? nm(len(vm)) : 128));
+  };
+  H.CLOSE = function () {
+    const ns = [];
+    if (!this.atEnd()) { do { this.eatOp('#'); ns.push(this.expr()); } while (this.eatOp(',')); }
+    this.emit((vm) => vm.closeFiles(ns.map((f) => nm(f(vm)))));
+  };
+  H.WRITE = function () {
+    let nf = null;
+    if (this.eatOp('#')) { nf = this.expr(); this.expectOp(','); }
+    const items = [];
+    if (!this.atEnd()) { do { items.push(this.expr()); } while (this.eatOp(',')); }
+    this.emit((vm) => vm.doWrite(nf ? vm.fileOut(nm(nf(vm))) : vm.screen, items.map((f) => f(vm))));
+  };
+  H.FIELD = function () {
+    this.eatOp('#');
+    const n = this.expr(), specs = [];
+    while (this.eatOp(',')) {
+      const w = this.expr(); this.expectId('AS');
+      const lv = this.lvalue();
+      if (!lv.isStr || lv.isArr) this.syntax('FIELD の変数は文字列変数です');
+      specs.push({ w, name: lv.name });
+    }
+    this.emit((vm) => vm.doField(nm(n(vm)), specs.map((sp) => ({ w: Math.trunc(nm(sp.w(vm))), name: sp.name }))));
+  };
+  function lset(left) {
+    return function () {
+      const lv = this.lvalue();
+      if (!lv.isStr || lv.isArr) this.syntax('LSET / RSET の左辺は文字列変数です');
+      this.expectOp('=');
+      const e = this.expr();
+      this.emit((vm) => vm.doLset(lv, e(vm), left));
+    };
+  }
+  H.LSET = lset(true);
+  H.RSET = lset(false);
+  H.GET = function () {
+    this.eatOp('#'); const n = this.expr(); const r = this.eatOp(',') ? this.expr() : null;
+    this.emit((vm) => vm.doGet(nm(n(vm)), r ? nm(r(vm)) : null));
+  };
+  H.PUT = function () {
+    this.eatOp('#'); const n = this.expr(); const r = this.eatOp(',') ? this.expr() : null;
+    this.emit((vm) => vm.doPut(nm(n(vm)), r ? nm(r(vm)) : null));
+  };
+  H.KILL = function () { const n = this.expr(); this.emit((vm) => vm.fileKill(n(vm))); };
+  H.NAME = function () { const a = this.expr(); this.expectId('AS'); const b = this.expr(); this.emit((vm) => vm.fileRename(a(vm), b(vm))); };
 
   // 方言外のコマンドを使ったときのメッセージ用に、ハンドラが無いキーワードも登録
   for (const w of ['RUN', 'NEW', 'LIST', 'CONT']) H[w] = function () { this.err(`${w} はエディタ操作用のコマンドです。「実行」ボタンを使ってください`, 2); };

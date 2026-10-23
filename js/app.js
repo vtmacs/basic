@@ -11,7 +11,7 @@
       font: '"Courier New", "Noto Sans Mono CJK JP", "MS Gothic", monospace',
     },
     n88: {
-      desc: 'NEC PC-8801/PC-9801 シリーズの標準BASIC。行番号つきで、色・図形(LINE/CIRCLE/PAINT)・音(PLAY)・文字列関数が使える、日本のパソコン黎明期の定番です。',
+      desc: 'NEC PC-8801/PC-9801 シリーズの標準BASIC。行番号つきで、色・図形(LINE/CIRCLE/PAINT)・音(PLAY)・文字列関数・ファイル(OPEN/PRINT#/INPUT#)が使える、日本のパソコン黎明期の定番です。',
       keys: '<kbd>INKEY$</kbd> 用に、画面をクリックしてからキーを押します(矢印キー = 28〜31)。画面は 80×25 文字・640×400 ドット・8色です。',
       font: '"MS Gothic", "Noto Sans Mono CJK JP", "Courier New", monospace',
     },

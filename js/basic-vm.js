@@ -2,7 +2,7 @@
 (function (root) {
   'use strict';
   const NS = root.MacsBasic;
-  const { BasicError, BArray, printNum, usingFormat, FN, COLORS, E, typeErr, illegal, PAL8, PAL16 } = NS;
+  const { BasicError, BArray, printNum, numToStr, usingFormat, FN, COLORS, E, typeErr, illegal, PAL8, PAL16 } = NS;
 
   class StopSignal extends Error { constructor() { super('stopped'); this.name = 'StopSignal'; } }
 
@@ -15,7 +15,7 @@
       this.globals = new Map(); this.scope = null; this.mode = '';
       this.callStack = []; this.forStack = []; this.tmp = Object.create(null);
       this.dataPtr = 0; this.pc = 0; this.halted = false; this.reason = '';
-      this.retVal = 0; this.lastRnd = 0.5; this.nest = 0;
+      this.retVal = 0; this.lastRnd = 0.5; this.nest = 0; this.files = new Map();
       this.errHandler = -1; this.errCode = 0; this.errLine = 0; this.inErr = false; this.errPc = 0;
       this.gcolor = this.D.fg; this.win = null; this.lastSync = 0;
       this.t0 = env.now();
@@ -72,7 +72,176 @@
       if (fs.get(kb) !== null && fs.get(kb) !== undefined) throw E(`同じ名前のファイルがあります: ${kb}`, 58);
       fs.set(kb, raw); fs.del(ka);
     }
-    fsList() { return this.fsEnv().list().sort(); }
+    fsList(pat) {
+      const keys = this.fsEnv().list();
+      if (this.D.id === 'n88') {
+        let names = keys.filter((k) => k.startsWith('N88:')).map((k) => k.slice(4)).sort();
+        if (pat) { const re = new RegExp('^' + this.fileName(pat).replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*').replace(/\?/g, '.') + '$'); names = names.filter((n) => re.test(n)); }
+        return names;
+      }
+      return keys.filter((k) => /^(TXT|DAT):/.test(k)).sort();
+    }
+
+    // ------------------------------------------------------------ N88-BASIC のファイル
+    fileName(name) {
+      if (typeof name !== 'string') throw typeErr();
+      const t = name.trim().replace(/^[A-Za-z0-9]:/, '').toUpperCase();
+      if (!/^[A-Z0-9_.\-*?]{1,32}$/.test(t)) throw E(`ファイル名が正しくありません: ${name} (Bad file name)`, 64);
+      return t;
+    }
+    getFile(n, modes) {
+      n = Math.trunc(n);
+      if (!(n >= 1 && n <= 15)) throw E('ファイル番号が正しくありません (Bad file number)', 52);
+      const f = this.files.get(n);
+      if (!f) throw E(`ファイル #${n} は開かれていません (Bad file number)`, 52);
+      if (modes && modes.indexOf(f.mode) < 0) throw E(`ファイル #${n} ではこの操作はできません (Bad file mode)`, 54);
+      return f;
+    }
+    openFile(n, name, mode, reclen) {
+      n = Math.trunc(n);
+      if (!(n >= 1 && n <= 15)) throw E('ファイル番号が正しくありません (Bad file number)', 52);
+      if (this.files.has(n)) throw E(`ファイル #${n} は既に開かれています (File already open)`, 55);
+      const fs = this.fsEnv(), nm = this.fileName(name), key = 'N88:' + nm;
+      const m = String(mode).trim().toUpperCase()[0];
+      if (['I', 'O', 'A', 'R'].indexOf(m) < 0) throw E('OPEN のモードは I / O / A / R です', 54);
+      for (const o of this.files.values()) if (o.key === key) throw E(`ファイルは既に開かれています: ${nm} (File already open)`, 55);
+      const raw = fs.get(key);
+      const f = { n, name: nm, key, mode: m, buf: '', pos: 0, reclen: Math.max(1, Math.trunc(reclen) || 128), fields: [], rbuf: '', recno: 0 };
+      if (m === 'I') { if (raw === null || raw === undefined) throw E(`ファイルが見つかりません: ${nm} (File not found)`, 53); f.buf = raw; }
+      else if (m === 'O') { f.buf = ''; this.fileFlush(f); }
+      else if (m === 'A') { f.buf = raw || ''; f.pos = f.buf.length; }
+      else { f.buf = raw || ''; f.rbuf = ' '.repeat(f.reclen); }
+      if (m === 'O' || m === 'A') {
+        const self = this;
+        f.out = { cx: 0, cols: 255, write(s) { for (const c of String(s)) { if (c === '\n') this.cx = 0; else if (c >= ' ') this.cx++; } f.buf += s; }, newline() { f.buf += '\n'; this.cx = 0; } };
+        void self;
+      }
+      this.files.set(n, f);
+    }
+    fileFlush(f) {
+      if (f.mode === 'I') return;
+      try { this.fsEnv().set(f.key, f.buf); } catch (e) { if (e instanceof BasicError) throw e; throw E('ディスクがいっぱいです (Disk full)', 61); }
+    }
+    closeFiles(list) {
+      const ns = list.length ? list.map((x) => Math.trunc(x)) : [...this.files.keys()];
+      for (const n of ns) { const f = this.files.get(n); if (f) { this.fileFlush(f); this.files.delete(n); } }
+    }
+    closeAllQuiet() { try { this.closeFiles([]); } catch (e) { /* 無視 */ } }
+    fileOut(n) { return this.getFile(n, ['O', 'A']).out; }
+    doWrite(target, vals) {
+      const parts = vals.map((v) => (typeof v === 'string' ? '"' + v + '"' : typeof v === 'number' ? numToStr(this, v) : (() => { throw typeErr(); })()));
+      target.write(parts.join(','));
+      target.newline();
+    }
+    fileToken(f) { // INPUT # 用に1項目読む
+      const b = f.buf;
+      let i = f.pos;
+      while (i < b.length && (b[i] === ' ' || b[i] === '\n' || b[i] === '\r' || b[i] === '\t')) i++;
+      if (i >= b.length) throw E('ファイルの終わりを過ぎて読もうとしました (Input past end)', 62);
+      let out;
+      const eol = () => { if (b[i] === '\r') i++; if (b[i] === '\n') i++; }; // 項目のあとの改行も読み飛ばす
+      if (b[i] === '"') {
+        const j = b.indexOf('"', i + 1);
+        const end = j < 0 ? b.length : j;
+        out = b.slice(i + 1, end); i = j < 0 ? b.length : j + 1;
+        while (i < b.length && b[i] === ' ') i++;
+        if (b[i] === ',') i++; else eol();
+      } else {
+        let j = i;
+        while (j < b.length && b[j] !== ',' && b[j] !== '\n' && b[j] !== '\r') j++;
+        out = b.slice(i, j).trim(); i = j;
+        if (b[i] === ',') i++; else eol();
+      }
+      f.pos = i;
+      return out;
+    }
+    doInputFile(n, lvs) {
+      const f = this.getFile(n, ['I']);
+      for (const lv of lvs) {
+        const t = this.fileToken(f);
+        if (lv.isStr) lv.set(this, t);
+        else {
+          if (!/^[+-]?(\d+\.?\d*|\.\d+)([eEdD][+-]?\d+)?$/.test(t)) {
+            if (t === '') { lv.set(this, 0); continue; }
+            throw E(`数値を読めませんでした: "${t}" (Type mismatch)`, 13);
+          }
+          lv.set(this, parseFloat(t.replace(/[dD]/, 'e')));
+        }
+      }
+    }
+    doLineInputFile(n, lv) {
+      const f = this.getFile(n, ['I']);
+      if (f.pos >= f.buf.length) throw E('ファイルの終わりを過ぎて読もうとしました (Input past end)', 62);
+      let j = f.buf.indexOf('\n', f.pos);
+      const end = j < 0 ? f.buf.length : j;
+      lv.set(this, f.buf.slice(f.pos, end).replace(/\r$/, ''));
+      f.pos = j < 0 ? f.buf.length : j + 1;
+    }
+    fileInputChars(cnt, n) {
+      if (n === null) throw E('INPUT$ にはファイル番号が必要です', 5);
+      const f = this.getFile(n, ['I']);
+      if (f.pos + cnt > f.buf.length) throw E('ファイルの終わりを過ぎて読もうとしました (Input past end)', 62);
+      const r = f.buf.substr(f.pos, cnt); f.pos += cnt; return r;
+    }
+    fileEof(n) {
+      const f = this.getFile(n, ['I', 'R']);
+      return f.pos >= f.buf.length ? -1 : 0;
+    }
+    fileLof(n) { return this.getFile(n).buf.length; }
+    fileLoc(n) { const f = this.getFile(n); return f.mode === 'R' ? f.recno : Math.ceil(f.pos / 128); }
+    fileKill(name) {
+      const key = 'N88:' + this.fileName(name), fs = this.fsEnv();
+      if (fs.get(key) === null || fs.get(key) === undefined) throw E(`ファイルが見つかりません: ${name} (File not found)`, 53);
+      for (const o of this.files.values()) if (o.key === key) throw E(`開いているファイルは削除できません: ${name} (File already open)`, 55);
+      fs.del(key);
+    }
+    fileRename(a, b) {
+      const ka = 'N88:' + this.fileName(a), kb = 'N88:' + this.fileName(b), fs = this.fsEnv();
+      const raw = fs.get(ka);
+      if (raw === null || raw === undefined) throw E(`ファイルが見つかりません: ${a} (File not found)`, 53);
+      if (fs.get(kb) !== null && fs.get(kb) !== undefined) throw E(`同じ名前のファイルがあります: ${b} (File already exists)`, 58);
+      fs.set(kb, raw); fs.del(ka);
+    }
+    // ---- ランダムファイル
+    doField(n, specs) {
+      const f = this.getFile(n, ['R']);
+      let off = 0;
+      f.fields = specs.map((sp) => { const r = { name: sp.name, off, w: sp.w }; off += sp.w; return r; });
+      if (off > f.reclen) throw E(`FIELD の合計(${off})がレコード長(${f.reclen})を超えています (Field overflow)`, 50);
+      for (const fl of f.fields) this.setVar(fl.name, f.rbuf.substr(fl.off, fl.w));
+    }
+    doLset(lv, value, left) {
+      if (typeof value !== 'string') throw typeErr();
+      const f = [...this.files.values()].find((o) => o.mode === 'R' && o.fields.some((x) => x.name === lv.name));
+      if (!f) { lv.set(this, value); return; } // FIELD されていない変数は普通の代入
+      const fl = f.fields.find((x) => x.name === lv.name);
+      const v = left ? value.slice(0, fl.w).padEnd(fl.w, ' ') : value.slice(0, fl.w).padStart(fl.w, ' ');
+      f.rbuf = f.rbuf.slice(0, fl.off) + v + f.rbuf.slice(fl.off + fl.w);
+      this.setVar(lv.name, v);
+    }
+    recNo(f, r) {
+      if (r === null) r = f.recno + 1;
+      r = Math.trunc(r);
+      if (r < 1 || r > 16777215) throw E('レコード番号が正しくありません (Bad record number)', 63);
+      return r;
+    }
+    doGet(n, r) {
+      const f = this.getFile(n, ['R']);
+      r = this.recNo(f, r);
+      const st = (r - 1) * f.reclen;
+      let rec = f.buf.substr(st, f.reclen);
+      if (rec.length < f.reclen) rec = rec.padEnd(f.reclen, ' ');
+      f.rbuf = rec; f.recno = r;
+      for (const fl of f.fields) this.setVar(fl.name, rec.substr(fl.off, fl.w));
+    }
+    doPut(n, r) {
+      const f = this.getFile(n, ['R']);
+      r = this.recNo(f, r);
+      const st = (r - 1) * f.reclen;
+      if (f.buf.length < st) f.buf = f.buf.padEnd(st, ' ');
+      f.buf = f.buf.slice(0, st) + f.rbuf + f.buf.slice(st + f.reclen);
+      f.recno = r;
+    }
     // ------------------------------------------------------------ 乱数
     seed(s) { this.rs = (Math.floor(Math.abs(s) * 997) ^ 0x9e3779b9) >>> 0; this.lastRnd = this.rand(); }
     rand() {
@@ -245,13 +414,14 @@
     }
 
     // ------------------------------------------------------------ PRINT / INPUT
-    tabZone() {
-      const scr = this.screen, z = this.D.zone;
+    tabZone(scr) {
+      scr = scr || this.screen;
+      const z = this.D.zone;
       const next = (Math.floor(scr.cx / z) + 1) * z;
       if (next >= scr.cols) scr.newline(); else scr.write(' '.repeat(next - scr.cx));
     }
-    doPrint(items, using) {
-      const scr = this.screen;
+    doPrint(items, using, target) {
+      const scr = target || this.screen;
       if (using) {
         const f = using(this);
         if (typeof f !== 'string') throw typeErr();
@@ -264,7 +434,7 @@
       }
       let nl = true;
       for (const it of items) {
-        if (it.sep) { if (it.sep === ',') this.tabZone(); nl = false; continue; }
+        if (it.sep) { if (it.sep === ',') this.tabZone(scr); nl = false; continue; }
         nl = true;
         const v = it.e(this);
         if (typeof v === 'number') scr.write(printNum(this, v));
@@ -446,9 +616,11 @@
               continue;
             }
           }
+          this.closeAllQuiet();
           throw e;
         }
       }
+      this.closeAllQuiet();
       return this.reason;
     }
   }
