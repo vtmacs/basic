@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>smile BASIC マニュアル | MACS Project</title>
-<meta name="description" content="ゲームを作りたくなる現代的なBASIC(SmileBASIC風)。行番号なし、ラベル、関数(DEF)、配列、VSYNC でのフレーム同期、RGB() での色指定。">
+<title>SmileBASIC互換 マニュアル | MACS Project</title>
+<meta name="description" content="ゲームを作りたくなる現代的なBASIC(SmileBASIC を参考にした非公式の互換実装)。行番号なし、ラベル、関数(DEF)、配列、スプライトとBG、VSYNC でのフレーム同期、RGB() での色指定、ファイル保存。">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -21,15 +21,15 @@
 </header>
 <main class="wrap">
 
-<h1>smile BASIC マニュアル</h1>
-<p class="lead">ゲームを作りたくなる現代的なBASIC(SmileBASIC風)。行番号なし、ラベル、関数(DEF)、配列、VSYNC でのフレーム同期、RGB() での色指定。</p>
+<h1>SmileBASIC互換 マニュアル</h1>
+<p class="lead">ゲームを作りたくなる現代的なBASIC(SmileBASIC を参考にした非公式の互換実装)。行番号なし、ラベル、関数(DEF)、配列、スプライトとBG、VSYNC でのフレーム同期、RGB() での色指定、ファイル保存。</p>
 <div class="doc-layout">
-  <nav class="toc" aria-label="目次"><b>目次</b><a href="#about">smile BASIC とは</a><a href="#start">画面とはじめかた</a><a href="#program">プログラムの書き方</a><a href="#data">変数・配列・演算子</a><a href="#io">入出力・文字画面</a><a href="#control">制御構造</a><a href="#def">DEF(関数・手続き)</a><a href="#arrays">配列の命令・データ</a><a href="#functions">関数</a><a href="#graphics">グラフィック</a><a href="#game">動かしてみよう(VSYNC・ボタン)</a><a href="#errors">エラーメッセージ</a><a href="#limits">制限事項</a><a href="compare.html">▶ 方言の比較</a><a href="index.html#smile">▶ シミュレータで試す</a></nav>
+  <nav class="toc" aria-label="目次"><b>目次</b><a href="#about">SmileBASIC互換 とは</a><a href="#start">画面とはじめかた</a><a href="#program">プログラムの書き方</a><a href="#data">変数・配列・演算子</a><a href="#io">入出力・文字画面</a><a href="#control">制御構造</a><a href="#def">DEF(関数・手続き)</a><a href="#arrays">配列の命令・データ</a><a href="#functions">関数</a><a href="#graphics">グラフィック</a><a href="#game">動かしてみよう(VSYNC・ボタン)</a><a href="#sprite">スプライト</a><a href="#bg">BG(背景)</a><a href="#page">グラフィックページ</a><a href="#file">ファイル(SAVE / LOAD)</a><a href="#errors">エラーメッセージ</a><a href="#limits">制限事項</a><a href="compare.html">▶ 方言の比較</a><a href="index.html#smile">▶ シミュレータで試す</a></nav>
   <article>
-<section id="about"><h2>smile BASIC とは</h2>
+<section id="about"><h2>SmileBASIC互換 とは</h2>
 
-<p>smile BASIC は、ニンテンドー3DS/Switch の「SmileBASIC」のように、<b>ゲームやグラフィックを手軽に作れる</b>ことを目指した現代的なBASICです。行番号は使わず、飛び先には <code>@LOOP</code> のような<b>ラベル</b>を使い、<code>DEF</code> で関数を作り、配列は <code>A[3]</code> のように <code>[ ]</code> で書きます。</p>
-<div class="note tip">このシミュレータの smile BASIC は SmileBASIC の文法を参考にした再現で、<b>スプライト・BG・音楽・ファイル・複数の画面</b>などは含みません。文字画面(コンソール)と、図形を描くグラフィック画面を中心にしています。</div>
+<p>SmileBASIC互換 は、株式会社スマイルブームの「SmileBASIC」を参考に、<b>ゲームやグラフィックを手軽に作れる</b>ことを目指した現代的なBASICです。行番号は使わず、飛び先には <code>@LOOP</code> のような<b>ラベル</b>を使い、<code>DEF</code> で関数を作り、配列は <code>A[3]</code> のように <code>[ ]</code> で書きます。このシミュレータは SmileBASIC の文法を参考に独自に作った<b>非公式の互換実装</b>で、株式会社スマイルブームとは関係がありません。</p>
+<div class="note tip">このシミュレータの SmileBASIC互換 は SmileBASIC の文法を参考にした非公式の再現です(標準のスプライト・タイルの絵や説明文はすべて独自のものです)。文字画面(コンソール)・図形・<b>スプライト・BG</b>・<b>ファイル保存</b>に対応しています。音楽・ネットワーク・実機の細かい仕様は含みません。</div>
 </section>
 <section id="start"><h2>画面とはじめかた</h2>
 
@@ -38,7 +38,7 @@
 <li>実行は <b>「▶ 実行」</b>(<kbd>Ctrl</kbd>+<kbd>Enter</kbd>)。ずっと動き続けるプログラムは「■ 停止」で止めます。</li>
 <li>キー操作: <kbd>←↑↓→</kbd> が十字キー、<kbd>Z</kbd><kbd>X</kbd><kbd>A</kbd><kbd>S</kbd> が A/B/X/Y ボタン、<kbd>Q</kbd><kbd>W</kbd> が L/R ボタン。画面をマウスでさわると <code>TOUCH</code> で座標が分かります。</li>
 </ul>
-<div class="ex"><div class="ex-title"><span>Hello, World</span><a class="try" href="index.html?d=smile&code='%20%E3%81%AF%E3%81%98%E3%82%81%E3%81%A6%E3%81%AE%20smile%20BASIC%0APRINT%20%22Hello%2C%20World!%22%0ACOLOR%206%0APRINT%20%22COLOR%20%E3%81%A7%E6%96%87%E5%AD%97%E3%81%AE%E8%89%B2%E3%82%92%E5%A4%89%E3%81%88%E3%81%BE%E3%81%99%22%0ACOLOR%2015">シミュレータで試す ▶</a></div><pre class="code">' はじめての smile BASIC
+<div class="ex"><div class="ex-title"><span>Hello, World</span><a class="try" href="index.html?d=smile&code='%20%E3%81%AF%E3%81%98%E3%82%81%E3%81%A6%E3%81%AE%20SmileBASIC%E4%BA%92%E6%8F%9B%0APRINT%20%22Hello%2C%20World!%22%0ACOLOR%206%0APRINT%20%22COLOR%20%E3%81%A7%E6%96%87%E5%AD%97%E3%81%AE%E8%89%B2%E3%82%92%E5%A4%89%E3%81%88%E3%81%BE%E3%81%99%22%0ACOLOR%2015">シミュレータで試す ▶</a></div><pre class="code">' はじめての SmileBASIC互換
 PRINT "Hello, World!"
 COLOR 6
 PRINT "COLOR で文字の色を変えます"
@@ -229,16 +229,154 @@ WHILE 1
   VSYNC
 WEND</pre></div>
 </section>
+<section id="sprite"><h2>スプライト</h2>
+
+<p>スプライトは、画面の上を自由に動かせる小さな絵(キャラクター)です。0〜511 の番号で管理し、<b>位置・回転・拡大・色・当たり判定</b>を持ちます。絵は<b>グラフィックページ4</b>から切り出して使います(<a href="#page">グラフィックページ</a>を参照)。</p>
+<h3>最初から使える絵</h3>
+<p>何も用意しなくても、<code>SPSET 番号, 定義番号</code> の「定義番号」に次の数を指定すれば使えます。<b>定義番号 = 形の番号 × 4 + 色の番号</b>(16×16ドット)です。</p>
+<table class="doc"><thead><tr><th>形 \ 色</th><th>0 赤</th><th>1 青</th><th>2 緑</th><th>3 黄</th></tr></thead><tbody><tr><td>0 円</td><td>0</td><td>1</td><td>2</td><td>3</td></tr><tr><td>1 四角</td><td>4</td><td>5</td><td>6</td><td>7</td></tr><tr><td>2 ひし形</td><td>8</td><td>9</td><td>10</td><td>11</td></tr><tr><td>3 三角</td><td>12</td><td>13</td><td>14</td><td>15</td></tr><tr><td>4 星</td><td>16</td><td>17</td><td>18</td><td>19</td></tr><tr><td>5 ハート</td><td>20</td><td>21</td><td>22</td><td>23</td></tr><tr><td>6 顔</td><td>24</td><td>25</td><td>26</td><td>27</td></tr><tr><td>7 輪</td><td>28</td><td>29</td><td>30</td><td>31</td></tr></tbody></table>
+<p>自分で絵をかくときは、ページ4に図形命令で絵を描いて <code>SPDEF</code> で範囲を登録します(下の例)。ページ4・5は 16×16 の升目に左上から順に番号が付き、番号 <i>n</i> の升目は <code>u=(n MOD 32)*16, v=(n DIV 32)*16</code> の位置です。</p>
+<table class="doc"><thead><tr><th>命令</th><th>書式</th><th>説明</th></tr></thead><tbody><tr><td><code>SPSET</code></td><td><code>SPSET id, 定義番号  /  SPSET id, u,v,w,h[,属性]</code></td><td>スプライトを作って表示します。属性の 1 ビット目が表示(省略すると表示)。</td></tr><tr><td><code>SPCLR</code></td><td><code>SPCLR [id]</code></td><td>スプライトを消します(省略すると全部)。</td></tr><tr><td><code>SPOFS</code></td><td><code>SPOFS id, x, y[, z]  /  SPOFS id OUT x,y,z</code></td><td>位置(基準点がくる場所)を決める・取得する。z が大きいほど奥。</td></tr><tr><td><code>SPHOME</code></td><td><code>SPHOME id, x, y</code></td><td>基準点(回転・拡大の中心)。左上が (0,0)。16×16 の中心は <code>8,8</code>。</td></tr><tr><td><code>SPROT</code></td><td><code>SPROT id, 角度  /  SPROT id OUT 角度</code></td><td>回転(度。時計回り)。</td></tr><tr><td><code>SPSCALE</code></td><td><code>SPSCALE id, 横倍率, 縦倍率</code></td><td>拡大・縮小。負の値で反転します。</td></tr><tr><td><code>SPCOLOR</code></td><td><code>SPCOLOR id, 色</code></td><td>色をかけ合わせます(<code>#WHITE</code> でそのまま)。</td></tr><tr><td><code>SPSHOW / SPHIDE</code></td><td><code>SPSHOW id  SPHIDE id</code></td><td>表示・非表示。</td></tr><tr><td><code>SPCHR</code></td><td><code>SPCHR id, 定義番号</code></td><td>絵を差しかえます。</td></tr><tr><td><code>SPDEF</code></td><td><code>SPDEF 定義番号, u, v, w, h[, hx, hy]</code></td><td>定義番号に、ページ4の範囲(と基準点)を登録します。</td></tr><tr><td><code>SPANIM</code></td><td><code>SPANIM id, 対象, 時間, 値…[, くり返し]</code></td><td>自動アニメーション(下で説明)。</td></tr><tr><td><code>SPCOL</code></td><td><code>SPCOL id, x, y, w, h</code></td><td>当たり判定の四角形(スプライトの左上が基準)。省略するとスプライト全体。</td></tr><tr><td><code>SPHITSP</code></td><td><code>SPHITSP(id1, id2)  SPHITSP(id)</code></td><td>2つが重なっていれば 1。引数1つなら重なっている別のスプライトの番号(なければ -1)。</td></tr><tr><td><code>SPHITRC</code></td><td><code>SPHITRC(id, x, y, w, h)</code></td><td>四角形と重なっていれば 1。</td></tr><tr><td><code>SPUSED</code></td><td><code>SPUSED(id)</code></td><td>使われていれば 1。</td></tr><tr><td><code>SPVAR</code></td><td><code>SPVAR id, 番号, 値  /  SPVAR(id, 番号)</code></td><td>スプライトごとのメモ用変数(番号 0〜7)。速度や体力を持たせられます。</td></tr></tbody></table>
+<h3>SPANIM(自動アニメーション)</h3>
+<p>時間の単位はフレーム(1/60秒)。<b>値を並べるごとに、その値まで時間をかけて変化</b>します。最後に1つ数を付けるとくり返し回数(<code>0</code> は無限)です。</p>
+<table class="doc"><thead><tr><th>対象</th><th>並べる値(1組)</th><th>意味</th></tr></thead><tbody><tr><td><code>"XY"</code></td><td>時間, x, y</td><td>位置をなめらかに動かす</td></tr><tr><td><code>"R"</code></td><td>時間, 角度</td><td>回転</td></tr><tr><td><code>"S"</code></td><td>時間, 横倍率, 縦倍率</td><td>拡大・縮小</td></tr><tr><td><code>"C"</code></td><td>時間, 色</td><td>色の変化</td></tr><tr><td><code>"I"</code></td><td>時間, 定義番号</td><td>その時間だけ、その絵を表示(パラパラ漫画)</td></tr></tbody></table>
+<h3>重ね順</h3>
+<p>奥から順に、グラフィック画面 → BG(3層→0層)→ スプライト(<code>z</code> が大きいものが奥)→ 文字画面です。当たり判定は回転を考えない四角形で行います。</p>
+<div class="ex"><div class="ex-title"><span>スプライトで星あつめ</span><a class="try" href="index.html?d=smile&code='%20%E2%86%90%E2%86%92%E2%86%91%E2%86%93%E3%82%AD%E3%83%BC%E3%81%A7%E9%A1%94%E3%82%92%E5%8B%95%E3%81%8B%E3%81%97%E3%81%A6%E3%80%81%E6%98%9F%E3%82%92%E9%9B%86%E3%82%81%E3%82%88%E3%81%86%0AVAR%20I%2CX%3D200%2CY%3D120%2CB%2CSC%3D0%0ASPSET%200%2C27%3ASPHOME%200%2C8%2C8%3ASPOFS%200%2CX%2CY%0AFOR%20I%3D1%20TO%205%0A%20%20SPSET%20I%2C16%3ASPHOME%20I%2C8%2C8%0A%20%20SPOFS%20I%2CRND(380)%2B10%2CRND(220)%2B10%0ANEXT%0AWHILE%201%0A%20%20B%3DBUTTON()%0A%20%20IF%20B%20AND%20%23LEFT%20THEN%20X%3DX-3%0A%20%20IF%20B%20AND%20%23RIGHT%20THEN%20X%3DX%2B3%0A%20%20IF%20B%20AND%20%23UP%20THEN%20Y%3DY-3%0A%20%20IF%20B%20AND%20%23DOWN%20THEN%20Y%3DY%2B3%0A%20%20X%3DCLAMP(X%2C8%2C392)%3AY%3DCLAMP(Y%2C8%2C232)%0A%20%20SPOFS%200%2CX%2CY%0A%20%20FOR%20I%3D1%20TO%205%0A%20%20%20%20IF%20SPHITSP(0%2CI)%20THEN%0A%20%20%20%20%20%20INC%20SC%0A%20%20%20%20%20%20SPOFS%20I%2CRND(380)%2B10%2CRND(220)%2B10%0A%20%20%20%20ENDIF%0A%20%20NEXT%0A%20%20LOCATE%200%2C0%3APRINT%20%22SCORE%20%22%3BSC%0A%20%20VSYNC%0AWEND">シミュレータで試す ▶</a></div><pre class="code">' ←→↑↓キーで顔を動かして、星を集めよう
+VAR I,X=200,Y=120,B,SC=0
+SPSET 0,27:SPHOME 0,8,8:SPOFS 0,X,Y
+FOR I=1 TO 5
+  SPSET I,16:SPHOME I,8,8
+  SPOFS I,RND(380)+10,RND(220)+10
+NEXT
+WHILE 1
+  B=BUTTON()
+  IF B AND #LEFT THEN X=X-3
+  IF B AND #RIGHT THEN X=X+3
+  IF B AND #UP THEN Y=Y-3
+  IF B AND #DOWN THEN Y=Y+3
+  X=CLAMP(X,8,392):Y=CLAMP(Y,8,232)
+  SPOFS 0,X,Y
+  FOR I=1 TO 5
+    IF SPHITSP(0,I) THEN
+      INC SC
+      SPOFS I,RND(380)+10,RND(220)+10
+    ENDIF
+  NEXT
+  LOCATE 0,0:PRINT "SCORE ";SC
+  VSYNC
+WEND</pre></div>
+<div class="ex"><div class="ex-title"><span>SPANIM</span><a class="try" href="index.html?d=smile&code='%20%E5%8B%95%E3%81%8D%E3%83%BB%E5%9B%9E%E8%BB%A2%E3%83%BB%E7%B5%B5%E3%81%AE%E5%88%87%E3%82%8A%E3%81%8B%E3%81%88%E3%83%BB%E8%89%B2%E3%81%AE%E5%A4%89%E5%8C%96%E3%82%92%20SPANIM%20%E3%81%AB%E3%81%BE%E3%81%8B%E3%81%9B%E3%82%8B%0ASPSET%200%2C0%3ASPHOME%200%2C8%2C8%3ASPSCALE%200%2C3%2C3%0ASPOFS%200%2C50%2C60%0ASPANIM%200%2C%22XY%22%2C120%2C350%2C60%2C120%2C50%2C60%2C0%0ASPSET%201%2C16%3ASPHOME%201%2C8%2C8%3ASPSCALE%201%2C3%2C3%0ASPOFS%201%2C200%2C130%0ASPANIM%201%2C%22R%22%2C120%2C360%2C0%0ASPSET%202%2C24%3ASPHOME%202%2C8%2C8%3ASPSCALE%202%2C3%2C3%0ASPOFS%202%2C100%2C200%0ASPANIM%202%2C%22I%22%2C15%2C24%2C15%2C27%2C0%0ASPSET%203%2C12%3ASPHOME%203%2C8%2C8%3ASPSCALE%203%2C2%2C2%0ASPOFS%203%2C300%2C200%0ASPANIM%203%2C%22C%22%2C60%2CRGB(255%2C0%2C0)%2C60%2CRGB(0%2C255%2C255)%2C0%0AWHILE%201%0A%20%20VSYNC%0AWEND">シミュレータで試す ▶</a></div><pre class="code">' 動き・回転・絵の切りかえ・色の変化を SPANIM にまかせる
+SPSET 0,0:SPHOME 0,8,8:SPSCALE 0,3,3
+SPOFS 0,50,60
+SPANIM 0,"XY",120,350,60,120,50,60,0
+SPSET 1,16:SPHOME 1,8,8:SPSCALE 1,3,3
+SPOFS 1,200,130
+SPANIM 1,"R",120,360,0
+SPSET 2,24:SPHOME 2,8,8:SPSCALE 2,3,3
+SPOFS 2,100,200
+SPANIM 2,"I",15,24,15,27,0
+SPSET 3,12:SPHOME 3,8,8:SPSCALE 3,2,2
+SPOFS 3,300,200
+SPANIM 3,"C",60,RGB(255,0,0),60,RGB(0,255,255),0
+WHILE 1
+  VSYNC
+WEND</pre></div>
+<div class="ex"><div class="ex-title"><span>自分で絵をかいてスプライトに</span><a class="try" href="index.html?d=smile&code='%20%E3%82%B0%E3%83%A9%E3%83%95%E3%82%A3%E3%83%83%E3%82%AF%E3%83%9A%E3%83%BC%E3%82%B84%E3%81%AB%E7%B5%B5%E3%82%92%E3%81%8B%E3%81%8D%E3%80%81SPDEF%20%E3%81%A7%E3%82%B9%E3%83%97%E3%83%A9%E3%82%A4%E3%83%88%E3%81%AB%E3%81%99%E3%82%8B%0AGPAGE%200%2C4%0AGFILL%200%2C128%2C15%2C143%2CRGB(255%2C200%2C0)%0AGFILL%203%2C132%2C5%2C135%2C%23BLACK%0AGFILL%2010%2C132%2C12%2C135%2C%23BLACK%0AGLINE%203%2C139%2C12%2C139%2C%23BLACK%0AGLINE%203%2C138%2C3%2C139%2C%23BLACK%0AGLINE%2012%2C138%2C12%2C139%2C%23BLACK%0AGPAGE%200%2C0%0ASPDEF%20200%2C0%2C128%2C16%2C16%0ASPSET%200%2C200%3ASPHOME%200%2C8%2C8%3ASPOFS%200%2C200%2C120%3ASPSCALE%200%2C5%2C5%0ASPSET%201%2C200%3ASPHOME%201%2C8%2C8%3ASPOFS%201%2C60%2C60%0AWHILE%201%0A%20%20SPROT%200%2CMAINCNT*2%0A%20%20VSYNC%0AWEND">シミュレータで試す ▶</a></div><pre class="code">' グラフィックページ4に絵をかき、SPDEF でスプライトにする
+GPAGE 0,4
+GFILL 0,128,15,143,RGB(255,200,0)
+GFILL 3,132,5,135,#BLACK
+GFILL 10,132,12,135,#BLACK
+GLINE 3,139,12,139,#BLACK
+GLINE 3,138,3,139,#BLACK
+GLINE 12,138,12,139,#BLACK
+GPAGE 0,0
+SPDEF 200,0,128,16,16
+SPSET 0,200:SPHOME 0,8,8:SPOFS 0,200,120:SPSCALE 0,5,5
+SPSET 1,200:SPHOME 1,8,8:SPOFS 1,60,60
+WHILE 1
+  SPROT 0,MAINCNT*2
+  VSYNC
+WEND</pre></div>
+</section>
+<section id="bg"><h2>BG(背景)</h2>
+
+<p>BG は、小さなタイル(16×16ドット)を升目に並べて作る背景です。0〜3 の<b>4つの層</b>があり、広い面をスクロールさせられます。タイルの絵は<b>グラフィックページ5</b>から取り、番号 <i>n</i> のタイルはスプライトと同じく左上から順に付きます。タイル番号 0 は透明です。</p>
+<table class="doc"><thead><tr><th>番号</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10〜15</th></tr></thead><tbody><tr><td>タイル</td><td>透明</td><td>ブロック</td><td>れんが</td><td>草地</td><td>水</td><td>砂</td><td>石</td><td>空</td><td>黒</td><td>市松</td><td>赤・緑・青・黄・紫・水色の単色</td></tr></tbody></table>
+<table class="doc"><thead><tr><th>命令</th><th>書式</th><th>説明</th></tr></thead><tbody><tr><td><code>BGSCREEN</code></td><td><code>BGSCREEN 層, 横のマス数, 縦のマス数</code></td><td>層の大きさを決めます(省略しても <code>BGPUT</code> したときに 64×64 で作られます)。</td></tr><tr><td><code>BGPUT</code></td><td><code>BGPUT 層, x, y, タイル番号</code></td><td>マス(x,y)にタイルを置きます。</td></tr><tr><td><code>BGFILL</code></td><td><code>BGFILL 層, x1, y1, x2, y2, タイル番号</code></td><td>範囲をタイルで埋めます。</td></tr><tr><td><code>BGGET</code></td><td><code>BGGET(層, x, y)</code></td><td>マスのタイル番号を返します。</td></tr><tr><td><code>BGOFS</code></td><td><code>BGOFS 層, x, y  /  BGOFS 層 OUT x,y</code></td><td>スクロール位置(ドット)。層の端までいくと反対側につながります。</td></tr><tr><td><code>BGSHOW / BGHIDE</code></td><td><code>BGSHOW 層  BGHIDE 層</code></td><td>層の表示・非表示。</td></tr><tr><td><code>BGCLR</code></td><td><code>BGCLR [層]</code></td><td>層を消します(省略すると全部)。</td></tr></tbody></table>
+<p>タイル番号に <code>&amp;H8000</code> を足すと左右反転、<code>&amp;H4000</code> を足すと上下反転します(<code>BGPUT 0,3,5,2+&amp;H8000</code>)。</p>
+<div class="ex"><div class="ex-title"><span>BG のスクロール</span><a class="try" href="index.html?d=smile&code='%20BG(%E8%83%8C%E6%99%AF%E3%81%AE%E3%82%BF%E3%82%A4%E3%83%AB)%E3%82%923%E5%B1%A4%E3%81%AB%E9%87%8D%E3%81%AD%E3%81%A6%E3%82%B9%E3%82%AF%E3%83%AD%E3%83%BC%E3%83%AB%E3%81%99%E3%82%8B(%E7%95%AA%E5%8F%B7%E3%81%AE%E5%B0%8F%E3%81%95%E3%81%84%E5%B1%A4%E3%81%8C%E6%89%8B%E5%89%8D)%0ABGSCREEN%202%2C64%2C15%0ABGFILL%202%2C0%2C0%2C63%2C14%2C7%0ABGSCREEN%201%2C64%2C15%0AVAR%20I%2CX%3D0%0AFOR%20I%3D2%20TO%2060%20STEP%209%0A%20%20BGFILL%201%2CI%2C3%2CI%2B2%2C4%2C1%0ANEXT%0ABGSCREEN%200%2C64%2C15%0ABGFILL%200%2C0%2C13%2C63%2C14%2C3%0AFOR%20I%3D0%20TO%2062%20STEP%205%0A%20%20BGPUT%200%2CI%2C12%2C2%0ANEXT%0ASPSET%200%2C27%3ASPHOME%200%2C8%2C8%3ASPOFS%200%2C100%2C200%0AWHILE%201%0A%20%20X%3DX%2B2%0A%20%20BGOFS%200%2CX%2C0%0A%20%20BGOFS%201%2CX%2F3%2C0%0A%20%20VSYNC%0AWEND">シミュレータで試す ▶</a></div><pre class="code">' BG(背景のタイル)を3層に重ねてスクロールする(番号の小さい層が手前)
+BGSCREEN 2,64,15
+BGFILL 2,0,0,63,14,7
+BGSCREEN 1,64,15
+VAR I,X=0
+FOR I=2 TO 60 STEP 9
+  BGFILL 1,I,3,I+2,4,1
+NEXT
+BGSCREEN 0,64,15
+BGFILL 0,0,13,63,14,3
+FOR I=0 TO 62 STEP 5
+  BGPUT 0,I,12,2
+NEXT
+SPSET 0,27:SPHOME 0,8,8:SPOFS 0,100,200
+WHILE 1
+  X=X+2
+  BGOFS 0,X,0
+  BGOFS 1,X/3,0
+  VSYNC
+WEND</pre></div>
+</section>
+<section id="page"><h2>グラフィックページ</h2>
+
+<p>グラフィックには<b>ページ</b>があります。ページ0は画面に表示される 400×240 の面、ページ1〜5 は 512×512 の作業用の面です。<b>ページ4はスプライトの絵、ページ5はBGタイルの絵</b>に使われます(最初から標準の絵が入っています)。</p>
+<table class="doc"><thead><tr><th>命令</th><th>書式</th><th>説明</th></tr></thead><tbody><tr><td><code>GPAGE</code></td><td><code>GPAGE 表示ページ[, 描画ページ]</code></td><td>表示するページと、<code>GPSET</code> や <code>GLINE</code> などで描くページを決めます。(このシミュレータでは「表示, 描画」の順です。)</td></tr><tr><td><code>GCOPY</code></td><td><code>GCOPY [元ページ,] x1,y1,x2,y2, dx,dy, モード</code></td><td>描画ページの (dx,dy) へ四角形をコピー。モード 0 は透明部分をコピーしない、1 はそのままコピー。</td></tr><tr><td><code>GCLS</code></td><td><code>GCLS</code></td><td>描画ページを<b>透明</b>にします(ページ0は背景の黒が見えます)。<code>GCLS 色</code> でその色に。</td></tr><tr><td><code>ACLS</code></td><td><code>ACLS</code></td><td>画面・スプライト・BG・ページ4/5 を最初の状態に戻します。</td></tr></tbody></table>
+<p>透明な点(まだ何も描いていない点)は、スプライトやBGでは抜けて見えます。<code>GPAGE 0,4</code> で描画先をページ4にして絵を描き、終わったら <code>GPAGE 0,0</code> で戻すのが基本の流れです。</p>
+</section>
+<section id="file"><h2>ファイル(SAVE / LOAD)</h2>
+
+<p>プログラムから、文字列や配列をファイルとして保存・読み込みできます。ファイルは<b>お使いのブラウザの中</b>(この サイト用の保存領域)に保存されるので、ページを閉じても、次に開いたときに残っています。別のパソコンや別のブラウザとは共有されません。</p>
+<ul>
+<li>ファイル名は <code>"TXT:名前"</code>(文字列用)か <code>"DAT:名前"</code>(配列用)。名前は英数字と <code>_ - .</code> で32文字まで(大文字小文字は区別しません)。</li>
+<li>保存できる量はブラウザの制限(数MB)までです。</li>
+</ul>
+<table class="doc"><thead><tr><th>命令</th><th>書式</th><th>説明</th></tr></thead><tbody><tr><td><code>SAVE</code></td><td><code>SAVE "TXT:名前", 文字列  /  SAVE "DAT:名前", 配列</code></td><td>保存します(同じ名前は上書き)。</td></tr><tr><td><code>LOAD</code></td><td><code>LOAD("TXT:名前")  /  LOAD "TXT:名前", 変数  /  LOAD "DAT:名前", 配列変数</code></td><td>読み込みます。関数の形(<code>A$=LOAD("TXT:X")</code>)でも使えます。</td></tr><tr><td><code>FILES</code></td><td><code>FILES  /  FILES 文字列配列</code></td><td>ファイルの一覧を表示(または配列に入れる)。</td></tr><tr><td><code>DELETE</code></td><td><code>DELETE "TXT:名前"</code></td><td>ファイルを消します。</td></tr><tr><td><code>RENAME</code></td><td><code>RENAME "TXT:旧", "TXT:新"</code></td><td>名前を変えます。</td></tr></tbody></table>
+<p>見つからないファイルを <code>LOAD</code> するとエラーになります。先に <code>FILES</code> で確かめるとよいでしょう。ブラウザの「サイトデータの削除」をすると、保存したファイルも消えます。</p>
+<div class="ex"><div class="ex-title"><span>ハイスコアの保存</span><a class="try" href="index.html?d=smile&code='%20%E3%83%96%E3%83%A9%E3%82%A6%E3%82%B6%E3%81%AB%E4%BF%9D%E5%AD%98%E3%81%95%E3%82%8C%E3%82%8B%E3%81%AE%E3%81%A7%E3%80%81%E3%82%82%E3%81%86%E4%B8%80%E5%BA%A6%E5%AE%9F%E8%A1%8C%E3%81%97%E3%81%A6%E3%82%82%E8%A8%98%E9%8C%B2%E3%81%8C%E6%AE%8B%E3%82%8A%E3%81%BE%E3%81%99%0AVAR%20HI%3D0%2CN%2CI%2CFOUND%3D0%0AFILES%20F%24%0AFOR%20I%3D0%20TO%20LEN(F%24)-1%0A%20%20IF%20F%24%5BI%5D%3D%3D%22TXT%3AHISCORE%22%20THEN%20FOUND%3D1%0ANEXT%0AIF%20FOUND%20THEN%20HI%3DVAL(LOAD(%22TXT%3AHISCORE%22))%0APRINT%20%22%E3%83%8F%E3%82%A4%E3%82%B9%E3%82%B3%E3%82%A2%3A%20%22%3BHI%0AN%3DRND(1000)%0APRINT%20%22%E4%BB%8A%E5%9B%9E%E3%81%AE%E3%82%B9%E3%82%B3%E3%82%A2%3A%20%22%3BN%0AIF%20N%3EHI%20THEN%0A%20%20PRINT%20%22%E6%96%B0%E8%A8%98%E9%8C%B2!%22%0A%20%20SAVE%20%22TXT%3AHISCORE%22%2CSTR%24(N)%0AENDIF">シミュレータで試す ▶</a></div><pre class="code">' ブラウザに保存されるので、もう一度実行しても記録が残ります
+VAR HI=0,N,I,FOUND=0
+FILES F$
+FOR I=0 TO LEN(F$)-1
+  IF F$[I]=="TXT:HISCORE" THEN FOUND=1
+NEXT
+IF FOUND THEN HI=VAL(LOAD("TXT:HISCORE"))
+PRINT "ハイスコア: ";HI
+N=RND(1000)
+PRINT "今回のスコア: ";N
+IF N&gt;HI THEN
+  PRINT "新記録!"
+  SAVE "TXT:HISCORE",STR$(N)
+ENDIF</pre></div>
+<div class="ex"><div class="ex-title"><span>配列の保存</span><a class="try" href="index.html?d=smile&code='%20%E9%85%8D%E5%88%97%E3%82%92%20DAT%20%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%AB%E4%BF%9D%E5%AD%98%E3%81%97%E3%81%A6%E8%AA%AD%E3%81%BF%E6%88%BB%E3%81%99%0ADIM%20A%5B5%5D%0AVAR%20I%0AFOR%20I%3D0%20TO%204%3AA%5BI%5D%3DI*I%3ANEXT%0ASAVE%20%22DAT%3ASQUARES%22%2CA%0ADIM%20B%5B1%5D%0ALOAD%20%22DAT%3ASQUARES%22%2CB%0APRINT%20LEN(B)%3B%22%20%E5%80%8B%3A%20%22%3BB%5B0%5D%3BB%5B1%5D%3BB%5B2%5D%3BB%5B3%5D%3BB%5B4%5D%0ADELETE%20%22DAT%3ASQUARES%22">シミュレータで試す ▶</a></div><pre class="code">' 配列を DAT ファイルに保存して読み戻す
+DIM A[5]
+VAR I
+FOR I=0 TO 4:A[I]=I*I:NEXT
+SAVE "DAT:SQUARES",A
+DIM B[1]
+LOAD "DAT:SQUARES",B
+PRINT LEN(B);" 個: ";B[0];B[1];B[2];B[3];B[4]
+DELETE "DAT:SQUARES"</pre></div>
+</section>
 <section id="errors"><h2>エラーメッセージ</h2>
 
-<table class="doc"><thead><tr><th>メッセージ</th><th>原因</th></tr></thead><tbody><tr><td>構文エラー (Syntax error)</td><td>文の書き方が違います。</td></tr><tr><td>〜がありません (ブロックが閉じられていません)</td><td><code>ENDIF</code> / <code>WEND</code> / <code>NEXT</code> / <code>UNTIL</code> / <code>END</code>(DEF)の閉じ忘れ。</td></tr><tr><td>未定義のラベルです</td><td><code>GOTO @XXX</code> のラベルが存在しません。</td></tr><tr><td>〜は定義されていません</td><td><code>DEF</code> が見つかりません(つづりを確認)。</td></tr><tr><td>型が一致しません (Type mismatch)</td><td><code>A="x"</code> のように、数の変数に文字列を入れた(文字列変数には <code>$</code> が必要)。</td></tr><tr><td>添字が範囲外です (Subscript out of range)</td><td>配列・文字列の範囲を超えた。</td></tr><tr><td>配列が定義されていません</td><td><code>DIM</code> しないで <code>A[0]</code> を使った。</td></tr><tr><td>0で割りました (Division by zero)</td><td>0 で割った。</td></tr><tr><td>〜は〜のコマンドです (smile BASICでは使えません)</td><td>他の方言の命令を使った。smile BASIC での書き方に直します。</td></tr></tbody></table>
+<table class="doc"><thead><tr><th>メッセージ</th><th>原因</th></tr></thead><tbody><tr><td>構文エラー (Syntax error)</td><td>文の書き方が違います。</td></tr><tr><td>〜がありません (ブロックが閉じられていません)</td><td><code>ENDIF</code> / <code>WEND</code> / <code>NEXT</code> / <code>UNTIL</code> / <code>END</code>(DEF)の閉じ忘れ。</td></tr><tr><td>未定義のラベルです</td><td><code>GOTO @XXX</code> のラベルが存在しません。</td></tr><tr><td>〜は定義されていません</td><td><code>DEF</code> が見つかりません(つづりを確認)。</td></tr><tr><td>型が一致しません (Type mismatch)</td><td><code>A="x"</code> のように、数の変数に文字列を入れた(文字列変数には <code>$</code> が必要)。</td></tr><tr><td>添字が範囲外です (Subscript out of range)</td><td>配列・文字列の範囲を超えた。</td></tr><tr><td>配列が定義されていません</td><td><code>DIM</code> しないで <code>A[0]</code> を使った。</td></tr><tr><td>0で割りました (Division by zero)</td><td>0 で割った。</td></tr><tr><td>〜は〜のコマンドです (SmileBASIC互換では使えません)</td><td>他の方言の命令を使った。SmileBASIC互換 での書き方に直します。</td></tr></tbody></table>
 </section>
 <section id="limits"><h2>制限事項</h2>
 
 <ul>
-<li>スプライト(SPSET など)、BG、音楽(BGMPLAY)、効果音の細かい制御、ファイル(LOAD/SAVE)、複数のグラフィックページ、OUT 引数つきの DEF、マルチタスク、キーボードの KEYBOARD などは未対応です。</li>
-<li><code>COLOR</code> の16色パレットは本シミュレータのものです(実機とは色が少し違います)。<code>RGB()</code> は 24 ビットの色を返します。</li>
+<li>未対応: 音楽(BGMPLAY)・効果音の細かい制御、BGのアニメーション/回転/拡大(BGANIM など)、スプライトの連結(SPLINK)、SPFUNC、回転を考えた当たり判定、スプライトの左右反転属性(かわりに <code>SPSCALE</code> の負の値を使います)、GSAVE/GLOAD や PRG・GRP のファイル、OUT 引数つきの DEF、マルチタスク、KEYBOARD。</li>
+<li>スプライトは最大 512 個、BG は 4 層(最大 256×256 マス)、グラフィックページは 6 枚です。描画は最近傍(ドットのまま拡大)です。</li>
+<li><code>COLOR</code> の16色パレットは本シミュレータのものです(実機とは色が少し違います)。<code>RGB()</code> は 24 ビットの色を返します(透明度は使いません)。</li>
 <li><code>BUTTON()</code> の割り当て・<code>STICK</code> の値はキーボード用の簡易的なものです。</li>
+<li>標準のスプライト/タイルの絵は、このシミュレータ独自のものです。</li>
 <li>関数(式の中で呼ぶ DEF)の中では <code>INPUT</code> や <code>VSYNC</code> のように「待つ」命令は使えません(手続きとして呼ぶ DEF の中なら使えます)。</li>
 <li>文字は 8×8 ドット相当の升目に描かれ、フォントは実機と異なります。</li>
 </ul>
@@ -250,9 +388,10 @@ WEND</pre></div>
 <footer class="site-footer">
   <div class="wrap">
     <span>© MACS Project</span>
-    <span>マニュアル: <a href="manual-tiny.html">Tiny BASIC</a><a href="manual-n88.html">N88-BASIC</a><a href="manual-full.html">Full BASIC</a><a href="manual-smile.html" aria-current="page">smile BASIC</a></span>
+    <span>マニュアル: <a href="manual-tiny.html">Tiny BASIC</a><a href="manual-n88.html">N88互換BASIC</a><a href="manual-full.html">Full BASIC</a><a href="manual-smile.html" aria-current="page">SmileBASIC互換</a></span>
     <span><a href="compare.html">方言の比較</a> / <a href="index.html">シミュレータ</a></span>
   </div>
+  <div class="wrap"><p class="legal">「N88-BASIC」「PC-8801」「PC-9801」は日本電気株式会社(NEC)の、「SmileBASIC」は株式会社スマイルブームの、「Microsoft」は Microsoft Corporation の商標または登録商標です。このサイトは個人・学習用の<b>非公式</b>のシミュレータで、これらの会社とは関係がなく、承認・提携・推奨を受けたものではありません。このサイトの「N88互換BASIC」「SmileBASIC互換」は、それらの文法や使い方を参考にした互換実装であることを示す名前です。各社の製品・ソフトウェア・画像・マニュアルの内容は含まれていません(画面の絵・サンプル・説明文はすべて独自に作成したものです)。</p></div>
 </footer>
 </body>
 </html>

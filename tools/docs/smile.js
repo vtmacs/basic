@@ -1,12 +1,12 @@
 module.exports = {
-  title: 'smile BASIC マニュアル',
-  lead: 'ゲームを作りたくなる現代的なBASIC(SmileBASIC風)。行番号なし、ラベル、関数(DEF)、配列、VSYNC でのフレーム同期、RGB() での色指定。',
+  title: 'SmileBASIC互換 マニュアル',
+  lead: 'ゲームを作りたくなる現代的なBASIC(SmileBASIC を参考にした非公式の互換実装)。行番号なし、ラベル、関数(DEF)、配列、スプライトとBG、VSYNC でのフレーム同期、RGB() での色指定、ファイル保存。',
   sections: (h) => [
     {
-      id: 'about', title: 'smile BASIC とは',
+      id: 'about', title: 'SmileBASIC互換 とは',
       html: `
-<p>smile BASIC は、ニンテンドー3DS/Switch の「SmileBASIC」のように、<b>ゲームやグラフィックを手軽に作れる</b>ことを目指した現代的なBASICです。行番号は使わず、飛び先には <code>@LOOP</code> のような<b>ラベル</b>を使い、<code>DEF</code> で関数を作り、配列は <code>A[3]</code> のように <code>[ ]</code> で書きます。</p>
-${h.tip('このシミュレータの smile BASIC は SmileBASIC の文法を参考にした再現で、<b>スプライト・BG・音楽・ファイル・複数の画面</b>などは含みません。文字画面(コンソール)と、図形を描くグラフィック画面を中心にしています。')}`,
+<p>SmileBASIC互換 は、株式会社スマイルブームの「SmileBASIC」を参考に、<b>ゲームやグラフィックを手軽に作れる</b>ことを目指した現代的なBASICです。行番号は使わず、飛び先には <code>@LOOP</code> のような<b>ラベル</b>を使い、<code>DEF</code> で関数を作り、配列は <code>A[3]</code> のように <code>[ ]</code> で書きます。このシミュレータは SmileBASIC の文法を参考に独自に作った<b>非公式の互換実装</b>で、株式会社スマイルブームとは関係がありません。</p>
+${h.tip('このシミュレータの SmileBASIC互換 は SmileBASIC の文法を参考にした非公式の再現です(標準のスプライト・タイルの絵や説明文はすべて独自のものです)。文字画面(コンソール)・図形・<b>スプライト・BG</b>・<b>ファイル保存</b>に対応しています。音楽・ネットワーク・実機の細かい仕様は含みません。')}`,
     },
     {
       id: 'start', title: '画面とはじめかた',
@@ -16,7 +16,7 @@ ${h.tip('このシミュレータの smile BASIC は SmileBASIC の文法を参�
 <li>実行は <b>「▶ 実行」</b>(<kbd>Ctrl</kbd>+<kbd>Enter</kbd>)。ずっと動き続けるプログラムは「■ 停止」で止めます。</li>
 <li>キー操作: <kbd>←↑↓→</kbd> が十字キー、<kbd>Z</kbd><kbd>X</kbd><kbd>A</kbd><kbd>S</kbd> が A/B/X/Y ボタン、<kbd>Q</kbd><kbd>W</kbd> が L/R ボタン。画面をマウスでさわると <code>TOUCH</code> で座標が分かります。</li>
 </ul>
-${h.ex(`' はじめての smile BASIC
+${h.ex(`' はじめての SmileBASIC互換
 PRINT "Hello, World!"
 COLOR 6
 PRINT "COLOR で文字の色を変えます"
@@ -286,6 +286,188 @@ WHILE 1
 WEND`, 'TOUCH で絵をかく')}`,
     },
     {
+      id: 'sprite', title: 'スプライト',
+      html: `
+<p>スプライトは、画面の上を自由に動かせる小さな絵(キャラクター)です。0〜511 の番号で管理し、<b>位置・回転・拡大・色・当たり判定</b>を持ちます。絵は<b>グラフィックページ4</b>から切り出して使います(<a href="#page">グラフィックページ</a>を参照)。</p>
+<h3>最初から使える絵</h3>
+<p>何も用意しなくても、<code>SPSET 番号, 定義番号</code> の「定義番号」に次の数を指定すれば使えます。<b>定義番号 = 形の番号 × 4 + 色の番号</b>(16×16ドット)です。</p>
+${h.table(['形 \\ 色', '0 赤', '1 青', '2 緑', '3 黄'], [
+  ['0 円', '0', '1', '2', '3'], ['1 四角', '4', '5', '6', '7'], ['2 ひし形', '8', '9', '10', '11'], ['3 三角', '12', '13', '14', '15'],
+  ['4 星', '16', '17', '18', '19'], ['5 ハート', '20', '21', '22', '23'], ['6 顔', '24', '25', '26', '27'], ['7 輪', '28', '29', '30', '31'],
+])}
+<p>自分で絵をかくときは、ページ4に図形命令で絵を描いて <code>SPDEF</code> で範囲を登録します(下の例)。ページ4・5は 16×16 の升目に左上から順に番号が付き、番号 <i>n</i> の升目は <code>u=(n MOD 32)*16, v=(n DIV 32)*16</code> の位置です。</p>
+${h.cmds([
+  ['SPSET', 'SPSET id, 定義番号  /  SPSET id, u,v,w,h[,属性]', 'スプライトを作って表示します。属性の 1 ビット目が表示(省略すると表示)。'],
+  ['SPCLR', 'SPCLR [id]', 'スプライトを消します(省略すると全部)。'],
+  ['SPOFS', 'SPOFS id, x, y[, z]  /  SPOFS id OUT x,y,z', '位置(基準点がくる場所)を決める・取得する。z が大きいほど奥。'],
+  ['SPHOME', 'SPHOME id, x, y', '基準点(回転・拡大の中心)。左上が (0,0)。16×16 の中心は <code>8,8</code>。'],
+  ['SPROT', 'SPROT id, 角度  /  SPROT id OUT 角度', '回転(度。時計回り)。'],
+  ['SPSCALE', 'SPSCALE id, 横倍率, 縦倍率', '拡大・縮小。負の値で反転します。'],
+  ['SPCOLOR', 'SPCOLOR id, 色', '色をかけ合わせます(<code>#WHITE</code> でそのまま)。'],
+  ['SPSHOW / SPHIDE', 'SPSHOW id  SPHIDE id', '表示・非表示。'],
+  ['SPCHR', 'SPCHR id, 定義番号', '絵を差しかえます。'],
+  ['SPDEF', 'SPDEF 定義番号, u, v, w, h[, hx, hy]', '定義番号に、ページ4の範囲(と基準点)を登録します。'],
+  ['SPANIM', 'SPANIM id, 対象, 時間, 値…[, くり返し]', '自動アニメーション(下で説明)。'],
+  ['SPCOL', 'SPCOL id, x, y, w, h', '当たり判定の四角形(スプライトの左上が基準)。省略するとスプライト全体。'],
+  ['SPHITSP', 'SPHITSP(id1, id2)  SPHITSP(id)', '2つが重なっていれば 1。引数1つなら重なっている別のスプライトの番号(なければ -1)。'],
+  ['SPHITRC', 'SPHITRC(id, x, y, w, h)', '四角形と重なっていれば 1。'],
+  ['SPUSED', 'SPUSED(id)', '使われていれば 1。'],
+  ['SPVAR', 'SPVAR id, 番号, 値  /  SPVAR(id, 番号)', 'スプライトごとのメモ用変数(番号 0〜7)。速度や体力を持たせられます。'],
+])}
+<h3>SPANIM(自動アニメーション)</h3>
+<p>時間の単位はフレーム(1/60秒)。<b>値を並べるごとに、その値まで時間をかけて変化</b>します。最後に1つ数を付けるとくり返し回数(<code>0</code> は無限)です。</p>
+${h.table(['対象', '並べる値(1組)', '意味'], [
+  ['<code>"XY"</code>', '時間, x, y', '位置をなめらかに動かす'], ['<code>"R"</code>', '時間, 角度', '回転'], ['<code>"S"</code>', '時間, 横倍率, 縦倍率', '拡大・縮小'],
+  ['<code>"C"</code>', '時間, 色', '色の変化'], ['<code>"I"</code>', '時間, 定義番号', 'その時間だけ、その絵を表示(パラパラ漫画)'],
+])}
+<h3>重ね順</h3>
+<p>奥から順に、グラフィック画面 → BG(3層→0層)→ スプライト(<code>z</code> が大きいものが奥)→ 文字画面です。当たり判定は回転を考えない四角形で行います。</p>
+${h.ex(`' ←→↑↓キーで顔を動かして、星を集めよう
+VAR I,X=200,Y=120,B,SC=0
+SPSET 0,27:SPHOME 0,8,8:SPOFS 0,X,Y
+FOR I=1 TO 5
+  SPSET I,16:SPHOME I,8,8
+  SPOFS I,RND(380)+10,RND(220)+10
+NEXT
+WHILE 1
+  B=BUTTON()
+  IF B AND #LEFT THEN X=X-3
+  IF B AND #RIGHT THEN X=X+3
+  IF B AND #UP THEN Y=Y-3
+  IF B AND #DOWN THEN Y=Y+3
+  X=CLAMP(X,8,392):Y=CLAMP(Y,8,232)
+  SPOFS 0,X,Y
+  FOR I=1 TO 5
+    IF SPHITSP(0,I) THEN
+      INC SC
+      SPOFS I,RND(380)+10,RND(220)+10
+    ENDIF
+  NEXT
+  LOCATE 0,0:PRINT "SCORE ";SC
+  VSYNC
+WEND`, 'スプライトで星あつめ')}
+${h.ex(`' 動き・回転・絵の切りかえ・色の変化を SPANIM にまかせる
+SPSET 0,0:SPHOME 0,8,8:SPSCALE 0,3,3
+SPOFS 0,50,60
+SPANIM 0,"XY",120,350,60,120,50,60,0
+SPSET 1,16:SPHOME 1,8,8:SPSCALE 1,3,3
+SPOFS 1,200,130
+SPANIM 1,"R",120,360,0
+SPSET 2,24:SPHOME 2,8,8:SPSCALE 2,3,3
+SPOFS 2,100,200
+SPANIM 2,"I",15,24,15,27,0
+SPSET 3,12:SPHOME 3,8,8:SPSCALE 3,2,2
+SPOFS 3,300,200
+SPANIM 3,"C",60,RGB(255,0,0),60,RGB(0,255,255),0
+WHILE 1
+  VSYNC
+WEND`, 'SPANIM')}
+${h.ex(`' グラフィックページ4に絵をかき、SPDEF でスプライトにする
+GPAGE 0,4
+GFILL 0,128,15,143,RGB(255,200,0)
+GFILL 3,132,5,135,#BLACK
+GFILL 10,132,12,135,#BLACK
+GLINE 3,139,12,139,#BLACK
+GLINE 3,138,3,139,#BLACK
+GLINE 12,138,12,139,#BLACK
+GPAGE 0,0
+SPDEF 200,0,128,16,16
+SPSET 0,200:SPHOME 0,8,8:SPOFS 0,200,120:SPSCALE 0,5,5
+SPSET 1,200:SPHOME 1,8,8:SPOFS 1,60,60
+WHILE 1
+  SPROT 0,MAINCNT*2
+  VSYNC
+WEND`, '自分で絵をかいてスプライトに')}`,
+    },
+    {
+      id: 'bg', title: 'BG(背景)',
+      html: `
+<p>BG は、小さなタイル(16×16ドット)を升目に並べて作る背景です。0〜3 の<b>4つの層</b>があり、広い面をスクロールさせられます。タイルの絵は<b>グラフィックページ5</b>から取り、番号 <i>n</i> のタイルはスプライトと同じく左上から順に付きます。タイル番号 0 は透明です。</p>
+${h.table(['番号', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10〜15'], [['タイル', '透明', 'ブロック', 'れんが', '草地', '水', '砂', '石', '空', '黒', '市松', '赤・緑・青・黄・紫・水色の単色']])}
+${h.cmds([
+  ['BGSCREEN', 'BGSCREEN 層, 横のマス数, 縦のマス数', '層の大きさを決めます(省略しても <code>BGPUT</code> したときに 64×64 で作られます)。'],
+  ['BGPUT', 'BGPUT 層, x, y, タイル番号', 'マス(x,y)にタイルを置きます。'],
+  ['BGFILL', 'BGFILL 層, x1, y1, x2, y2, タイル番号', '範囲をタイルで埋めます。'],
+  ['BGGET', 'BGGET(層, x, y)', 'マスのタイル番号を返します。'],
+  ['BGOFS', 'BGOFS 層, x, y  /  BGOFS 層 OUT x,y', 'スクロール位置(ドット)。層の端までいくと反対側につながります。'],
+  ['BGSHOW / BGHIDE', 'BGSHOW 層  BGHIDE 層', '層の表示・非表示。'],
+  ['BGCLR', 'BGCLR [層]', '層を消します(省略すると全部)。'],
+])}
+<p>タイル番号に <code>&amp;H8000</code> を足すと左右反転、<code>&amp;H4000</code> を足すと上下反転します(<code>BGPUT 0,3,5,2+&amp;H8000</code>)。</p>
+${h.ex(`' BG(背景のタイル)を3層に重ねてスクロールする(番号の小さい層が手前)
+BGSCREEN 2,64,15
+BGFILL 2,0,0,63,14,7
+BGSCREEN 1,64,15
+VAR I,X=0
+FOR I=2 TO 60 STEP 9
+  BGFILL 1,I,3,I+2,4,1
+NEXT
+BGSCREEN 0,64,15
+BGFILL 0,0,13,63,14,3
+FOR I=0 TO 62 STEP 5
+  BGPUT 0,I,12,2
+NEXT
+SPSET 0,27:SPHOME 0,8,8:SPOFS 0,100,200
+WHILE 1
+  X=X+2
+  BGOFS 0,X,0
+  BGOFS 1,X/3,0
+  VSYNC
+WEND`, 'BG のスクロール')}`,
+    },
+    {
+      id: 'page', title: 'グラフィックページ',
+      html: `
+<p>グラフィックには<b>ページ</b>があります。ページ0は画面に表示される 400×240 の面、ページ1〜5 は 512×512 の作業用の面です。<b>ページ4はスプライトの絵、ページ5はBGタイルの絵</b>に使われます(最初から標準の絵が入っています)。</p>
+${h.cmds([
+  ['GPAGE', 'GPAGE 表示ページ[, 描画ページ]', '表示するページと、<code>GPSET</code> や <code>GLINE</code> などで描くページを決めます。(このシミュレータでは「表示, 描画」の順です。)'],
+  ['GCOPY', 'GCOPY [元ページ,] x1,y1,x2,y2, dx,dy, モード', '描画ページの (dx,dy) へ四角形をコピー。モード 0 は透明部分をコピーしない、1 はそのままコピー。'],
+  ['GCLS', 'GCLS', '描画ページを<b>透明</b>にします(ページ0は背景の黒が見えます)。<code>GCLS 色</code> でその色に。'],
+  ['ACLS', 'ACLS', '画面・スプライト・BG・ページ4/5 を最初の状態に戻します。'],
+])}
+<p>透明な点(まだ何も描いていない点)は、スプライトやBGでは抜けて見えます。<code>GPAGE 0,4</code> で描画先をページ4にして絵を描き、終わったら <code>GPAGE 0,0</code> で戻すのが基本の流れです。</p>`,
+    },
+    {
+      id: 'file', title: 'ファイル(SAVE / LOAD)',
+      html: `
+<p>プログラムから、文字列や配列をファイルとして保存・読み込みできます。ファイルは<b>お使いのブラウザの中</b>(この サイト用の保存領域)に保存されるので、ページを閉じても、次に開いたときに残っています。別のパソコンや別のブラウザとは共有されません。</p>
+<ul>
+<li>ファイル名は <code>"TXT:名前"</code>(文字列用)か <code>"DAT:名前"</code>(配列用)。名前は英数字と <code>_ - .</code> で32文字まで(大文字小文字は区別しません)。</li>
+<li>保存できる量はブラウザの制限(数MB)までです。</li>
+</ul>
+${h.cmds([
+  ['SAVE', 'SAVE "TXT:名前", 文字列  /  SAVE "DAT:名前", 配列', '保存します(同じ名前は上書き)。'],
+  ['LOAD', 'LOAD("TXT:名前")  /  LOAD "TXT:名前", 変数  /  LOAD "DAT:名前", 配列変数', '読み込みます。関数の形(<code>A$=LOAD("TXT:X")</code>)でも使えます。'],
+  ['FILES', 'FILES  /  FILES 文字列配列', 'ファイルの一覧を表示(または配列に入れる)。'],
+  ['DELETE', 'DELETE "TXT:名前"', 'ファイルを消します。'],
+  ['RENAME', 'RENAME "TXT:旧", "TXT:新"', '名前を変えます。'],
+])}
+<p>見つからないファイルを <code>LOAD</code> するとエラーになります。先に <code>FILES</code> で確かめるとよいでしょう。ブラウザの「サイトデータの削除」をすると、保存したファイルも消えます。</p>
+${h.ex(`' ブラウザに保存されるので、もう一度実行しても記録が残ります
+VAR HI=0,N,I,FOUND=0
+FILES F$
+FOR I=0 TO LEN(F$)-1
+  IF F$[I]=="TXT:HISCORE" THEN FOUND=1
+NEXT
+IF FOUND THEN HI=VAL(LOAD("TXT:HISCORE"))
+PRINT "ハイスコア: ";HI
+N=RND(1000)
+PRINT "今回のスコア: ";N
+IF N>HI THEN
+  PRINT "新記録!"
+  SAVE "TXT:HISCORE",STR$(N)
+ENDIF`, 'ハイスコアの保存')}
+${h.ex(`' 配列を DAT ファイルに保存して読み戻す
+DIM A[5]
+VAR I
+FOR I=0 TO 4:A[I]=I*I:NEXT
+SAVE "DAT:SQUARES",A
+DIM B[1]
+LOAD "DAT:SQUARES",B
+PRINT LEN(B);" 個: ";B[0];B[1];B[2];B[3];B[4]
+DELETE "DAT:SQUARES"`, '配列の保存')}`,
+    },
+    {
       id: 'errors', title: 'エラーメッセージ',
       html: `
 ${h.table(['メッセージ', '原因'], [
@@ -297,16 +479,18 @@ ${h.table(['メッセージ', '原因'], [
   ['添字が範囲外です (Subscript out of range)', '配列・文字列の範囲を超えた。'],
   ['配列が定義されていません', '<code>DIM</code> しないで <code>A[0]</code> を使った。'],
   ['0で割りました (Division by zero)', '0 で割った。'],
-  ['〜は〜のコマンドです (smile BASICでは使えません)', '他の方言の命令を使った。smile BASIC での書き方に直します。'],
+  ['〜は〜のコマンドです (SmileBASIC互換では使えません)', '他の方言の命令を使った。SmileBASIC互換 での書き方に直します。'],
 ])}`,
     },
     {
       id: 'limits', title: '制限事項',
       html: `
 <ul>
-<li>スプライト(SPSET など)、BG、音楽(BGMPLAY)、効果音の細かい制御、ファイル(LOAD/SAVE)、複数のグラフィックページ、OUT 引数つきの DEF、マルチタスク、キーボードの KEYBOARD などは未対応です。</li>
-<li><code>COLOR</code> の16色パレットは本シミュレータのものです(実機とは色が少し違います)。<code>RGB()</code> は 24 ビットの色を返します。</li>
+<li>未対応: 音楽(BGMPLAY)・効果音の細かい制御、BGのアニメーション/回転/拡大(BGANIM など)、スプライトの連結(SPLINK)、SPFUNC、回転を考えた当たり判定、スプライトの左右反転属性(かわりに <code>SPSCALE</code> の負の値を使います)、GSAVE/GLOAD や PRG・GRP のファイル、OUT 引数つきの DEF、マルチタスク、KEYBOARD。</li>
+<li>スプライトは最大 512 個、BG は 4 層(最大 256×256 マス)、グラフィックページは 6 枚です。描画は最近傍(ドットのまま拡大)です。</li>
+<li><code>COLOR</code> の16色パレットは本シミュレータのものです(実機とは色が少し違います)。<code>RGB()</code> は 24 ビットの色を返します(透明度は使いません)。</li>
 <li><code>BUTTON()</code> の割り当て・<code>STICK</code> の値はキーボード用の簡易的なものです。</li>
+<li>標準のスプライト/タイルの絵は、このシミュレータ独自のものです。</li>
 <li>関数(式の中で呼ぶ DEF)の中では <code>INPUT</code> や <code>VSYNC</code> のように「待つ」命令は使えません(手続きとして呼ぶ DEF の中なら使えます)。</li>
 <li>文字は 8×8 ドット相当の升目に描かれ、フォントは実機と異なります。</li>
 </ul>

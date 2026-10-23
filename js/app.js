@@ -11,7 +11,7 @@
       font: '"Courier New", "Noto Sans Mono CJK JP", "MS Gothic", monospace',
     },
     n88: {
-      desc: 'NEC PC-8801/PC-9801 シリーズの標準BASIC。行番号つきで、色・図形(LINE/CIRCLE/PAINT)・音(PLAY)・文字列関数が使える、日本のパソコン黎明期の定番です。',
+      desc: 'NEC PC-8801/PC-9801 シリーズ向けBASICを参考にした非公式の互換実装。行番号つきで、色・図形(LINE/CIRCLE/PAINT)・音(PLAY)・文字列関数・ファイル(OPEN/PRINT#/INPUT#)が使える、日本のパソコン黎明期の定番です。',
       keys: '<kbd>INKEY$</kbd> 用に、画面をクリックしてからキーを押します(矢印キー = 28〜31)。画面は 80×25 文字・640×400 ドット・8色です。',
       font: '"MS Gothic", "Noto Sans Mono CJK JP", "Courier New", monospace',
     },
@@ -21,12 +21,12 @@
       font: '"Courier New", "Noto Sans Mono CJK JP", "MS Gothic", monospace',
     },
     smile: {
-      desc: 'ゲームを作りたくなる現代的なBASIC(SmileBASIC風)。行番号なし、ラベル(@LOOP)、DEF による関数、配列 A[i]、VSYNC によるフレーム同期、RGB() による色指定。スプライト等は未対応です。',
+      desc: 'ゲームを作りたくなる現代的なBASIC(SmileBASIC を参考にした非公式の互換実装)。行番号なし、ラベル(@LOOP)、DEF による関数、配列 A[i]、VSYNC によるフレーム同期、RGB() による色指定、スプライト(SPSET)・BG(BGPUT)・ファイル保存(SAVE/LOAD)にも対応しています。',
       keys: '<kbd>←↑↓→</kbd> = 十字キー、<kbd>Z</kbd><kbd>X</kbd><kbd>A</kbd><kbd>S</kbd> = A/B/X/Y ボタン(<kbd>BUTTON()</kbd>)。マウスでタッチ(<kbd>TOUCH</kbd>)。画面は 400×240 ドット・50×30 文字です。',
       font: '"Noto Sans Mono CJK JP", "MS Gothic", "Courier New", monospace',
     },
   };
-  const LABELS = { tiny: 'Tiny BASIC', n88: 'N88-BASIC', full: 'Full BASIC', smile: 'smile BASIC' };
+  const LABELS = { tiny: 'Tiny BASIC', n88: 'N88互換BASIC', full: 'Full BASIC', smile: 'SmileBASIC互換' };
 
   const editor = $('#editor'), statusEl = $('#status'), runBtn = $('#run'), stopBtn = $('#stop');
   const screenEl = $('#screen'), gfx = $('#gfx'), txt = $('#txt');
@@ -35,7 +35,7 @@
 
   let dialect = 'n88', screen = null, vm = null, running = false, pendingInput = null;
   const keyQueue = [], pressed = new Set();
-  let touch = { down: false, x: 0, y: 0, t0: 0 };
+  let touch = { down: false, x: 0, y: 0, t0: 0 }, lastFrame = 0;
 
   // ---------------------------------------------------------------- 保存
   const store = {
@@ -43,11 +43,19 @@
     set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* 無視 */ } },
   };
   const codeKey = (d) => 'macs-basic:code:' + d;
+  // SmileBASIC互換 の SAVE / LOAD 用のファイル置き場(ブラウザの localStorage)
+  const FSP = 'macs-basic:file:';
+  const fs = {
+    get(k) { try { return localStorage.getItem(FSP + k); } catch (e) { return null; } },
+    set(k, v) { localStorage.setItem(FSP + k, v); },
+    del(k) { try { localStorage.removeItem(FSP + k); } catch (e) { /* 無視 */ } },
+    list() { const out = []; try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.startsWith(FSP)) out.push(k.slice(FSP.length)); } } catch (e) { /* 無視 */ } return out; },
+  };
 
   // ---------------------------------------------------------------- 画面
   function makeScreen() {
     const D = NS.DIALECTS[dialect];
-    screen = new NS.Screen({ cols: D.cols, rows: D.rows, gw: D.gw, gh: D.gh, bg: D.bg, fg: D.fg });
+    screen = NS.createScreen(dialect);
     gfx.width = D.gw; gfx.height = D.gh;
     txt.width = D.gw * 2; txt.height = D.gh * 2;
     screenEl.style.setProperty('--ar', D.gw + ' / ' + D.gh);
@@ -58,7 +66,10 @@
   }
   function frame() {
     if (screen) {
-      if (screen.dirtyG) screen.renderGfx(gctx);
+      const now = performance.now();
+      if (vm && running && screen.spr) screen.spr.tick(Math.min(4, (now - lastFrame) * 60 / 1000)); // スプライトのアニメーション
+      lastFrame = now;
+      if (screen.needsGfx()) screen.renderGfx(gctx);
       if (screen.dirtyT || screen.cursorOn) screen.renderText(tctx, txt.width, txt.height, INFO[dialect].font);
     }
     requestAnimationFrame(frame);
@@ -86,10 +97,20 @@
     const lh = parseFloat(getComputedStyle(editor).lineHeight) || 21;
     editor.scrollTop = Math.max(0, (n - 4) * lh);
   }
+  // Full BASIC で行番号を書いていないときの「行番号つきリスト」
+  const hasNumbers = (src) => src.split('\n').some((l) => /^\s*\d+(\s|$)/.test(l));
+  function updateListing() {
+    const box = $('#listing');
+    if (dialect !== 'full' || hasNumbers(editor.value)) { box.hidden = true; return; }
+    const lines = editor.value.replace(/\r\n?/g, '\n').split('\n').filter((l) => !/^\s*$/.test(l));
+    $('#listing-body').innerHTML = lines.map((l) => '<li>' + l.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</li>').join('');
+    box.hidden = false;
+  }
   function showError(e) {
     if (e instanceof NS.BasicError) {
       const D = NS.DIALECTS[dialect];
-      const where = e.line ? (D.lineNo === 'none' || e.line === e.srcLine && D.lineNo !== 'req' ? `${e.srcLine || e.line}行目` : `行番号 ${e.line}`) : '';
+      const auto = dialect === 'full' && !hasNumbers(editor.value);
+      const where = e.line ? (auto ? `リストの ${e.line} 行目` : D.lineNo === 'none' || e.line === e.srcLine && D.lineNo !== 'req' ? `${e.srcLine || e.line}行目` : `行番号 ${e.line}`) : '';
       setStatus(`エラー: ${e.msg}${where ? '  (' + where + ')' : ''}`, 'err');
       selectLine(e.srcLine);
     } else {
@@ -187,7 +208,7 @@
       buttons: () => { let b = 0; pressed.forEach((c) => { b |= BTN[c] || 0; }); return b; },
       stick: () => [(pressed.has('ArrowRight') ? 1 : 0) - (pressed.has('ArrowLeft') ? 1 : 0), (pressed.has('ArrowUp') ? 1 : 0) - (pressed.has('ArrowDown') ? 1 : 0)],
       touch: () => [touch.down ? Math.floor((Date.now() - touch.t0) * 60 / 1000) + 1 : 0, touch.x, touch.y],
-      tone, abort: cancelInput,
+      tone, abort: cancelInput, fs, tickOnVsync: false,
     };
     const me = new NS.VM(prog, env);
     vm = me;
@@ -237,6 +258,7 @@
     const saved = store.get(codeKey(d));
     editor.value = opt.code != null ? opt.code : saved != null ? saved : (NS.SAMPLES[d] && NS.SAMPLES[d][0].code) || '';
     makeScreen();
+    updateListing();
     setStatus('準備完了');
     if (!opt.initial) history.replaceState(null, '', '#' + d);
   }
@@ -259,10 +281,11 @@
     if (i === '') return;
     if (editor.value.trim() && !confirm('今のプログラムをサンプルで置き換えます。よろしいですか?')) { samplesEl.value = ''; return; }
     editor.value = NS.SAMPLES[dialect][+i].code;
+    updateListing();
     samplesEl.value = '';
     setStatus('サンプルを読み込みました。「実行」を押してください');
   });
-  editor.addEventListener('input', () => store.set(codeKey(dialect), editor.value));
+  editor.addEventListener('input', () => { store.set(codeKey(dialect), editor.value); updateListing(); });
   editor.addEventListener('keydown', (e) => {
     if (e.key === 'Tab' && !e.shiftKey) {
       e.preventDefault();
@@ -280,10 +303,11 @@
       const r = n + ' ' + l; n += 10; return r;
     }).join('\n');
     store.set(codeKey(dialect), editor.value);
+    updateListing();
     setStatus('行番号を振りました');
   });
   $('#clear').addEventListener('click', () => {
-    if (!editor.value.trim() || confirm('プログラムをすべて消去します。よろしいですか?')) { editor.value = ''; store.set(codeKey(dialect), ''); editor.focus(); }
+    if (!editor.value.trim() || confirm('プログラムをすべて消去します。よろしいですか?')) { editor.value = ''; updateListing(); store.set(codeKey(dialect), ''); editor.focus(); }
   });
   $('#save').addEventListener('click', () => {
     const blob = new Blob([editor.value], { type: 'text/plain;charset=utf-8' });
@@ -298,7 +322,7 @@
   $('#file').addEventListener('change', (e) => {
     const f = e.target.files[0]; if (!f) return;
     const r = new FileReader();
-    r.onload = () => { editor.value = String(r.result); store.set(codeKey(dialect), editor.value); setStatus(f.name + ' を読み込みました'); };
+    r.onload = () => { editor.value = String(r.result); updateListing(); store.set(codeKey(dialect), editor.value); setStatus(f.name + ' を読み込みました'); };
     r.readAsText(f);
     e.target.value = '';
   });

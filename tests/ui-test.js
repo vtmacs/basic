@@ -76,6 +76,13 @@ const path = require('path');
   await page.evaluate(() => { document.querySelector('#editor').value = 'PRINT 1\nPRINT 2'; });
   await page.click('#number');
   check('renumber', (await page.inputValue('#editor')) === '10 PRINT 1\n20 PRINT 2');
+  // 9. N88 のファイルはブラウザに残る(2回実行すると追記される)
+  await page.goto(url + '#n88');
+  await page.evaluate(() => window.__sim.setDialect('n88'));
+  await page.evaluate(() => { localStorage.clear(); document.querySelector('#editor').value = '10 OPEN "M.TXT" FOR APPEND AS #1\n20 PRINT #1,"X"\n30 CLOSE\n40 OPEN "M.TXT" FOR INPUT AS #1\n50 WHILE NOT EOF(1):LINE INPUT #1,A$:PRINT A$:WEND'; });
+  await page.click('#run'); await page.waitForTimeout(150);
+  await page.click('#run'); await page.waitForTimeout(150);
+  check('n88 file persists', (await screenText()).replace(/\s+/g, '') === 'XX');
   console.log(`ui: ${ok} ok, ${bad} failed`, errors);
   await browser.close();
   process.exit(bad || errors.length ? 1 : 0);

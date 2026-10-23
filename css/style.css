@@ -112,6 +112,12 @@ textarea.code {
 .keys { padding: 8px 12px; font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); }
 .keys kbd, kbd { font: 12px var(--mono); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 3px; padding: 0 5px; background: #fff; }
 
+.listing { border-top: 1px solid var(--line); font-size: 13px; }
+.listing summary { cursor: pointer; padding: 6px 12px; background: var(--panel); color: var(--muted); }
+.listing ol { margin: 0; padding: 6px 12px 6px 44px; max-height: 220px; overflow: auto; font: 13px/1.5 var(--mono); }
+.listing li { white-space: pre; }
+.listing li::marker { color: var(--accent); }
+
 /* ---- 本文 (マニュアル/比較) ---- */
 main { padding-bottom: 40px; }
 .doc-layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 32px; align-items: start; }
@@ -157,6 +163,8 @@ table.cmp td.no::before { content: "× "; }
 .col pre.code { margin-top: 0; border-radius: 0 0 var(--radius) var(--radius); border-left-width: 1px; }
 .site-footer { border-top: 1px solid var(--line); padding: 18px 0 28px; color: var(--muted); font-size: 13px; background: var(--panel); }
 .site-footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; }
+.site-footer .wrap + .wrap { margin-top: 10px; }
+.legal { margin: 0; font-size: 12px; line-height: 1.7; color: var(--muted); }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 @media (prefers-reduced-motion: no-preference) { .btn, .tab, .card { transition: all .12s; } }
 @media print { .site-header, .toc, .site-footer, .strip { display: none; } .doc-layout { display: block; } }

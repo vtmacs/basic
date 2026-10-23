@@ -5,8 +5,9 @@ const fs = require('fs');
 const path = require('path');
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const LABEL = { tiny: 'Tiny BASIC', n88: 'N88-BASIC', full: 'Full BASIC', smile: 'smile BASIC' };
+const LABEL = { tiny: 'Tiny BASIC', n88: 'N88互換BASIC', full: 'Full BASIC', smile: 'SmileBASIC互換' };
 const ORDER = ['tiny', 'n88', 'full', 'smile'];
+const LEGAL = '<p class="legal">「N88-BASIC」「PC-8801」「PC-9801」は日本電気株式会社(NEC)の、「SmileBASIC」は株式会社スマイルブームの、「Microsoft」は Microsoft Corporation の商標または登録商標です。このサイトは個人・学習用の<b>非公式</b>のシミュレータで、これらの会社とは関係がなく、承認・提携・推奨を受けたものではありません。このサイトの「N88互換BASIC」「SmileBASIC互換」は、それらの文法や使い方を参考にした互換実装であることを示す名前です。各社の製品・ソフトウェア・画像・マニュアルの内容は含まれていません(画面の絵・サンプル・説明文はすべて独自に作成したものです)。</p>';
 
 function makeHelpers(dialect, collected) {
   const h = {};
@@ -62,6 +63,7 @@ ${body}
     <span>マニュアル: ${links}</span>
     <span><a href="compare.html">方言の比較</a> / <a href="index.html">シミュレータ</a></span>
   </div>
+  <div class="wrap">${LEGAL}</div>
 </footer>
 </body>
 </html>
@@ -93,7 +95,18 @@ function buildAll(opts) {
   }
   const cmp = require('./docs/compare.js');
   const hh = (dd) => makeHelpers(dd, collected);
-  out['compare.html'] = shell({ dialect: null, title: '方言の比較', desc: 'Tiny BASIC・N88-BASIC・Full BASIC・smile BASIC の違いを一覧で比較', nav: 'compare', body: cmp.page(hh, esc, LABEL) });
+  out['compare.html'] = shell({ dialect: null, title: '方言の比較', desc: 'Tiny BASIC・N88互換BASIC・Full BASIC・SmileBASIC互換 の違いを一覧で比較', nav: 'compare', body: cmp.page(hh, esc, LABEL) });
+  out['manual.html'] = shell({
+    dialect: null, title: 'マニュアル', desc: 'BASICシミュレータのマニュアル一覧', nav: 'manual',
+    body: `<h1>マニュアル</h1>
+<p class="lead">使いたい方言のマニュアルを選んでください。(以前の <code>manual.html</code> は JIS BASIC に準拠した Full BASIC のマニュアルでした。)</p>
+<div class="cards">
+  <a class="card d-tiny" href="manual-tiny.html"><h3>Tiny BASIC</h3><p>最小のBASIC。行番号・整数・IF/GOTO/GOSUB。</p></a>
+  <a class="card d-n88" href="manual-n88.html"><h3>N88互換BASIC</h3><p>行番号つきの定番BASIC。色・図形・音・文字列。</p></a>
+  <a class="card d-full" href="manual-full.html"><h3>Full BASIC</h3><p>JIS/ISO規格の構造化BASIC。行番号なしで書ける。</p></a>
+  <a class="card d-smile" href="manual-smile.html"><h3>SmileBASIC互換</h3><p>ゲーム向けの現代的BASIC。ラベル・DEF・VSYNC。</p></a>
+</div>
+<p><a href="compare.html">▶ 4つの方言を一覧で比較する</a>　<a href="index.html">▶ シミュレータへ</a></p>` });
   return { files: out, examples: collected };
 }
 

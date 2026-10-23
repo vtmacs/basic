@@ -28,12 +28,13 @@
       kw: words('REM LET PRINT IF GOTO GOSUB RETURN INPUT END STOP CLEAR CLS COLOR PLOT LINE CIRCLE WAIT'),
     },
     n88: {
-      id: 'n88', label: 'N88-BASIC', lineNo: 'req', colon: true, intOnly: false, suffix: '$%!#',
+      id: 'n88', label: 'N88互換BASIC', lineNo: 'req', colon: true, intOnly: false, suffix: '$%!#',
       apos: true, bang: false, brackets: false, trueVal: -1, numStyle: 'ms', digits: 7, zone: 14,
       cols: 80, rows: 25, gw: 640, gh: 400, bg: 0x000000, fg: 0xffffff, pal: PAL8, arrCount: false,
       kw: words(`REM LET PRINT IF GOTO GOSUB RETURN ON INPUT LINE FOR NEXT WHILE WEND DATA READ RESTORE DIM ERASE
         CLEAR END STOP CLS LOCATE COLOR SCREEN WIDTH BEEP SOUND PLAY RANDOMIZE SWAP DEFINT DEFSNG DEFDBL DEFSTR
-        DEF OPTION PSET PRESET CIRCLE PAINT RESUME CONSOLE KEY`),
+        DEF OPTION PSET PRESET CIRCLE PAINT RESUME CONSOLE KEY
+        OPEN CLOSE WRITE FIELD LSET RSET GET PUT KILL NAME FILES`),
     },
     full: {
       id: 'full', label: 'Full BASIC', lineNo: 'opt', colon: true, intOnly: false, suffix: '',
@@ -43,13 +44,16 @@
         READ RESTORE DIM OPTION RANDOMIZE DEF SUB FUNCTION CALL DECLARE END STOP CLEAR SET PLOT BOX WAIT PAUSE`),
     },
     smile: {
-      id: 'smile', label: 'smile BASIC', lineNo: 'none', colon: true, intOnly: false, suffix: '',
+      id: 'smile', label: 'SmileBASIC互換', lineNo: 'none', colon: true, intOnly: false, suffix: '',
       apos: true, bang: false, brackets: true, trueVal: 1, numStyle: 'plain', digits: 15, zone: 4,
       cols: 50, rows: 30, gw: 400, gh: 240, bg: 0x000000, fg: 0xffffff, pal: PAL16, arrCount: true,
       kw: words(`REM PRINT LOCATE COLOR CLS VSYNC WAIT FOR NEXT BREAK CONTINUE WHILE WEND REPEAT UNTIL IF ELSEIF ELSE
         ENDIF GOTO GOSUB RETURN ON VAR DIM DATA READ RESTORE DEF END COMMON CALL INPUT LINPUT INC DEC SWAP PUSH
         UNSHIFT SORT RSORT ACLS GCLS GCOLOR GPSET GLINE GBOX GFILL GCIRCLE GPAINT GPRINT XSCREEN DISPLAY BEEP
-        RANDOMIZE STICK TOUCH SWITCH CASE DEFAULT ENDSWITCH STOP OPTION`),
+        RANDOMIZE STICK TOUCH SWITCH CASE DEFAULT ENDSWITCH STOP OPTION
+        SPSET SPCLR SPOFS SPROT SPSCALE SPHOME SPCOLOR SPSHOW SPHIDE SPCHR SPDEF SPANIM SPCOL SPVAR
+        BGSCREEN BGPUT BGFILL BGOFS BGCLR BGSHOW BGHIDE GPAGE GCOPY SAVE LOAD DELETE RENAME FILES`),
+      transparent: true,
     },
   };
   for (const d of Object.values(DIALECTS)) d.suffixSet = new Set(d.suffix.split(''));
@@ -161,6 +165,7 @@
   }
 
   // ---------------------------------------------------------------- 字句解析
+  const FILE_KW = new Set(['PRINT', 'INPUT', 'WRITE', 'CLOSE', 'FIELD', 'GET', 'PUT']);
   const OPS2 = ['<>', '<=', '>=', '==', '!=', '<<', '>>', '&&', '||', '=<', '=>', '><'];
   const OPS1 = '+-*/\\^()[],;:=<>.?#@!%&';
   function tokenize(s, D) {
@@ -216,7 +221,7 @@
         let name = m[0].toUpperCase();
         i = ID.lastIndex;
         if (s[i] === '$') { name += '$'; i++; }
-        else if (D.suffixSet.has(s[i]) && s[i] !== '$') { name += s[i]; i++; }
+        else if (D.suffixSet.has(s[i]) && s[i] !== '$' && !(s[i] === '#' && FILE_KW.has(name))) { name += s[i]; i++; } // PRINT#1 のような続け書き
         if (name === 'REM' || name === 'DATA') {
           toks.push({ t: 'id', v: name, raw: s.slice(i), pos }); i = n; break;
         }
@@ -395,6 +400,25 @@
     return (cl(r) << 16) | (cl(g) << 8) | cl(b);
   }, 'full');
   def('BUTTON', 0, 2, (vm) => vm.env.buttons(), 'smile');
+  const spr = (vm) => { if (!vm.screen.spr) throw E('この環境ではスプライトを使えません', 5); return vm.screen.spr; };
+  def('SPUSED', 1, 1, (vm, id) => spr(vm).used(num(id)), 'smile');
+  def('SPHITSP', 1, 2, (vm, a, b) => spr(vm).hitsp(num(a), b === undefined ? undefined : num(b)), 'smile');
+  def('SPHITRC', 5, 5, (vm, id, x, y, w, h) => spr(vm).hitrc(num(id), num(x), num(y), num(w), num(h)), 'smile');
+  def('SPVAR', 2, 2, (vm, id, n) => spr(vm).spvar(num(id), num(n)), 'smile');
+  def('BGGET', 3, 3, (vm, l, x, y) => spr(vm).bgget(num(l), num(x), num(y)), 'smile');
+  def('LOAD', 1, 1, (vm, name) => vm.fsLoad(str(name)), 'smile');
+  // N88互換BASIC のファイル関数
+  def('EOF', 1, 1, (vm, n) => vm.fileEof(num(n)), 'n88');
+  def('LOF', 1, 1, (vm, n) => vm.fileLof(num(n)), 'n88');
+  def('LOC', 1, 1, (vm, n) => vm.fileLoc(num(n)), 'n88');
+  const pack = (n, bytes, fn) => { const dv = new DataView(new ArrayBuffer(bytes)); fn(dv, num(n)); let r = ''; for (let i = 0; i < bytes; i++) r += String.fromCharCode(dv.getUint8(i)); return r; };
+  const unpack = (s, bytes, fn) => { str(s); if (s.length < bytes) throw illegal(`${bytes}バイトの文字列が必要です`); const dv = new DataView(new ArrayBuffer(bytes)); for (let i = 0; i < bytes; i++) dv.setUint8(i, s.charCodeAt(i) & 255); return fn(dv); };
+  def('MKI$', 1, 1, (vm, n) => pack(n, 2, (dv, v) => dv.setInt16(0, Math.round(v), true)), 'n88');
+  def('MKS$', 1, 1, (vm, n) => pack(n, 4, (dv, v) => dv.setFloat32(0, v, true)), 'n88');
+  def('MKD$', 1, 1, (vm, n) => pack(n, 8, (dv, v) => dv.setFloat64(0, v, true)), 'n88');
+  def('CVI', 1, 1, (vm, s) => unpack(s, 2, (dv) => dv.getInt16(0, true)), 'n88');
+  def('CVS', 1, 1, (vm, s) => unpack(s, 4, (dv) => dv.getFloat32(0, true)), 'n88');
+  def('CVD', 1, 1, (vm, s) => unpack(s, 8, (dv) => dv.getFloat64(0, true)), 'n88');
   def('POP', 1, 1, (vm, a) => { if (!(a instanceof BArray) || !a.data.length) throw illegal(); const v = a.data.pop(); a.sync(); return v; }, 'smile');
   def('SHIFT', 1, 1, (vm, a) => { if (!(a instanceof BArray) || !a.data.length) throw illegal(); const v = a.data.shift(); a.sync(); return v; }, 'smile');
 

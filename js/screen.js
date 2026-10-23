@@ -16,7 +16,9 @@
   class Screen {
     constructor(o) {
       this.cols = o.cols; this.rows = o.rows; this.gw = o.gw; this.gh = o.gh;
+      this.gw0 = o.gw; this.gh0 = o.gh;
       this.bg = o.bg; this.fg = o.fg;
+      this.transparent = !!o.transparent; // true: グラフィック面の初期色は透明(smile BASIC)
       this.reset();
     }
     reset() {
@@ -26,7 +28,12 @@
       this.bgc = new Int32Array(N).fill(-1);
       this.cx = 0; this.cy = 0;
       this.curFg = this.fg; this.curBg = -1;
-      this.fb = new Uint32Array(this.gw * this.gh).fill(toABGR(this.bg));
+      this.gw = this.dispW = this.gw0; this.gh = this.dispH = this.gh0;
+      // グラフィックページ: 0 は表示面、1〜5 は 512x512 (必要になったときに作る)
+      this.pages = { 0: { fb: new Uint32Array(this.gw * this.gh).fill(this.transparent ? 0 : toABGR(this.bg)), w: this.gw, h: this.gh } };
+      this.fb = this.pages[0].fb;
+      this.drawPage = 0; this.dispPage = 0;
+      this.spr = null; // スプライト/BG (sprites.js)
       this.lastX = 0; this.lastY = 0;
       this.dirtyT = true; this.dirtyG = true;
       this.cursorOn = false;
@@ -88,7 +95,42 @@
     text() { return this.textLines().join('\n').replace(/\n+$/, ''); }
 
     // ---------- graphics ----------
-    gcls(rgb) { this.fb.fill(toABGR(rgb === undefined ? this.bg : rgb)); this.dirtyG = true; }
+    gcls(rgb) { this.fb.fill(rgb === undefined ? (this.transparent ? 0 : toABGR(this.bg)) : toABGR(rgb)); this.dirtyG = true; }
+    getPage(n) {
+      if (!this.pages[n]) this.pages[n] = { fb: new Uint32Array(512 * 512), w: 512, h: 512 };
+      return this.pages[n];
+    }
+    usePage(n) { const p = this.getPage(n); this.fb = p.fb; this.gw = p.w; this.gh = p.h; this.drawPage = n; }
+    withPage(n, fn) { const keep = this.drawPage; this.usePage(n); try { return fn(); } finally { this.usePage(keep); } }
+    gcopy(sp, x1, y1, x2, y2, dx, dy, all) {
+      const src = this.getPage(sp), dst = this.pages[this.drawPage];
+      const ax = Math.round(Math.min(x1, x2)), bx = Math.round(Math.max(x1, x2));
+      const ay = Math.round(Math.min(y1, y2)), by = Math.round(Math.max(y1, y2));
+      dx = Math.round(dx); dy = Math.round(dy);
+      const tmp = [];
+      for (let y = ay; y <= by; y++) for (let x = ax; x <= bx; x++) tmp.push(x >= 0 && y >= 0 && x < src.w && y < src.h ? src.fb[y * src.w + x] : 0);
+      let k = 0;
+      for (let y = ay; y <= by; y++) for (let x = ax; x <= bx; x++, k++) {
+        const X = x - ax + dx, Y = y - ay + dy, v = tmp[k];
+        if (X < 0 || Y < 0 || X >= dst.w || Y >= dst.h) continue;
+        if (all || (v >>> 24)) dst.fb[Y * dst.w + X] = v;
+      }
+      this.dirtyG = true;
+    }
+    // 表示用に合成した画面(透明部分を背景色にし、BGとスプライトを重ねる)
+    needsCompose() { return this.transparent || !!this.spr; }
+    compose() {
+      const W = this.dispW, H = this.dispH;
+      if (!this._out || this._out.length !== W * H) this._out = new Uint32Array(W * H);
+      const out = this._out, pg = this.getPage(this.dispPage), bgv = toABGR(this.bg);
+      for (let y = 0; y < H; y++) {
+        let si = y * pg.w, di = y * W;
+        for (let x = 0; x < W; x++) { const v = pg.fb[si++]; out[di++] = (v >>> 24) ? v : bgv; }
+      }
+      if (this.spr) this.spr.compose(out, W, H);
+      return out;
+    }
+    needsGfx() { return this.dirtyG || !!(this.spr && this.spr.dirty); }
     pset(x, y, rgb) {
       x = Math.round(x); y = Math.round(y);
       if (x < 0 || y < 0 || x >= this.gw || y >= this.gh) return;
@@ -211,10 +253,12 @@
 
     // ---------- 描画(ブラウザ) ----------
     renderGfx(ctx) {
-      if (!this._img || this._img.width !== this.gw || this._img.height !== this.gh) this._img = ctx.createImageData(this.gw, this.gh);
-      new Uint32Array(this._img.data.buffer).set(this.fb);
+      const W = this.dispW, H = this.dispH;
+      if (!this._img || this._img.width !== W || this._img.height !== H) this._img = ctx.createImageData(W, H);
+      new Uint32Array(this._img.data.buffer).set(this.needsCompose() ? this.compose() : this.pages[0].fb);
       ctx.putImageData(this._img, 0, 0);
       this.dirtyG = false;
+      if (this.spr) this.spr.dirty = false;
     }
     renderText(ctx, W, H, fontFamily) {
       ctx.clearRect(0, 0, W, H);
@@ -250,7 +294,7 @@
       this.dirtyT = false;
     }
   }
-  Screen.toABGR = toABGR; Screen.css = css; Screen.isWide = isWide;
+  Screen.fromABGR = fromABGR; Screen.toABGR = toABGR; Screen.css = css; Screen.isWide = isWide;
   NS.Screen = Screen;
   if (typeof module !== 'undefined' && module.exports) module.exports = NS;
 })(typeof window !== 'undefined' ? window : globalThis);

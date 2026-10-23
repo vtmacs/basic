@@ -87,10 +87,10 @@
   ];
 
   S.n88 = [
-    { title: 'Hello, World', code: `10 ' はじめてのN88-BASIC
+    { title: 'Hello, World', code: `10 ' はじめてのN88互換BASIC
 20 CLS
 30 PRINT "Hello, World!"
-40 PRINT "こんにちは N88-BASIC"
+40 PRINT "こんにちは N88互換BASIC"
 50 END
 ` },
     { title: '九九の表', code: `10 CLS
@@ -115,7 +115,7 @@
 110 PRINT "ソート後:";: FOR I=0 TO 9: PRINT A(I);: NEXT I: PRINT
 120 END
 ` },
-    { title: '文字列関数', code: `10 A$="N88-BASIC"
+    { title: '文字列関数', code: `10 A$="MY-BASIC"
 20 PRINT "長さ=";LEN(A$)
 30 PRINT "左3文字=";LEFT$(A$,3)
 40 PRINT "右5文字=";RIGHT$(A$,5)
@@ -144,7 +144,7 @@
 60 PAINT (320,230),2,6
 70 CIRCLE (320,230),60,5
 80 LINE (100,150)-(540,390),7,B
-90 LOCATE 30,12: COLOR 7: PRINT "N88-BASIC GRAPHICS"
+90 LOCATE 30,12: COLOR 7: PRINT "N88互換BASIC GRAPHICS"
 100 END
 ` },
     { title: 'サインカーブ', code: `10 SCREEN 3: CLS
@@ -168,6 +168,41 @@
     { title: '音(PLAY)', code: `10 PRINT "ドレミを演奏します"
 20 PLAY "T120 O4 L4 C D E F G A B >C"
 30 END
+` },
+    { title: 'ファイルに書いて読む(OPEN・WRITE#・INPUT#)', code: `10 ' 点数をファイルに保存して、読み出して平均を出す
+20 OPEN "SCORE.DAT" FOR OUTPUT AS #1
+30 FOR I=1 TO 5
+40   WRITE #1,"生徒"+STR$(I),50+I*7
+50 NEXT I
+60 CLOSE #1
+70 OPEN "SCORE.DAT" FOR INPUT AS #1
+80 S=0:N=0
+90 WHILE NOT EOF(1)
+100   INPUT #1,NM$,P
+110   PRINT NM$;P
+120   S=S+P:N=N+1
+130 WEND
+140 CLOSE #1
+150 PRINT "平均=";S/N
+160 END
+` },
+    { title: '住所録(ランダムファイル FIELD・GET・PUT)', code: `10 ' 1件24文字のレコードで保存する
+20 OPEN "ADDR.DAT" AS #1 LEN=24
+30 FIELD #1,12 AS N$,10 AS T$,2 AS A$
+40 DATA 山田,0901111111,20,鈴木,0902222222,31,佐藤,0903333333,45
+50 FOR I=1 TO 3
+60   READ NM$,TL$,AG
+70   LSET N$=NM$:LSET T$=TL$:LSET A$=MKI$(AG)
+80   PUT #1,I
+90 NEXT I
+100 PRINT "レコード数=";LOF(1)/24
+110 FOR I=3 TO 1 STEP -1
+120   GET #1,I
+130   PRINT I;N$;T$;CVI(A$);"歳"
+140 NEXT I
+150 CLOSE #1
+160 FILES
+170 END
 ` },
   ];
 
@@ -240,6 +275,57 @@ END SUB
 NEXT score
 END
 ` },
+    { title: '数列の和(Σ)', code: `! 初項 a、公差 d の等差数列の、第 n 項までの和
+INPUT PROMPT "初項 a = ": a
+INPUT PROMPT "公差 d = ": d
+INPUT PROMPT "項数 n = ": n
+LET s = 0
+FOR k = 1 TO n
+   LET s = s + (a + (k - 1) * d)
+NEXT k
+PRINT "和 ="; s
+PRINT "公式 n(2a+(n-1)d)/2 ="; n * (2 * a + (n - 1) * d) / 2
+END
+` },
+    { title: '漸化式とGOTO(自動の行番号)', code: `! 行番号を書かなくても、上から数えた番号(空行を除く)が付く
+! a(n+1) = 2a(n) + 1, a(1) = 1
+LET a = 1
+LET n = 1
+PRINT "a("; n; ") ="; a
+LET a = 2 * a + 1
+LET n = n + 1
+IF n <= 8 THEN GOTO 5
+END
+` },
+    { title: '区分求積法(x^2 の積分)', code: `! 0 から 1 まで x^2 を積分する(正解は 1/3)
+LET n = 1000
+LET s = 0
+FOR i = 0 TO n - 1
+   LET x = i / n
+   LET s = s + x ^ 2 / n
+NEXT i
+PRINT "n ="; n; " のとき"; s
+PRINT "1/3 ="; 1 / 3
+END
+` },
+    { title: '乱数で円周率(モンテカルロ法)', code: `RANDOMIZE
+LET n = 3000
+LET c = 0
+SET WINDOW 0, 1, 0, 1
+FOR i = 1 TO n
+   LET x = RND
+   LET y = RND
+   IF x ^ 2 + y ^ 2 <= 1 THEN
+      LET c = c + 1
+      SET COLOR "RED"
+   ELSE
+      SET COLOR "BLUE"
+   END IF
+   PLOT POINTS: x, y
+NEXT i
+PRINT "円周率の近似値 ="; 4 * c / n
+END
+` },
     { title: 'グラフ(SIN と COS)', code: `SET WINDOW -7, 7, -1.5, 1.5
 SET COLOR "BLUE"
 PLOT LINES: -7, 0; 7, 0
@@ -270,9 +356,9 @@ END
   ];
 
   S.smile = [
-    { title: 'Hello, World', code: `' はじめての smile BASIC
+    { title: 'Hello, World', code: `' はじめての SmileBASIC互換
 PRINT "Hello, World!"
-PRINT "こんにちは smile BASIC"
+PRINT "こんにちは SmileBASIC互換"
 COLOR 6
 PRINT "COLOR で文字の色を変えます"
 COLOR 15
@@ -359,6 +445,101 @@ WHILE 1
   LOCATE 0,0:PRINT "LEFT/RIGHT KEY"
   VSYNC 1
 WEND
+` },
+    { title: 'スプライトで星あつめ(SPSET・SPHITSP)', code: `' ←→↑↓キーで顔を動かして、星を集めよう
+VAR I,X=200,Y=120,B,SC=0
+SPSET 0,27:SPHOME 0,8,8:SPOFS 0,X,Y
+FOR I=1 TO 5
+  SPSET I,16:SPHOME I,8,8
+  SPOFS I,RND(380)+10,RND(220)+10
+NEXT
+WHILE 1
+  B=BUTTON()
+  IF B AND #LEFT THEN X=X-3
+  IF B AND #RIGHT THEN X=X+3
+  IF B AND #UP THEN Y=Y-3
+  IF B AND #DOWN THEN Y=Y+3
+  X=CLAMP(X,8,392):Y=CLAMP(Y,8,232)
+  SPOFS 0,X,Y
+  FOR I=1 TO 5
+    IF SPHITSP(0,I) THEN
+      INC SC
+      SPOFS I,RND(380)+10,RND(220)+10
+    ENDIF
+  NEXT
+  LOCATE 0,0:PRINT "SCORE ";SC
+  VSYNC
+WEND
+` },
+    { title: 'スプライトの自動アニメーション(SPANIM)', code: `' 動き・回転・絵の切りかえ・色の変化を SPANIM にまかせる
+SPSET 0,0:SPHOME 0,8,8:SPSCALE 0,3,3
+SPOFS 0,50,60
+SPANIM 0,"XY",120,350,60,120,50,60,0
+SPSET 1,16:SPHOME 1,8,8:SPSCALE 1,3,3
+SPOFS 1,200,130
+SPANIM 1,"R",120,360,0
+SPSET 2,24:SPHOME 2,8,8:SPSCALE 2,3,3
+SPOFS 2,100,200
+SPANIM 2,"I",15,24,15,27,0
+SPSET 3,12:SPHOME 3,8,8:SPSCALE 3,2,2
+SPOFS 3,300,200
+SPANIM 3,"C",60,RGB(255,0,0),60,RGB(0,255,255),0
+WHILE 1
+  VSYNC
+WEND
+` },
+    { title: 'BGのスクロール(BGSCREEN・BGOFS)', code: `' BG(背景のタイル)を3層に重ねてスクロールする(番号の小さい層が手前)
+BGSCREEN 2,64,15
+BGFILL 2,0,0,63,14,7
+BGSCREEN 1,64,15
+VAR I,X=0
+FOR I=2 TO 60 STEP 9
+  BGFILL 1,I,3,I+2,4,1
+NEXT
+BGSCREEN 0,64,15
+BGFILL 0,0,13,63,14,3
+FOR I=0 TO 62 STEP 5
+  BGPUT 0,I,12,2
+NEXT
+SPSET 0,27:SPHOME 0,8,8:SPOFS 0,100,200
+WHILE 1
+  X=X+2
+  BGOFS 0,X,0
+  BGOFS 1,X/3,0
+  VSYNC
+WEND
+` },
+    { title: '自分で絵をかいてスプライトに(GPAGE・SPDEF)', code: `' グラフィックページ4に絵をかき、SPDEF でスプライトにする
+GPAGE 0,4
+GFILL 0,128,15,143,RGB(255,200,0)
+GFILL 3,132,5,135,#BLACK
+GFILL 10,132,12,135,#BLACK
+GLINE 3,139,12,139,#BLACK
+GLINE 3,138,3,139,#BLACK
+GLINE 12,138,12,139,#BLACK
+GPAGE 0,0
+SPDEF 200,0,128,16,16
+SPSET 0,200:SPHOME 0,8,8:SPOFS 0,200,120:SPSCALE 0,5,5
+SPSET 1,200:SPHOME 1,8,8:SPOFS 1,60,60
+WHILE 1
+  SPROT 0,MAINCNT*2
+  VSYNC
+WEND
+` },
+    { title: 'ハイスコアをファイルに保存(SAVE・LOAD)', code: `' ブラウザに保存されるので、もう一度実行しても記録が残ります
+VAR HI=0,N,I,FOUND=0
+FILES F$
+FOR I=0 TO LEN(F$)-1
+  IF F$[I]=="TXT:HISCORE" THEN FOUND=1
+NEXT
+IF FOUND THEN HI=VAL(LOAD("TXT:HISCORE"))
+PRINT "ハイスコア: ";HI
+N=RND(1000)
+PRINT "今回のスコア: ";N
+IF N>HI THEN
+  PRINT "新記録!"
+  SAVE "TXT:HISCORE",STR$(N)
+ENDIF
 ` },
   ];
 

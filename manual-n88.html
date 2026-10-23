@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>N88-BASIC マニュアル | MACS Project</title>
-<meta name="description" content="NEC PC-8801 / PC-9801 シリーズの標準BASIC。行番号つきの手軽な書き方に、色・図形・音・文字列処理がそろった、日本のパソコン黎明期の定番です。">
+<title>N88互換BASIC マニュアル | MACS Project</title>
+<meta name="description" content="NEC の PC-8801 / PC-9801 シリーズ向けBASICの文法を参考にした、非公式の互換実装です。行番号つきの手軽な書き方に、色・図形・音・文字列処理がそろった、日本のパソコン黎明期の定番です。">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -21,15 +21,15 @@
 </header>
 <main class="wrap">
 
-<h1>N88-BASIC マニュアル</h1>
-<p class="lead">NEC PC-8801 / PC-9801 シリーズの標準BASIC。行番号つきの手軽な書き方に、色・図形・音・文字列処理がそろった、日本のパソコン黎明期の定番です。</p>
+<h1>N88互換BASIC マニュアル</h1>
+<p class="lead">NEC の PC-8801 / PC-9801 シリーズ向けBASICの文法を参考にした、非公式の互換実装です。行番号つきの手軽な書き方に、色・図形・音・文字列処理がそろった、日本のパソコン黎明期の定番です。</p>
 <div class="doc-layout">
-  <nav class="toc" aria-label="目次"><b>目次</b><a href="#about">N88-BASIC とは</a><a href="#start">画面とはじめかた</a><a href="#program">プログラムの書き方</a><a href="#data">変数・型・演算子</a><a href="#io">入出力の命令</a><a href="#control">制御の命令</a><a href="#vars">データと変数の命令</a><a href="#functions">関数</a><a href="#graphics">グラフィック</a><a href="#samples">もう少し大きなプログラム</a><a href="#errors">エラーメッセージ</a><a href="#limits">制限事項</a><a href="compare.html">▶ 方言の比較</a><a href="index.html#n88">▶ シミュレータで試す</a></nav>
+  <nav class="toc" aria-label="目次"><b>目次</b><a href="#about">N88互換BASIC とは</a><a href="#start">画面とはじめかた</a><a href="#program">プログラムの書き方</a><a href="#data">変数・型・演算子</a><a href="#io">入出力の命令</a><a href="#control">制御の命令</a><a href="#vars">データと変数の命令</a><a href="#functions">関数</a><a href="#graphics">グラフィック</a><a href="#file">ファイル</a><a href="#samples">もう少し大きなプログラム</a><a href="#errors">エラーメッセージ</a><a href="#limits">制限事項</a><a href="compare.html">▶ 方言の比較</a><a href="index.html#n88">▶ シミュレータで試す</a></nav>
   <article>
-<section id="about"><h2>N88-BASIC とは</h2>
+<section id="about"><h2>N88互換BASIC とは</h2>
 
-<p>N88-BASIC は NEC のパソコン PC-8801 シリーズ(のちに PC-9801 の N88-BASIC(86) も)に搭載された BASIC で、マイクロソフトの BASIC を元にしています。行番号で書くスタイルは <a href="manual-tiny.html">Tiny BASIC</a> と同じですが、変数の型、配列、文字列、FOR/WHILE、ON GOTO、DATA/READ、グラフィック命令などが加わっています。</p>
-<div class="note tip">このシミュレータの N88-BASIC は、よく使われる命令を中心に再現した学習用のものです。ディスクやカセットの命令、スプライト、PEEK/POKE などの機種依存の機能は含みません。</div>
+<p>N88互換BASIC が参考にしている N88-BASIC は、NEC のパソコン PC-8801 シリーズ(のちに PC-9801 シリーズ)に搭載された BASIC で、マイクロソフト社の BASIC を元にしています。このシミュレータは、その文法や使い方を参考に独自に作った<b>非公式の互換実装</b>で、NEC やマイクロソフト社とは関係がありません。行番号で書くスタイルは <a href="manual-tiny.html">Tiny BASIC</a> と同じですが、変数の型、配列、文字列、FOR/WHILE、ON GOTO、DATA/READ、グラフィック命令などが加わっています。</p>
+<div class="note tip">このシミュレータの N88互換BASIC は、よく使われる命令を中心に再現した学習用のものです(実機のソフトウェアや画像は含みません)。ディスクやカセットの命令、スプライト、PEEK/POKE などの機種依存の機能は含みません。</div>
 </section>
 <section id="start"><h2>画面とはじめかた</h2>
 
@@ -40,9 +40,9 @@
 <li><code>INKEY$</code> でキー入力を読むときは、画面をクリックしてからキーを押します。</li>
 <li>すべての行は行番号で始めます(「行番号をふる」ボタンで自動で付けられます)。</li>
 </ul>
-<div class="ex"><div class="ex-title"><span>Hello, World</span><a class="try" href="index.html?d=n88&code=10%20CLS%0A20%20PRINT%20%22Hello%2C%20World!%22%0A30%20PRINT%20%22%E3%81%93%E3%82%93%E3%81%AB%E3%81%A1%E3%81%AF%20N88-BASIC%22%0A40%20END">シミュレータで試す ▶</a></div><pre class="code">10 CLS
+<div class="ex"><div class="ex-title"><span>Hello, World</span><a class="try" href="index.html?d=n88&code=10%20CLS%0A20%20PRINT%20%22Hello%2C%20World!%22%0A30%20PRINT%20%22%E3%81%93%E3%82%93%E3%81%AB%E3%81%A1%E3%81%AF%20N88%E4%BA%92%E6%8F%9BBASIC%22%0A40%20END">シミュレータで試す ▶</a></div><pre class="code">10 CLS
 20 PRINT "Hello, World!"
-30 PRINT "こんにちは N88-BASIC"
+30 PRINT "こんにちは N88互換BASIC"
 40 END</pre></div>
 </section>
 <section id="program"><h2>プログラムの書き方</h2>
@@ -128,7 +128,7 @@
 <table class="doc"><thead><tr><th>関数</th><th>書式</th><th>説明</th></tr></thead><tbody><tr><td><code>ABS</code></td><td><code>ABS(x)</code></td><td>絶対値</td></tr><tr><td><code>SGN</code></td><td><code>SGN(x)</code></td><td>符号(-1, 0, 1)</td></tr><tr><td><code>INT</code></td><td><code>INT(x)</code></td><td>x を超えない最大の整数(<code>INT(-1.5)</code> = -2)</td></tr><tr><td><code>FIX</code></td><td><code>FIX(x)</code></td><td>小数点以下を切り捨て(<code>FIX(-1.5)</code> = -1)</td></tr><tr><td><code>CINT</code></td><td><code>CINT(x)</code></td><td>四捨五入して整数に</td></tr><tr><td><code>SQR</code></td><td><code>SQR(x)</code></td><td>平方根</td></tr><tr><td><code>SIN COS TAN</code></td><td><code>SIN(x)</code></td><td>三角関数(ラジアン)</td></tr><tr><td><code>ATN</code></td><td><code>ATN(x)</code></td><td>アークタンジェント</td></tr><tr><td><code>EXP LOG</code></td><td><code>EXP(x) LOG(x)</code></td><td>指数関数・自然対数</td></tr><tr><td><code>RND</code></td><td><code>RND(1)</code></td><td>0以上1未満の乱数。<code>RND(0)</code> は直前の値、負の数で乱数列を初期化。整数の乱数は <code>INT(RND(1)*6)+1</code>。</td></tr><tr><td><code>TIMER</code></td><td><code>TIMER</code></td><td>実行開始からの秒数</td></tr><tr><td><code>POINT</code></td><td><code>POINT(x,y)</code></td><td>画面上の点の色番号</td></tr></tbody></table>
 <h3>文字列の関数</h3>
 <table class="doc"><thead><tr><th>関数</th><th>書式</th><th>説明</th></tr></thead><tbody><tr><td><code>LEN</code></td><td><code>LEN(a$)</code></td><td>文字数</td></tr><tr><td><code>LEFT$</code></td><td><code>LEFT$(a$,n)</code></td><td>左から n 文字</td></tr><tr><td><code>RIGHT$</code></td><td><code>RIGHT$(a$,n)</code></td><td>右から n 文字</td></tr><tr><td><code>MID$</code></td><td><code>MID$(a$,p[,n])</code></td><td>p 文字目(1から数える)から n 文字</td></tr><tr><td><code>INSTR</code></td><td><code>INSTR([開始,]a$,b$)</code></td><td>a$ の中で b$ が最初に現れる位置(なければ 0)</td></tr><tr><td><code>STR$</code></td><td><code>STR$(x)</code></td><td>数を文字列に(正の数は先頭に空白)</td></tr><tr><td><code>VAL</code></td><td><code>VAL(a$)</code></td><td>文字列を数に(数でなければ 0)</td></tr><tr><td><code>CHR$</code></td><td><code>CHR$(n)</code></td><td>文字コードから文字</td></tr><tr><td><code>ASC</code></td><td><code>ASC(a$)</code></td><td>先頭文字の文字コード</td></tr><tr><td><code>HEX$ OCT$ BIN$</code></td><td><code>HEX$(n)</code></td><td>16進・8進・2進の文字列</td></tr><tr><td><code>SPACE$ STRING$</code></td><td><code>SPACE$(n)  STRING$(n,c)</code></td><td>n 個の空白、n 個の同じ文字</td></tr><tr><td><code>TIME$ DATE$</code></td><td><code>TIME$  DATE$</code></td><td>現在の時刻・日付</td></tr></tbody></table>
-<div class="ex"><div class="ex-title"><span>文字列関数</span><a class="try" href="index.html?d=n88&code=10%20A%24%3D%22N88-BASIC%22%0A20%20PRINT%20LEN(A%24)%3BLEFT%24(A%24%2C3)%3BRIGHT%24(A%24%2C5)%3BMID%24(A%24%2C5%2C2)%0A30%20PRINT%20INSTR(A%24%2C%22-%22)%3BSTR%24(3)%3BVAL(%2212%22)%2B1%0A40%20PRINT%20CHR%24(65)%3BASC(%22a%22)%3BHEX%24(255)%3BSTRING%24(5%2C%22*%22)%0A50%20FOR%20I%3DLEN(A%24)%20TO%201%20STEP%20-1%3A%20PRINT%20MID%24(A%24%2CI%2C1)%3B%3A%20NEXT%20I%3A%20PRINT%0A60%20END">シミュレータで試す ▶</a></div><pre class="code">10 A$="N88-BASIC"
+<div class="ex"><div class="ex-title"><span>文字列関数</span><a class="try" href="index.html?d=n88&code=10%20A%24%3D%22MY-BASIC%22%0A20%20PRINT%20LEN(A%24)%3BLEFT%24(A%24%2C3)%3BRIGHT%24(A%24%2C5)%3BMID%24(A%24%2C5%2C2)%0A30%20PRINT%20INSTR(A%24%2C%22-%22)%3BSTR%24(3)%3BVAL(%2212%22)%2B1%0A40%20PRINT%20CHR%24(65)%3BASC(%22a%22)%3BHEX%24(255)%3BSTRING%24(5%2C%22*%22)%0A50%20FOR%20I%3DLEN(A%24)%20TO%201%20STEP%20-1%3A%20PRINT%20MID%24(A%24%2CI%2C1)%3B%3A%20NEXT%20I%3A%20PRINT%0A60%20END">シミュレータで試す ▶</a></div><pre class="code">10 A$="MY-BASIC"
 20 PRINT LEN(A$);LEFT$(A$,3);RIGHT$(A$,5);MID$(A$,5,2)
 30 PRINT INSTR(A$,"-");STR$(3);VAL("12")+1
 40 PRINT CHR$(65);ASC("a");HEX$(255);STRING$(5,"*")
@@ -139,7 +139,7 @@
 
 <p>座標は<b>左上が (0,0)</b>で、右へ x、下へ y が増えます(640 × 400)。色は色番号(0〜7)。色を省略すると <code>COLOR</code> で決めた色になります。</p>
 <table class="doc"><thead><tr><th>命令</th><th>書式</th><th>説明</th></tr></thead><tbody><tr><td><code>PSET</code></td><td><code>PSET (x,y)[,色]</code></td><td>点を打ちます。<code>PSET STEP(dx,dy)</code> で直前の位置からの相対位置。</td></tr><tr><td><code>PRESET</code></td><td><code>PRESET (x,y)</code></td><td>点を背景色で消します。</td></tr><tr><td><code>LINE</code></td><td><code>LINE [(x1,y1)]-(x2,y2)[,色[,B|BF]]</code></td><td>線。<code>B</code> で四角形の枠、<code>BF</code> で塗りつぶした四角形。始点を省略すると直前の位置から。</td></tr><tr><td><code>CIRCLE</code></td><td><code>CIRCLE (x,y),半径[,色[,開始角,終了角[,比率]]]</code></td><td>円・円弧・楕円。角度はラジアン(右が0、反時計回り)。比率が1より小さいと横長の楕円。角度に負の符号を付けると中心への線も引きます。</td></tr><tr><td><code>PAINT</code></td><td><code>PAINT (x,y)[,塗り色[,境界色]]</code></td><td>(x,y) をふくむ閉じた領域を塗ります。境界色を指定した場合は、その色の線まで塗ります。</td></tr><tr><td><code>POINT</code></td><td><code>POINT(x,y)</code></td><td>(x,y) の色番号を返す関数。</td></tr></tbody></table>
-<div class="ex"><div class="ex-title"><span>図形</span><a class="try" href="index.html?d=n88&code=10%20SCREEN%203%3A%20CLS%0A20%20FOR%20I%3D0%20TO%207%0A30%20%20%20LINE%20(I*80%2C0)-(I*80%2B79%2C60)%2CI%2CBF%0A40%20NEXT%20I%0A50%20CIRCLE%20(320%2C230)%2C120%2C6%0A60%20PAINT%20(320%2C230)%2C2%2C6%0A70%20CIRCLE%20(320%2C230)%2C60%2C5%0A80%20LINE%20(100%2C150)-(540%2C390)%2C7%2CB%0A90%20LOCATE%2030%2C12%3A%20COLOR%207%3A%20PRINT%20%22N88-BASIC%20GRAPHICS%22%0A100%20END">シミュレータで試す ▶</a></div><pre class="code">10 SCREEN 3: CLS
+<div class="ex"><div class="ex-title"><span>図形</span><a class="try" href="index.html?d=n88&code=10%20SCREEN%203%3A%20CLS%0A20%20FOR%20I%3D0%20TO%207%0A30%20%20%20LINE%20(I*80%2C0)-(I*80%2B79%2C60)%2CI%2CBF%0A40%20NEXT%20I%0A50%20CIRCLE%20(320%2C230)%2C120%2C6%0A60%20PAINT%20(320%2C230)%2C2%2C6%0A70%20CIRCLE%20(320%2C230)%2C60%2C5%0A80%20LINE%20(100%2C150)-(540%2C390)%2C7%2CB%0A90%20LOCATE%2030%2C12%3A%20COLOR%207%3A%20PRINT%20%22N88%E4%BA%92%E6%8F%9BBASIC%20GRAPHICS%22%0A100%20END">シミュレータで試す ▶</a></div><pre class="code">10 SCREEN 3: CLS
 20 FOR I=0 TO 7
 30   LINE (I*80,0)-(I*80+79,60),I,BF
 40 NEXT I
@@ -147,7 +147,7 @@
 60 PAINT (320,230),2,6
 70 CIRCLE (320,230),60,5
 80 LINE (100,150)-(540,390),7,B
-90 LOCATE 30,12: COLOR 7: PRINT "N88-BASIC GRAPHICS"
+90 LOCATE 30,12: COLOR 7: PRINT "N88互換BASIC GRAPHICS"
 100 END</pre></div>
 <div class="ex"><div class="ex-title"><span>サインカーブ</span><a class="try" href="index.html?d=n88&code=10%20SCREEN%203%3A%20CLS%0A20%20LINE%20(0%2C200)-(639%2C200)%2C7%0A30%20FOR%20X%3D0%20TO%20639%0A40%20%20%20Y%3D200-SIN(X%2F639*4*3.14159)*150%0A50%20%20%20PSET%20(X%2CY)%2C6%0A60%20NEXT%20X%0A70%20END">シミュレータで試す ▶</a></div><pre class="code">10 SCREEN 3: CLS
 20 LINE (0,200)-(639,200),7
@@ -161,6 +161,66 @@
 30 CIRCLE (320,200),100,4,3.14159,6.28318
 40 CIRCLE (320,200),150,5,,,0.5
 50 END</pre></div>
+</section>
+<section id="file"><h2>ファイル</h2>
+
+<p>データをファイルに保存して、あとで読み込めます。ファイルは<b>お使いのブラウザの中</b>(このサイト用の保存領域)に保存されるので、ページを閉じても残ります。別のパソコンや別のブラウザとは共有されません(ブラウザのサイトデータを消すと一緒に消えます)。</p>
+<ul>
+<li>ファイル名は英数字と <code>_ - .</code> で32文字まで(大文字小文字は区別しません)。<code>"A:DATA.DAT"</code> のようなドライブ名は書いても無視されます。</li>
+<li>ファイル番号は <code>#1</code>〜<code>#15</code>。同時に開けるのは別々の番号・別々のファイルです。</li>
+<li>プログラムが終了(<code>END</code>・エラー・停止)すると、開いているファイルは自動で閉じて保存されます。(実機のように <code>CLOSE</code> を忘れて失う心配はありません。それでも <code>CLOSE</code> を書く習慣をつけましょう。)</li>
+</ul>
+<h3>順番に読み書きする(シーケンシャルファイル)</h3>
+<table class="doc"><thead><tr><th>命令</th><th>書式</th><th>説明</th></tr></thead><tbody><tr><td><code>OPEN</code></td><td><code>OPEN "名前" FOR INPUT|OUTPUT|APPEND AS #n</code></td><td>読み込み(INPUT)、新規書き込み(OUTPUT、同名があれば上書き)、追加書き込み(APPEND)で開きます。古い書き方 <code>OPEN "I",#1,"名前"</code>(モードは <code>I</code> <code>O</code> <code>A</code>)も使えます。</td></tr><tr><td><code>CLOSE</code></td><td><code>CLOSE [#n, #m …]</code></td><td>ファイルを閉じて保存します。番号を省くとすべて閉じます。</td></tr><tr><td><code>PRINT #</code></td><td><code>PRINT #n, 項目 [; | , 項目 …]</code></td><td>画面の <code>PRINT</code> と同じ書式でファイルに書きます(<code>USING</code> も使えます)。</td></tr><tr><td><code>WRITE #</code></td><td><code>WRITE #n, 項目, 項目 …</code></td><td><code>INPUT #</code> で読み戻しやすい形(文字列は <code>"…"</code> で囲み、項目はカンマ区切り、数は空白なし)で書きます。</td></tr><tr><td><code>INPUT #</code></td><td><code>INPUT #n, 変数, 変数 …</code></td><td>ファイルから項目を読みます。項目はカンマか改行で区切られます。</td></tr><tr><td><code>LINE INPUT #</code></td><td><code>LINE INPUT #n, 文字列変数</code></td><td>1行をそのまま読みます。</td></tr><tr><td><code>INPUT$</code></td><td><code>INPUT$(文字数, #n)</code></td><td>指定した文字数だけ読みます。</td></tr><tr><td><code>EOF</code></td><td><code>EOF(n)</code></td><td>ファイルの終わりまで読んだら -1(真)。<code>WHILE NOT EOF(1) … WEND</code> で全部読めます。</td></tr><tr><td><code>LOF</code></td><td><code>LOF(n)</code></td><td>ファイルの大きさ(文字数)。</td></tr><tr><td><code>LOC</code></td><td><code>LOC(n)</code></td><td>ランダムファイルでは最後に読み書きしたレコード番号。</td></tr></tbody></table>
+<div class="ex"><div class="ex-title"><span>WRITE # と INPUT #</span><a class="try" href="index.html?d=n88&code=10%20'%20%E7%82%B9%E6%95%B0%E3%82%92%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%AB%E4%BF%9D%E5%AD%98%E3%81%97%E3%81%A6%E3%80%81%E8%AA%AD%E3%81%BF%E5%87%BA%E3%81%97%E3%81%A6%E5%B9%B3%E5%9D%87%E3%82%92%E5%87%BA%E3%81%99%0A20%20OPEN%20%22SCORE.DAT%22%20FOR%20OUTPUT%20AS%20%231%0A30%20FOR%20I%3D1%20TO%205%0A40%20%20%20WRITE%20%231%2C%22%E7%94%9F%E5%BE%92%22%2BSTR%24(I)%2C50%2BI*7%0A50%20NEXT%20I%0A60%20CLOSE%20%231%0A70%20OPEN%20%22SCORE.DAT%22%20FOR%20INPUT%20AS%20%231%0A80%20S%3D0%3AN%3D0%0A90%20WHILE%20NOT%20EOF(1)%0A100%20%20%20INPUT%20%231%2CNM%24%2CP%0A110%20%20%20PRINT%20NM%24%3BP%0A120%20%20%20S%3DS%2BP%3AN%3DN%2B1%0A130%20WEND%0A140%20CLOSE%20%231%0A150%20PRINT%20%22%E5%B9%B3%E5%9D%87%3D%22%3BS%2FN%0A160%20END">シミュレータで試す ▶</a></div><pre class="code">10 ' 点数をファイルに保存して、読み出して平均を出す
+20 OPEN "SCORE.DAT" FOR OUTPUT AS #1
+30 FOR I=1 TO 5
+40   WRITE #1,"生徒"+STR$(I),50+I*7
+50 NEXT I
+60 CLOSE #1
+70 OPEN "SCORE.DAT" FOR INPUT AS #1
+80 S=0:N=0
+90 WHILE NOT EOF(1)
+100   INPUT #1,NM$,P
+110   PRINT NM$;P
+120   S=S+P:N=N+1
+130 WEND
+140 CLOSE #1
+150 PRINT "平均=";S/N
+160 END</pre></div>
+<div class="ex"><div class="ex-title"><span>APPEND と LINE INPUT #</span><a class="try" href="index.html?d=n88&code=10%20'%20%E3%83%A1%E3%83%A2%E3%82%921%E8%A1%8C%E3%81%9A%E3%81%A4%E8%BF%BD%E5%8A%A0%E3%81%97%E3%81%A6%E3%81%84%E3%81%8F(%E4%BD%95%E5%BA%A6%E5%AE%9F%E8%A1%8C%E3%81%97%E3%81%A6%E3%82%82%E5%A2%97%E3%81%88%E3%81%A6%E3%81%84%E3%81%8F)%0A20%20OPEN%20%22MEMO.TXT%22%20FOR%20APPEND%20AS%20%231%0A30%20PRINT%20%231%2C%22%E5%AE%9F%E8%A1%8C%E3%81%97%E3%81%9F%E6%99%82%E5%88%BB%20%22%3BTIME%24%0A40%20CLOSE%20%231%0A50%20OPEN%20%22MEMO.TXT%22%20FOR%20INPUT%20AS%20%231%0A60%20WHILE%20NOT%20EOF(1)%0A70%20%20%20LINE%20INPUT%20%231%2CA%24%0A80%20%20%20PRINT%20A%24%0A90%20WEND%0A100%20CLOSE%20%231">シミュレータで試す ▶</a></div><pre class="code">10 ' メモを1行ずつ追加していく(何度実行しても増えていく)
+20 OPEN "MEMO.TXT" FOR APPEND AS #1
+30 PRINT #1,"実行した時刻 ";TIME$
+40 CLOSE #1
+50 OPEN "MEMO.TXT" FOR INPUT AS #1
+60 WHILE NOT EOF(1)
+70   LINE INPUT #1,A$
+80   PRINT A$
+90 WEND
+100 CLOSE #1</pre></div>
+<h3>番号で出し入れする(ランダムファイル)</h3>
+<p>1件ぶんの長さ(レコード長)を決め、<b>何番目のレコード</b>かを指定して読み書きします。<code>OPEN "名前" AS #n LEN=レコード長</code>(または <code>OPEN "R",#n,"名前",レコード長</code>)で開き、<code>FIELD</code> でレコードの中身を文字列変数に割り当てます。</p>
+<table class="doc"><thead><tr><th>命令</th><th>書式</th><th>説明</th></tr></thead><tbody><tr><td><code>FIELD</code></td><td><code>FIELD #n, 幅 AS 変数$, 幅 AS 変数$ …</code></td><td>レコードを、幅ごとの文字列変数に割り当てます(幅の合計はレコード長以下)。</td></tr><tr><td><code>LSET / RSET</code></td><td><code>LSET 変数$ = 式  /  RSET 変数$ = 式</code></td><td>FIELD した変数に、左そろえ(LSET)・右そろえ(RSET)で値を入れます(足りない分は空白、あふれた分は切り捨て)。ふつうの <code>=</code> では書き込めません。</td></tr><tr><td><code>PUT</code></td><td><code>PUT #n[, レコード番号]</code></td><td>いまのレコードの内容をファイルへ書きます。番号を省くと前回の次のレコード。</td></tr><tr><td><code>GET</code></td><td><code>GET #n[, レコード番号]</code></td><td>レコードを読んで、FIELD の変数に入れます。</td></tr><tr><td><code>MKI$ MKS$ MKD$</code></td><td><code>MKI$(整数)  MKS$(単精度)  MKD$(倍精度)</code></td><td>数を 2・4・8 文字の文字列に変換します(レコードに数を入れるとき用)。</td></tr><tr><td><code>CVI CVS CVD</code></td><td><code>CVI(文字列)  CVS(文字列)  CVD(文字列)</code></td><td>上の逆(文字列から数に戻す)。</td></tr></tbody></table>
+<div class="ex"><div class="ex-title"><span>ランダムファイル(住所録)</span><a class="try" href="index.html?d=n88&code=10%20'%201%E4%BB%B624%E6%96%87%E5%AD%97%E3%81%AE%E3%83%AC%E3%82%B3%E3%83%BC%E3%83%89%E3%81%A7%E4%BF%9D%E5%AD%98%E3%81%99%E3%82%8B%0A20%20OPEN%20%22ADDR.DAT%22%20AS%20%231%20LEN%3D24%0A30%20FIELD%20%231%2C12%20AS%20N%24%2C10%20AS%20T%24%2C2%20AS%20A%24%0A40%20DATA%20%E5%B1%B1%E7%94%B0%2C0901111111%2C20%2C%E9%88%B4%E6%9C%A8%2C0902222222%2C31%2C%E4%BD%90%E8%97%A4%2C0903333333%2C45%0A50%20FOR%20I%3D1%20TO%203%0A60%20%20%20READ%20NM%24%2CTL%24%2CAG%0A70%20%20%20LSET%20N%24%3DNM%24%3ALSET%20T%24%3DTL%24%3ALSET%20A%24%3DMKI%24(AG)%0A80%20%20%20PUT%20%231%2CI%0A90%20NEXT%20I%0A100%20PRINT%20%22%E3%83%AC%E3%82%B3%E3%83%BC%E3%83%89%E6%95%B0%3D%22%3BLOF(1)%2F24%0A110%20FOR%20I%3D3%20TO%201%20STEP%20-1%0A120%20%20%20GET%20%231%2CI%0A130%20%20%20PRINT%20I%3BN%24%3BT%24%3BCVI(A%24)%3B%22%E6%AD%B3%22%0A140%20NEXT%20I%0A150%20CLOSE%20%231%0A160%20FILES%0A170%20END">シミュレータで試す ▶</a></div><pre class="code">10 ' 1件24文字のレコードで保存する
+20 OPEN "ADDR.DAT" AS #1 LEN=24
+30 FIELD #1,12 AS N$,10 AS T$,2 AS A$
+40 DATA 山田,0901111111,20,鈴木,0902222222,31,佐藤,0903333333,45
+50 FOR I=1 TO 3
+60   READ NM$,TL$,AG
+70   LSET N$=NM$:LSET T$=TL$:LSET A$=MKI$(AG)
+80   PUT #1,I
+90 NEXT I
+100 PRINT "レコード数=";LOF(1)/24
+110 FOR I=3 TO 1 STEP -1
+120   GET #1,I
+130   PRINT I;N$;T$;CVI(A$);"歳"
+140 NEXT I
+150 CLOSE #1
+160 FILES
+170 END</pre></div>
+<h3>ファイルの管理</h3>
+<table class="doc"><thead><tr><th>命令</th><th>書式</th><th>説明</th></tr></thead><tbody><tr><td><code>FILES</code></td><td><code>FILES ["パターン"]</code></td><td>ファイルの一覧を表示します(<code>FILES "*.DAT"</code> のように <code>*</code> と <code>?</code> が使えます)。</td></tr><tr><td><code>KILL</code></td><td><code>KILL "名前"</code></td><td>ファイルを削除します。</td></tr><tr><td><code>NAME</code></td><td><code>NAME "旧" AS "新"</code></td><td>ファイル名を変更します。</td></tr></tbody></table>
+<p>よくあるエラー: 「ファイルが見つかりません」(読み込み用に開いたのに無い)、「ファイルの終わりを過ぎて読もうとしました」(<code>EOF</code> を確かめずに読んだ)、「ファイルは既に開かれています」(<code>CLOSE</code> せずに同じ番号・同じファイルを開いた)、「ファイル #n ではこの操作はできません」(書き込み用に開いたファイルを <code>INPUT #</code> した、など)。</p>
 </section>
 <section id="samples"><h2>もう少し大きなプログラム</h2>
 
@@ -193,7 +253,8 @@
 <section id="limits"><h2>制限事項</h2>
 
 <ul>
-<li>ファイル(OPEN/CLOSE/SAVE/LOAD)、PEEK/POKE、OUT/INP、スプライト、GET/PUT@(図形の取り込み)、VIEW/WINDOW、KEY・割り込み(ON KEY/ON TIMER)は未対応です。<code>KEY</code> と <code>CONSOLE</code> は書いても何も起きません。</li>
+<li>プログラム自体の SAVE/LOAD/MERGE(エディタの「保存」「読み込み」を使ってください)、PEEK/POKE、OUT/INP、スプライト、GET@/PUT@(図形の取り込み)、VIEW/WINDOW、KEY・割り込み(ON KEY/ON TIMER)は未対応です。<code>KEY</code> と <code>CONSOLE</code> は書いても何も起きません。</li>
+<li>ファイルはブラウザの中に保存されます。ディスクやカセットなどの装置名は無視され、<code>LOF</code> や <code>LOC</code> の値は実機と少し違います。ランダムファイルの文字列は、日本語も1文字を1つと数えます。</li>
 <li>グラフィックは 640 × 400 ドット・8色固定で、文字層とグラフィック層は別です。<code>CLS</code> は両方を消します。</li>
 <li>単精度/倍精度の違いは表示桁数にだけ現れ、内部では倍精度で計算します(<code>PRINT 1/3</code> は <code>.3333333</code>)。</li>
 <li>キーワードの途中に空白がなくても読める「<code>FORI=1TO10</code>」のような書き方は、キーワードの前後に空白が必要です。</li>
@@ -207,9 +268,10 @@
 <footer class="site-footer">
   <div class="wrap">
     <span>© MACS Project</span>
-    <span>マニュアル: <a href="manual-tiny.html">Tiny BASIC</a><a href="manual-n88.html" aria-current="page">N88-BASIC</a><a href="manual-full.html">Full BASIC</a><a href="manual-smile.html">smile BASIC</a></span>
+    <span>マニュアル: <a href="manual-tiny.html">Tiny BASIC</a><a href="manual-n88.html" aria-current="page">N88互換BASIC</a><a href="manual-full.html">Full BASIC</a><a href="manual-smile.html">SmileBASIC互換</a></span>
     <span><a href="compare.html">方言の比較</a> / <a href="index.html">シミュレータ</a></span>
   </div>
+  <div class="wrap"><p class="legal">「N88-BASIC」「PC-8801」「PC-9801」は日本電気株式会社(NEC)の、「SmileBASIC」は株式会社スマイルブームの、「Microsoft」は Microsoft Corporation の商標または登録商標です。このサイトは個人・学習用の<b>非公式</b>のシミュレータで、これらの会社とは関係がなく、承認・提携・推奨を受けたものではありません。このサイトの「N88互換BASIC」「SmileBASIC互換」は、それらの文法や使い方を参考にした互換実装であることを示す名前です。各社の製品・ソフトウェア・画像・マニュアルの内容は含まれていません(画面の絵・サンプル・説明文はすべて独自に作成したものです)。</p></div>
 </footer>
 </body>
 </html>

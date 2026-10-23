@@ -1,7 +1,7 @@
 // 方言の比較ページ。セルの先頭の y: / p: / n: は ● / △ / × の印になる。
 const ROWS = [
   ['基本', [
-    ['時代・出どころ', '1975年ごろ。Tiny BASIC 仕様(最小のBASIC)', '1980年代。NEC PC-8801/9801 の標準BASIC(Microsoft BASIC系)', '1980年代に規格化(ANSI/ISO、JIS X 3003)。教育用', '2010年代〜。ゲーム向けの現代的BASIC(SmileBASIC風)'],
+    ['時代・出どころ', '1975年ごろ。Tiny BASIC 仕様(最小のBASIC)', '1980年代のNEC PC-8801/9801 向けBASICを参考にした互換(Microsoft BASIC系の文法)', '1980年代に規格化(ANSI/ISO、JIS X 3003)。教育用', '2010年代〜のゲーム向け現代的BASIC(SmileBASIC を参考にした互換)'],
     ['行番号', '必須', '必須', 'p:省略できる(付けても可)', 'y:使わない(ラベル <code>@名前</code>)'],
     ['1行に複数の文(<code>:</code>)', 'n:不可', 'y:可', 'y:可', 'y:可'],
     ['コメント', '<code>REM</code>', '<code>REM</code> と <code>\'</code>', '<code>!</code> と <code>REM</code>', '<code>\'</code> と <code>REM</code>'],
@@ -64,6 +64,8 @@ const ROWS = [
     ['色の指定', '0〜7', '0〜7(黒 青 赤 紫 緑 水 黄 白)', '0〜7・色名 <code>"RED"</code>・<code>MIX(r,g,b)</code>', '<code>RGB(r,g,b)</code>・<code>#RED</code> など'],
     ['時間待ち', '<code>WAIT</code>(拡張)', 'n:なし(ループで待つ)', '<code>WAIT DELAY 秒</code>', '<code>VSYNC</code>・<code>WAIT</code>(1/60秒単位)'],
     ['音', 'n:なし', 'y:<code>BEEP SOUND PLAY</code>', 'n:なし', 'p:<code>BEEP</code> だけ'],
+    ['スプライト・BG', 'n:なし', 'n:なし', 'n:なし', 'y:<code>SPSET SPOFS SPANIM BGPUT BGOFS …</code>'],
+    ['ファイルの保存', 'n:なし', 'y:<code>OPEN CLOSE PRINT# INPUT# GET PUT</code> など(ブラウザに保存)', 'n:なし', 'y:<code>SAVE LOAD FILES</code>(ブラウザに保存)'],
   ]],
 ];
 
@@ -209,14 +211,14 @@ GCIRCLE 200,120,100,#YELLOW`,
 ];
 
 const TIPS = [
-  ['行番号 ⇔ ラベル', 'N88-BASIC の <code>GOTO 100</code> は、smile BASIC では <code>GOTO @LABEL</code>(<code>@LABEL</code> を飛び先の行に書く)にします。Full BASIC は行番号を省略して構造化(<code>DO</code> / <code>IF</code> ブロック)で書き換えるのがおすすめです。'],
-  ['真偽の値', 'N88-BASIC の「真」は <b>-1</b>、他は <b>1</b>。<code>IF A THEN</code> のように 0 かどうかだけを見る使い方は共通ですが、<code>X = (A>B)</code> のように値を取り出すと結果が変わります。'],
-  ['乱数', 'N88-BASIC の <code>INT(RND(1)*6)+1</code> は、smile BASIC では <code>RND(6)+1</code>、Tiny BASIC では <code>RND(6)</code> です。'],
-  ['文字の位置', '<code>MID$</code> の位置は N88-BASIC / Full BASIC が <b>1</b> から、smile BASIC が <b>0</b> から。<code>INSTR</code> が「見つからない」ときは N88 が 0、smile が -1 です。'],
-  ['配列の大きさ', '<code>DIM A(10)</code> は N88-BASIC / Full BASIC で <b>11 個</b>(0〜10)、<code>DIM A[10]</code> は smile BASIC で <b>10 個</b>(0〜9)。'],
-  ['数の表示', 'N88-BASIC と Full BASIC の <code>PRINT</code> は数の前後に空白を入れます(<code>PRINT 5</code> は <code> 5 </code>)。見た目をそろえたいときは <code>STR$</code> と <code>MID$</code> を使うか、<code>PRINT USING</code> を使いましょう。'],
+  ['行番号 ⇔ ラベル', 'N88互換BASIC の <code>GOTO 100</code> は、SmileBASIC互換 では <code>GOTO @LABEL</code>(<code>@LABEL</code> を飛び先の行に書く)にします。Full BASIC は行番号を省略して構造化(<code>DO</code> / <code>IF</code> ブロック)で書き換えるのがおすすめです。'],
+  ['真偽の値', 'N88互換BASIC の「真」は <b>-1</b>、他は <b>1</b>。<code>IF A THEN</code> のように 0 かどうかだけを見る使い方は共通ですが、<code>X = (A>B)</code> のように値を取り出すと結果が変わります。'],
+  ['乱数', 'N88互換BASIC の <code>INT(RND(1)*6)+1</code> は、SmileBASIC互換 では <code>RND(6)+1</code>、Tiny BASIC では <code>RND(6)</code> です。'],
+  ['文字の位置', '<code>MID$</code> の位置は N88互換BASIC / Full BASIC が <b>1</b> から、SmileBASIC互換 が <b>0</b> から。<code>INSTR</code> が「見つからない」ときは N88 が 0、smile が -1 です。'],
+  ['配列の大きさ', '<code>DIM A(10)</code> は N88互換BASIC / Full BASIC で <b>11 個</b>(0〜10)、<code>DIM A[10]</code> は SmileBASIC互換 で <b>10 個</b>(0〜9)。'],
+  ['数の表示', 'N88互換BASIC と Full BASIC の <code>PRINT</code> は数の前後に空白を入れます(<code>PRINT 5</code> は <code> 5 </code>)。見た目をそろえたいときは <code>STR$</code> と <code>MID$</code> を使うか、<code>PRINT USING</code> を使いましょう。'],
   ['グラフィックの座標', 'Full BASIC だけは「好きな座標系」(数学と同じで上が +y)で描きます。ほかは左上が (0,0) のドット座標です。'],
-  ['色', 'Tiny / N88 / Full は 0〜7 の色番号(Full は色名も)、smile BASIC は <code>RGB(r,g,b)</code> か <code>#RED</code> などの定数です。'],
+  ['色', 'Tiny / N88 / Full は 0〜7 の色番号(Full は色名も)、SmileBASIC互換 は <code>RGB(r,g,b)</code> か <code>#RED</code> などの定数です。'],
 ];
 
 function cell(c) {
@@ -244,12 +246,12 @@ ${D.map((d) => `<div class="col d-${d}"><h4>${LABEL[d]}</h4>${hh(d).ex(progs[d],
 
   return `
 <h1>方言の比較</h1>
-<p class="lead">Tiny BASIC・N88-BASIC・Full BASIC・smile BASIC の違いを、一覧表と「同じプログラムを4つの方言で書いた例」で比べます。</p>
+<p class="lead">Tiny BASIC・N88互換BASIC・Full BASIC・SmileBASIC互換 の違いを、一覧表と「同じプログラムを4つの方言で書いた例」で比べます。</p>
 <div class="cards">
   <a class="card d-tiny" href="manual-tiny.html"><h3>Tiny BASIC</h3><p>最小のBASIC。行番号・整数・IF/GOTO/GOSUB。「プログラムとは何か」を学ぶ入口。</p></a>
-  <a class="card d-n88" href="manual-n88.html"><h3>N88-BASIC</h3><p>行番号つきの定番BASIC。色・図形・音・文字列がそろったレトロPCの味。</p></a>
+  <a class="card d-n88" href="manual-n88.html"><h3>N88互換BASIC</h3><p>行番号つきの定番BASIC。色・図形・音・文字列がそろったレトロPCの味。</p></a>
   <a class="card d-full" href="manual-full.html"><h3>Full BASIC</h3><p>規格化された構造化BASIC。行番号なし、SUB/FUNCTION、数学向きの図形。</p></a>
-  <a class="card d-smile" href="manual-smile.html"><h3>smile BASIC</h3><p>ゲーム向けの現代的BASIC。ラベル・DEF・配列・VSYNC・RGB。</p></a>
+  <a class="card d-smile" href="manual-smile.html"><h3>SmileBASIC互換</h3><p>ゲーム向けの現代的BASIC。ラベル・DEF・配列・VSYNC・RGB。</p></a>
 </div>
 <div class="note">表の印: <b>●</b> 使える　<b>△</b> 一部だけ(拡張や制限つき)　<b>×</b> 使えない。印のない欄は書き方の違いです。このシミュレータが再現している範囲での比較です。</div>
 <h2>1. 一覧表</h2>
@@ -262,8 +264,8 @@ ${tips}
 <h2>4. どれを選ぶ?</h2>
 <ul>
 <li><b>プログラムの動く仕組みを最小の道具で学びたい</b> → Tiny BASIC</li>
-<li><b>昔のパソコンの雰囲気で、色や図形や音を楽しみたい</b> → N88-BASIC</li>
+<li><b>昔のパソコンの雰囲気で、色や図形や音を楽しみたい</b> → N88互換BASIC</li>
 <li><b>きれいな構造のプログラムや、数学・理科のグラフを描きたい</b> → Full BASIC</li>
-<li><b>ゲームやアニメーションを作りたい</b> → smile BASIC</li>
+<li><b>ゲームやアニメーションを作りたい</b> → SmileBASIC互換</li>
 </ul>`;
 };

@@ -28,7 +28,7 @@
   <article>
 <section id="about"><h2>Tiny BASIC とは</h2>
 
-<p>Tiny BASIC は、まだパソコンのメモリが 4KB 前後しかなかった 1975 年ごろ、「小さなマイコンでも動くBASIC」として考えられた言語です。多くの処理系が作られ、その後の <a href="manual-n88.html">N88-BASIC</a> などパソコン用BASICの先祖にあたります。</p>
+<p>Tiny BASIC は、まだパソコンのメモリが 4KB 前後しかなかった 1975 年ごろ、「小さなマイコンでも動くBASIC」として考えられた言語です。多くの処理系が作られ、その後の <a href="manual-n88.html">N88互換BASIC</a> などパソコン用BASICの先祖にあたります。</p>
 <p>機能をぎりぎりまで削っているので、<b>FOR も、文字列変数も、小数もありません</b>。そのかわり、覚えることが少なく、「プログラムは上から順に実行され、IF と GOTO で流れが変わる」という基本がそのまま見えます。</p>
 <div class="note tip">Tiny BASIC は実装ごとに細部が違います。このシミュレータは、よく知られた Tiny BASIC の文法(PRINT / IF / GOTO / GOSUB / RETURN / INPUT / LET / END / REM / RND)に、描画用の拡張命令を加えたものです。</div>
 </section>
@@ -160,7 +160,7 @@
 </section>
 <section id="errors"><h2>エラーメッセージ</h2>
 
-<table class="doc"><thead><tr><th>メッセージ</th><th>原因と対処</th></tr></thead><tbody><tr><td>行番号がありません</td><td>すべての行の先頭に行番号が必要です。「行番号をふる」を使うと便利です。</td></tr><tr><td>Tiny BASICの変数名は A〜Z の1文字です</td><td><code>AB</code> や <code>SUM</code> は使えません。1文字の変数にします。</td></tr><tr><td>〜は N88-BASIC・… のコマンドです</td><td>FOR、WHILE、DIM などは Tiny BASIC にはありません。<code>IF</code> と <code>GOTO</code> で書き換えます。</td></tr><tr><td>オーバーフロー (Overflow)</td><td>計算結果が -32767〜32767 を超えました。</td></tr><tr><td>0で割りました (Division by zero)</td><td>0 で割っています。</td></tr><tr><td>未定義の行番号です</td><td><code>GOTO</code> / <code>GOSUB</code> で存在しない行を指定しています。</td></tr><tr><td>RETURN に対応する GOSUB がありません</td><td>GOSUB を通らずに RETURN を実行しました。<code>END</code> を忘れていないか確認してください。</td></tr><tr><td>再入力してください (Redo from start)</td><td><code>INPUT</code> に数でないものを入力した場合のメッセージです(エラーではなく再入力になります)。</td></tr></tbody></table>
+<table class="doc"><thead><tr><th>メッセージ</th><th>原因と対処</th></tr></thead><tbody><tr><td>行番号がありません</td><td>すべての行の先頭に行番号が必要です。「行番号をふる」を使うと便利です。</td></tr><tr><td>Tiny BASICの変数名は A〜Z の1文字です</td><td><code>AB</code> や <code>SUM</code> は使えません。1文字の変数にします。</td></tr><tr><td>〜は N88互換BASIC・… のコマンドです</td><td>FOR、WHILE、DIM などは Tiny BASIC にはありません。<code>IF</code> と <code>GOTO</code> で書き換えます。</td></tr><tr><td>オーバーフロー (Overflow)</td><td>計算結果が -32767〜32767 を超えました。</td></tr><tr><td>0で割りました (Division by zero)</td><td>0 で割っています。</td></tr><tr><td>未定義の行番号です</td><td><code>GOTO</code> / <code>GOSUB</code> で存在しない行を指定しています。</td></tr><tr><td>RETURN に対応する GOSUB がありません</td><td>GOSUB を通らずに RETURN を実行しました。<code>END</code> を忘れていないか確認してください。</td></tr><tr><td>再入力してください (Redo from start)</td><td><code>INPUT</code> に数でないものを入力した場合のメッセージです(エラーではなく再入力になります)。</td></tr></tbody></table>
 </section>
 <section id="limits"><h2>制限事項・他の方言との違い</h2>
 
@@ -170,7 +170,7 @@
 <li>整数は -32767〜32767 の範囲です。</li>
 <li>PLOT / LINE / CIRCLE / COLOR / CLS / WAIT はこのシミュレータの拡張で、実機の Tiny BASIC にはありません。</li>
 </ul>
-<p>各BASICの違いは <a href="compare.html">方言の比較</a> にまとめています。もっと機能がほしくなったら <a href="manual-n88.html">N88-BASIC</a> や <a href="manual-full.html">Full BASIC</a> へ進みましょう。</p>
+<p>各BASICの違いは <a href="compare.html">方言の比較</a> にまとめています。もっと機能がほしくなったら <a href="manual-n88.html">N88互換BASIC</a> や <a href="manual-full.html">Full BASIC</a> へ進みましょう。</p>
 </section>
   </article>
 </div>
@@ -178,9 +178,10 @@
 <footer class="site-footer">
   <div class="wrap">
     <span>© MACS Project</span>
-    <span>マニュアル: <a href="manual-tiny.html" aria-current="page">Tiny BASIC</a><a href="manual-n88.html">N88-BASIC</a><a href="manual-full.html">Full BASIC</a><a href="manual-smile.html">smile BASIC</a></span>
+    <span>マニュアル: <a href="manual-tiny.html" aria-current="page">Tiny BASIC</a><a href="manual-n88.html">N88互換BASIC</a><a href="manual-full.html">Full BASIC</a><a href="manual-smile.html">SmileBASIC互換</a></span>
     <span><a href="compare.html">方言の比較</a> / <a href="index.html">シミュレータ</a></span>
   </div>
+  <div class="wrap"><p class="legal">「N88-BASIC」「PC-8801」「PC-9801」は日本電気株式会社(NEC)の、「SmileBASIC」は株式会社スマイルブームの、「Microsoft」は Microsoft Corporation の商標または登録商標です。このサイトは個人・学習用の<b>非公式</b>のシミュレータで、これらの会社とは関係がなく、承認・提携・推奨を受けたものではありません。このサイトの「N88互換BASIC」「SmileBASIC互換」は、それらの文法や使い方を参考にした互換実装であることを示す名前です。各社の製品・ソフトウェア・画像・マニュアルの内容は含まれていません(画面の絵・サンプル・説明文はすべて独自に作成したものです)。</p></div>
 </footer>
 </body>
 </html>

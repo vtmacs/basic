@@ -182,6 +182,99 @@ const px = (r, x, y) => r.screen.point(x, y);
   await T('n88 deep fn', 'n88', '10 DEF FNA(X)=FNA(X+1)\n20 PRINT FNA(0)', /ERR .*(深すぎ|あふれ)/);
   await T('smile recursion 300', 'smile', 'DEF S(N)\nIF N<=0 THEN RETURN 0\nRETURN N+S(N-1)\nEND\nPRINT S(300)', '45150');
   await T('gosub runaway', 'n88', '10 GOSUB 10', /ERR .*深すぎ/);
+  await T('full auto line goto', 'full', 'LET n = 1\nPRINT n\nLET n = n + 1\nIF n <= 3 THEN GOTO 2\nEND', ' 1\n 2\n 3');
+  await T('full auto line skips blanks', 'full', 'PRINT 1\n\n\nGOTO 4\nPRINT 2\nPRINT 3', ' 1\n 3'.replace(' 3', ' 3'));
+  await T('full auto line error number', 'full', 'PRINT 1\n\nPRINT 1 / 0', (r) => r.err && r.err.line === 2 && r.err.srcLine === 3);
+
+  // ---------------- smile BASIC: スプライト / BG / ページ / ファイル
+  const cp = (r, x, y) => { const o = r.screen.compose(); const v = o[y * r.screen.dispW + x]; return ((v & 255) << 16) | (v & 0xff00) | ((v >>> 16) & 255); };
+  await T('spr basic', 'smile', 'SPSET 0,0\nSPOFS 0,100,50', (r) => cp(r, 108, 58) === 0xff3030 && cp(r, 90, 50) === 0 && cp(r, 100, 50) === 0);
+  await T('spr hide/show', 'smile', 'SPSET 0,0\nSPOFS 0,100,50\nSPHIDE 0', (r) => cp(r, 108, 58) === 0);
+  await T('spr scale', 'smile', 'SPSET 1,4\nSPOFS 1,0,0\nSPSCALE 1,2,2', (r) => cp(r, 20, 20) === 0xff3030 && cp(r, 31, 31) === 0);
+  await T('spr home', 'smile', 'SPSET 0,0\nSPHOME 0,8,8\nSPOFS 0,100,100', (r) => cp(r, 100, 100) === 0xff3030 && cp(r, 93, 100) === 0xff3030 && cp(r, 80, 100) === 0);
+  await T('spr rot', 'smile', 'SPSET 1,4\nSPHOME 1,8,8\nSPOFS 1,100,100\nSPROT 1,45', (r) => cp(r, 100, 100) === 0xff3030 && cp(r, 100, 92) === 0xff3030 && cp(r, 93, 93) === 0);
+  await T('spr z order', 'smile', 'SPSET 0,0\nSPSET 1,5\nSPOFS 0,0,0,1\nSPOFS 1,0,0,0', (r) => cp(r, 8, 8) === 0x3080ff);
+  await T('spr z order 2', 'smile', 'SPSET 0,0\nSPSET 1,5\nSPOFS 0,0,0,-1\nSPOFS 1,0,0,0', (r) => cp(r, 8, 8) === 0xff3030);
+  await T('spr tint', 'smile', 'SPSET 0,0\nSPCOLOR 0,RGB(0,0,255)', (r) => cp(r, 8, 8) === 0x000030);
+  await T('spr ofs out', 'smile', 'SPSET 0,0\nSPOFS 0,5,6\nSPOFS 0 OUT X,Y\nPRINT X;Y\nSPSCALE 0,2,3\nSPSCALE 0 OUT A,B\nPRINT A;B', '56\n23');
+  await T('spr used clr', 'smile', 'SPSET 3,0\nPRINT SPUSED(3);SPUSED(4)\nSPCLR 3\nPRINT SPUSED(3)', '10\n0');
+  await T('spr unused err', 'smile', 'SPOFS 5,1,1', /ERR .*使われていません/);
+  await T('spr hitsp', 'smile', 'SPSET 0,0:SPSET 1,0:SPSET 2,0\nSPOFS 0,0,0:SPOFS 1,10,10:SPOFS 2,100,100\nPRINT SPHITSP(0,1);SPHITSP(0,2);SPHITSP(0);SPHITSP(2)', '10' + '1' + '-1'.replace('', ''));
+  await T('spr hitrc', 'smile', 'SPSET 0,0\nSPOFS 0,50,50\nPRINT SPHITRC(0,55,55,2,2);SPHITRC(0,0,0,10,10)', '10');
+  await T('spr col custom', 'smile', 'SPSET 0,0:SPSET 1,0\nSPOFS 0,0,0:SPOFS 1,10,0\nSPCOL 0,0,0,4,4\nSPCOL 1,0,0,4,4\nPRINT SPHITSP(0,1)', '0');
+  await T('spr var', 'smile', 'SPSET 0,0\nSPVAR 0,2,99\nPRINT SPVAR(0,2);SPVAR(0,3)', '990');
+  await T('spr def', 'smile', 'GPAGE 0,4\nGCLS\nGFILL 0,64,7,71,#GREEN\nGPAGE 0,0\nSPDEF 100,0,64,8,8\nSPSET 0,100\nSPOFS 0,20,20', (r) => cp(r, 22, 22) === 0x008000 && cp(r, 29, 22) === 0);
+  await T('spr set uvwh', 'smile', 'SPSET 0,16,0,16,16\nSPOFS 0,0,0', (r) => cp(r, 8, 8) === 0x3080ff);
+  await T('spr anim xy', 'smile', 'SPSET 0,0\nSPOFS 0,0,0\nSPANIM 0,"XY",10,100,50\nVSYNC 5\nSPOFS 0 OUT X,Y\nPRINT X;Y\nVSYNC 5\nSPOFS 0 OUT X,Y\nPRINT X;Y', '50 25\n100 50'.replace(/ /g, '').replace('5025', '5025') );
+  await T('spr anim loop', 'smile', 'SPSET 0,0\nSPANIM 0,"XY",10,100,0,10,0,0,0\nVSYNC 25\nSPOFS 0 OUT X,Y\nPRINT X', '50');
+  await T('spr anim image', 'smile', 'SPSET 0,0\nSPANIM 0,"I",5,0,5,5,0\nVSYNC 7', (r) => cp(r, 8, 8) === 0x3080ff);
+  await T('spr acls', 'smile', 'SPSET 0,0\nBGPUT 0,0,0,1\nACLS\nPRINT SPUSED(0)', '0');
+  await T('bg basic', 'smile', 'BGPUT 0,0,0,2', (r) => cp(r, 0, 0) === 0xc04030 && cp(r, 16, 0) === 0);
+  await T('bg ofs', 'smile', 'BGPUT 0,1,0,3\nBGOFS 0,16,0', (r) => cp(r, 0, 0) === 0x30a030 && cp(r, 0, 10) === 0x805020);
+  await T('bg wrap', 'smile', 'BGSCREEN 0,2,2\nBGPUT 0,0,0,10\nBGOFS 0,-4,0', (r) => cp(r, 4, 0) === 0xff0000 && cp(r, 0, 0) === 0 && cp(r, 36, 0) === 0xff0000);
+  await T('bg fill get', 'smile', 'BGFILL 0,0,0,2,2,7\nPRINT BGGET(0,1,1);BGGET(0,3,3)', '70');
+  await T('bg flip', 'smile', 'BGPUT 0,0,0,3+&H4000', (r) => cp(r, 0, 0) === 0x805020 && cp(r, 0, 15) === 0x30a030);
+  await T('bg layer order', 'smile', 'BGPUT 0,0,0,10\nBGPUT 1,0,0,11', (r) => cp(r, 0, 0) === 0xff0000);
+  await T('bg hide', 'smile', 'BGPUT 0,0,0,10\nBGHIDE 0', (r) => cp(r, 0, 0) === 0);
+  await T('bg ofs out', 'smile', 'BGOFS 1,3,4\nBGOFS 1 OUT X,Y\nPRINT X;Y', '34');
+  await T('bg range', 'smile', 'BGSCREEN 0,4,4\nBGPUT 0,4,0,1', /ERR .*範囲外/);
+  await T('bg sprite over', 'smile', 'BGFILL 0,0,0,3,3,10\nSPSET 0,0\nSPOFS 0,0,0', (r) => cp(r, 8, 8) === 0xff3030 && cp(r, 0, 0) === 0xff0000);
+  await T('gpage draw', 'smile', 'GPAGE 0,5\nGPSET 3,3,#RED\nGPAGE 0,0', (r) => r.screen.getPage(5).fb[3 * 512 + 3] !== 0 && r.screen.point(3, 3) === 0);
+  await T('gpage display', 'smile', 'GPAGE 1,1\nGPSET 3,3,#RED\nGPAGE 1,0', (r) => cp(r, 3, 3) === 0xff0000);
+  await T('gcopy', 'smile', 'GCOPY 4,0,0,15,15,100,100,0', (r) => cp(r, 108, 108) === 0xff3030 && cp(r, 100, 100) === 0);
+  await T('gcopy same page', 'smile', 'GPSET 1,1,#RED\nGCOPY 0,0,3,3,50,50,1', (r) => cp(r, 51, 51) === 0xff0000);
+  await T('gpage range', 'smile', 'GPAGE 9,0', /ERR .*0〜5/);
+  await T('gcls transparent', 'smile', 'GPSET 1,1,#RED\nGCLS', (r) => cp(r, 1, 1) === 0);
+  await T('file txt', 'smile', 'SAVE "TXT:HI","こんにちは"\nA$=LOAD("TXT:HI")\nPRINT A$\nLOAD "TXT:HI",B$\nPRINT LEN(B$)', 'こんにちは\n5');
+  await T('file dat', 'smile', 'DIM A[3]\nA[0]=1:A[1]=22:A[2]=333\nSAVE "DAT:NUM",A\nDIM B[1]\nLOAD "DAT:NUM",B\nPRINT LEN(B);B[2]', '3333');
+  await T('file dat str', 'smile', 'DIM A$[2]\nA$[0]="x":A$[1]="y"\nSAVE "DAT:S",A$\nLOAD "DAT:S",C$\nPRINT C$[1]', 'y');
+  await T('file list', 'smile', 'SAVE "TXT:B","1"\nSAVE "TXT:A","2"\nFILES', /TXT:A\nTXT:B\n2 file/);
+  await T('file delete', 'smile', 'SAVE "TXT:A","1"\nDELETE "TXT:A"\nA$=LOAD("TXT:A")', /ERR .*見つかりません/);
+  await T('file rename', 'smile', 'SAVE "TXT:A","v"\nRENAME "TXT:A","TXT:B"\nPRINT LOAD("TXT:B")', 'v');
+  await T('file missing', 'smile', 'A$=LOAD("TXT:NOPE")', /ERR .*見つかりません/);
+  await T('file bad name', 'smile', 'SAVE "ABC","1"', /ERR .*ファイル名/);
+  await T('file type', 'smile', 'SAVE "TXT:A",5', /ERR .*型/);
+  await T('file persist across runs', 'smile', 'SAVE "TXT:Q","kept"', (r) => r.vm.env.fs.get('TXT:Q') !== null);
+  await T('spr n88 err', 'n88', '10 SPSET 0,0', /ERR .*コマンド/);
+
+  // ---------------- N88-BASIC: ファイル
+  await T('n88 file write/read', 'n88', '10 OPEN "T.TXT" FOR OUTPUT AS #1\n20 PRINT #1,"HELLO";1;2\n30 WRITE #1,"A,B",5,"x"\n40 CLOSE #1\n50 OPEN "T.TXT" FOR INPUT AS #1\n60 LINE INPUT #1,A$:PRINT "[";A$;"]"\n70 INPUT #1,B$,C,D$:PRINT B$;C;D$\n80 PRINT EOF(1)\n90 CLOSE', '[HELLO 1  2 ]\nA,B 5 x\n-1');
+  await T('n88 file old syntax', 'n88', '10 OPEN "O",#1,"A.DAT"\n20 PRINT #1,"x"\n30 CLOSE 1\n40 OPEN "I",#2,"A.DAT"\n50 LINE INPUT #2,A$:PRINT A$', 'x');
+  await T('n88 file no space', 'n88', '10 OPEN "A.DAT" FOR OUTPUT AS #1\n20 PRINT#1,5\n30 CLOSE#1\n40 OPEN "A.DAT" FOR INPUT AS #1\n50 INPUT#1,A:PRINT A', ' 5');
+  await T('n88 file append', 'n88', '10 OPEN "L" FOR OUTPUT AS #1:PRINT #1,"1":CLOSE\n20 OPEN "L" FOR APPEND AS #1:PRINT #1,"2":CLOSE\n30 OPEN "L" FOR INPUT AS #1\n40 WHILE NOT EOF(1):LINE INPUT #1,A$:PRINT A$;:WEND\n50 CLOSE', '12');
+  await T('n88 file numbers', 'n88', '10 OPEN "N" FOR OUTPUT AS #1\n20 FOR I=1 TO 3:WRITE #1,I,I*I:NEXT:CLOSE\n30 OPEN "N" FOR INPUT AS #1\n40 WHILE NOT EOF(1)\n50 INPUT #1,A,B:PRINT A;B\n60 WEND', ' 1  1\n 2  4\n 3  9');
+  await T('n88 file missing', 'n88', '10 OPEN "NOPE" FOR INPUT AS #1', /ERR .*見つかりません/);
+  await T('n88 file past end', 'n88', '10 OPEN "E" FOR OUTPUT AS #1:CLOSE\n20 OPEN "E" FOR INPUT AS #1\n30 INPUT #1,A', /ERR .*終わりを過ぎて/);
+  await T('n88 file bad mode', 'n88', '10 OPEN "M" FOR OUTPUT AS #1\n20 INPUT #1,A', /ERR .*この操作はできません/);
+  await T('n88 file not open', 'n88', '10 PRINT #3,"x"', /ERR .*開かれていません/);
+  await T('n88 file already open', 'n88', '10 OPEN "X" FOR OUTPUT AS #1\n20 OPEN "Y" FOR OUTPUT AS #1', /ERR .*既に開かれて/);
+  await T('n88 file autoclose', 'n88', '10 OPEN "Z" FOR OUTPUT AS #1\n20 PRINT #1,"kept"\n30 END', (r) => r.vm.env.fs.get('N88:Z') === 'kept\n');
+  await T('n88 file lof', 'n88', '10 OPEN "Z" FOR OUTPUT AS #1:PRINT #1,"abc":CLOSE\n20 OPEN "Z" FOR INPUT AS #1:PRINT LOF(1);EOF(1)', ' 4  0');
+  await T('n88 input$', 'n88', '10 OPEN "Q" FOR OUTPUT AS #1:PRINT #1,"ABCDEF":CLOSE\n20 OPEN "Q" FOR INPUT AS #1\n30 PRINT INPUT$(3,#1);"/";INPUT$(2,1)', 'ABC/DE');
+  await T('n88 kill name files', 'n88', '10 OPEN "B.TXT" FOR OUTPUT AS #1:CLOSE\n20 OPEN "A.DAT" FOR OUTPUT AS #1:CLOSE\n30 FILES\n40 NAME "A.DAT" AS "C.DAT"\n50 FILES "*.DAT"\n60 KILL "C.DAT"\n70 FILES', /^A\.DAT\nB\.TXT\n2 file\(s\)\nC\.DAT\n1 file\(s\)\nB\.TXT\n1 file\(s\)$/);
+  await T('n88 kill missing', 'n88', '10 KILL "NOPE"', /ERR .*見つかりません/);
+  await T('n88 file drive prefix', 'n88', '10 OPEN "A:DATA.TXT" FOR OUTPUT AS #1:PRINT #1,"1":CLOSE\n20 OPEN "DATA.TXT" FOR INPUT AS #1:INPUT #1,A:PRINT A', ' 1');
+  await T('n88 print using file', 'n88', '10 OPEN "U" FOR OUTPUT AS #1\n20 PRINT #1,USING "###.#";3.14159\n30 CLOSE\n40 OPEN "U" FOR INPUT AS #1:LINE INPUT #1,A$:PRINT "[";A$;"]"', '[  3.1]');
+  await T('n88 random file', 'n88', `10 OPEN "R.DAT" AS #1 LEN=20
+20 FIELD #1, 10 AS N$, 2 AS A$, 8 AS S$
+30 FOR I=1 TO 3
+40 LSET N$="NAME"+STR$(I)
+50 LSET A$=MKI$(I*10)
+60 RSET S$=STR$(I*1.5)
+70 PUT #1,I
+80 NEXT
+90 CLOSE
+100 OPEN "R" ,#1,"R.DAT",20
+110 FIELD #1, 10 AS N$, 2 AS A$, 8 AS S$
+120 GET #1,2
+130 PRINT "[";N$;"]";CVI(A$);"[";S$;"]"
+140 PRINT LOF(1)
+150 GET #1,3:PRINT CVI(A$)`, '[NAME 2    ] 20 [       3]\n 60\n 30');
+  await T('n88 mk cv', 'n88', '10 PRINT CVI(MKI$(-300));CVS(MKS$(1.5));CVD(MKD$(3.25));LEN(MKI$(1));LEN(MKS$(1));LEN(MKD$(1))', '-300 1.5 3.25 2 4 8'.replace(/ /g, '  ').replace(/^-300/, '-300'));
+  await T('n88 field overflow', 'n88', '10 OPEN "R" AS #1 LEN=5\n20 FIELD #1, 10 AS A$', /ERR .*超えて/);
+  await T('n88 lset plain', 'n88', '10 LSET A$="x"\n20 PRINT A$', 'x');
+  await T('smile files unaffected', 'smile', 'SAVE "TXT:A","1"\nFILES', /^TXT:A\n1 file/);
+  await T('smile no open', 'smile', 'OPEN "A" FOR OUTPUT AS #1', /ERR .*コマンド/);
 
   console.log(`\n${pass} passed, ${fail} failed`);
   process.exit(fail ? 1 : 0);
