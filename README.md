@@ -46,6 +46,17 @@ node tests/ui-test.js    # ブラウザ操作テスト(Playwright が必要)
 
 `js/basic-core.js` の `DIALECTS` に定義を足し、`js/basic-compiler.js` の `H`(文ハンドラ)と `js/basic-core.js` の `FN`(関数表)で使えるキーワードを増やします。
 
+## GitHub Pages で公開する
+
+`.github/workflows/pages.yml` が、`main` への push のたびにテストを実行し、公開に必要なファイル(`index.html`・`manual*.html`・`compare.html`・`css/`・`js/`)だけを GitHub Pages にデプロイします。ビルドや外部サービスは不要です。
+
+1. リポジトリの **Settings → Pages → Build and deployment → Source** を **GitHub Actions** にする。
+2. **Settings → Branches** で、デフォルトブランチを `main` にする(`github-pages` 環境はデフォルトブランチからのデプロイしか許可しないため)。
+3. PR を `main` にマージする(または Actions タブの「Deploy to GitHub Pages」を手動実行する)。
+4. 公開URL: `https://<ユーザー名>.github.io/<リポジトリ名>/`(例: https://vtmacs.github.io/basic/)。
+
+`.github/workflows/ci.yml` は、PR と `main` で `npm test` と「生成済みHTMLが `tools/docs` と一致しているか」を確認します。
+
 ## 商標・権利について
 
 - 「N88-BASIC」「PC-8801」「PC-9801」は日本電気株式会社の、「SmileBASIC」は株式会社スマイルブームの、「Microsoft」は Microsoft Corporation の商標または登録商標です。
