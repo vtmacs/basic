@@ -263,12 +263,17 @@
     renderText(ctx, W, H, fontFamily) {
       ctx.clearRect(0, 0, W, H);
       const cw = W / this.cols, chh = H / this.rows;
-      const fs = Math.floor(chh * 0.82);
-      ctx.font = fs + 'px ' + (fontFamily || 'monospace');
+      // 字の大きさは升目の高さと幅の両方から決める(フォントによって字幅がちがうため)。
+      // 引き伸ばしは控えめにして、升目の中央に置く。
+      const fam = fontFamily || 'monospace';
+      ctx.font = '100px ' + fam;
+      const ratio = (ctx.measureText('M').width || 60) / 100;
+      const fs = Math.max(6, Math.floor(Math.min(chh * 0.95, cw / ratio)));
+      ctx.font = fs + 'px ' + fam;
       ctx.textBaseline = 'middle';
-      const mw = ctx.measureText('M').width || fs * 0.6;
-      const sxN = Math.min(2.2, Math.max(1, cw / mw));
-      const sxW = Math.min(2.2, Math.max(1, (2 * cw) / fs));
+      const gwN = ratio * fs;
+      const sxN = Math.min(1.45, Math.max(1, cw / gwN));
+      const sxW = Math.min(1.3, Math.max(1, (2 * cw) / fs));
       for (let y = 0; y < this.rows; y++) {
         for (let x = 0; x < this.cols; x++) {
           const i = y * this.cols + x;
@@ -279,11 +284,11 @@
           ctx.fillStyle = css(this.fgc[i]);
           const wide = this.ch[i + 1] === '';
           const sx = wide ? sxW : sxN;
-          if (sx > 1.08) {
-            ctx.setTransform(sx, 0, 0, 1, x * cw + (wide ? 0 : 0), y * chh + chh / 2);
-            ctx.fillText(c, 0, 0);
-            ctx.setTransform(1, 0, 0, 1, 0, 0);
-          } else ctx.fillText(c, x * cw, y * chh + chh / 2, wide ? cw * 2 : cw);
+          const cellW = wide ? 2 * cw : cw, glyphW = (wide ? fs : gwN) * sx;
+          const ox = Math.max(0, (cellW - glyphW) / 2);
+          ctx.setTransform(sx, 0, 0, 1, x * cw + ox, y * chh + chh / 2);
+          ctx.fillText(c, 0, 0);
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
         }
       }
       if (this.cursorOn) {
