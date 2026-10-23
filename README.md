@@ -17,7 +17,8 @@ css/style.css                             共通CSS。<html data-dialect="..."> 
 js/screen.js                              文字グリッド+ピクセルフレームバッファ(DOM非依存)
 js/basic-core.js                          方言定義・字句解析・組込み関数・PRINT USING
 js/basic-compiler.js                      ソース → 命令列(クロージャ)へのコンパイラ
-js/basic-vm.js                            実行系(変数/配列/呼び出し/INPUT/グラフィック/エラー処理)
+js/basic-vm.js                            実行系(変数/配列/呼び出し/INPUT/グラフィック/エラー処理/ファイル)
+js/sprites.js                             smile BASIC のスプライト・BG・標準の絵・合成
 js/samples.js                             サンプルプログラム
 js/app.js                                 UI(エディタ・入力欄・キー/マウス・音)
 tools/build-docs.js, tools/docs/*.js      マニュアル・比較ページの生成元

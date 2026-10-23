@@ -64,6 +64,8 @@ const ROWS = [
     ['色の指定', '0〜7', '0〜7(黒 青 赤 紫 緑 水 黄 白)', '0〜7・色名 <code>"RED"</code>・<code>MIX(r,g,b)</code>', '<code>RGB(r,g,b)</code>・<code>#RED</code> など'],
     ['時間待ち', '<code>WAIT</code>(拡張)', 'n:なし(ループで待つ)', '<code>WAIT DELAY 秒</code>', '<code>VSYNC</code>・<code>WAIT</code>(1/60秒単位)'],
     ['音', 'n:なし', 'y:<code>BEEP SOUND PLAY</code>', 'n:なし', 'p:<code>BEEP</code> だけ'],
+    ['スプライト・BG', 'n:なし', 'n:なし', 'n:なし', 'y:<code>SPSET SPOFS SPANIM BGPUT BGOFS …</code>'],
+    ['ファイルの保存', 'n:なし', 'n:なし', 'n:なし', 'y:<code>SAVE LOAD FILES</code>(ブラウザに保存)'],
   ]],
 ];
 

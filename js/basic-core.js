@@ -49,7 +49,10 @@
       kw: words(`REM PRINT LOCATE COLOR CLS VSYNC WAIT FOR NEXT BREAK CONTINUE WHILE WEND REPEAT UNTIL IF ELSEIF ELSE
         ENDIF GOTO GOSUB RETURN ON VAR DIM DATA READ RESTORE DEF END COMMON CALL INPUT LINPUT INC DEC SWAP PUSH
         UNSHIFT SORT RSORT ACLS GCLS GCOLOR GPSET GLINE GBOX GFILL GCIRCLE GPAINT GPRINT XSCREEN DISPLAY BEEP
-        RANDOMIZE STICK TOUCH SWITCH CASE DEFAULT ENDSWITCH STOP OPTION`),
+        RANDOMIZE STICK TOUCH SWITCH CASE DEFAULT ENDSWITCH STOP OPTION
+        SPSET SPCLR SPOFS SPROT SPSCALE SPHOME SPCOLOR SPSHOW SPHIDE SPCHR SPDEF SPANIM SPCOL SPVAR
+        BGSCREEN BGPUT BGFILL BGOFS BGCLR BGSHOW BGHIDE GPAGE GCOPY SAVE LOAD DELETE RENAME FILES`),
+      transparent: true,
     },
   };
   for (const d of Object.values(DIALECTS)) d.suffixSet = new Set(d.suffix.split(''));
@@ -395,6 +398,13 @@
     return (cl(r) << 16) | (cl(g) << 8) | cl(b);
   }, 'full');
   def('BUTTON', 0, 2, (vm) => vm.env.buttons(), 'smile');
+  const spr = (vm) => { if (!vm.screen.spr) throw E('この環境ではスプライトを使えません', 5); return vm.screen.spr; };
+  def('SPUSED', 1, 1, (vm, id) => spr(vm).used(num(id)), 'smile');
+  def('SPHITSP', 1, 2, (vm, a, b) => spr(vm).hitsp(num(a), b === undefined ? undefined : num(b)), 'smile');
+  def('SPHITRC', 5, 5, (vm, id, x, y, w, h) => spr(vm).hitrc(num(id), num(x), num(y), num(w), num(h)), 'smile');
+  def('SPVAR', 2, 2, (vm, id, n) => spr(vm).spvar(num(id), num(n)), 'smile');
+  def('BGGET', 3, 3, (vm, l, x, y) => spr(vm).bgget(num(l), num(x), num(y)), 'smile');
+  def('LOAD', 1, 1, (vm, name) => vm.fsLoad(str(name)), 'smile');
   def('POP', 1, 1, (vm, a) => { if (!(a instanceof BArray) || !a.data.length) throw illegal(); const v = a.data.pop(); a.sync(); return v; }, 'smile');
   def('SHIFT', 1, 1, (vm, a) => { if (!(a instanceof BArray) || !a.data.length) throw illegal(); const v = a.data.shift(); a.sync(); return v; }, 'smile');
 

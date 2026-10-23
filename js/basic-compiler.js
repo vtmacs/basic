@@ -66,7 +66,9 @@
     }
     coercer(name) {
       const D = this.D, ty = this.typeOf(name);
-      if (ty === 'str') return (v) => { if (typeof v !== 'string') throw typeErr(); return v; };
+      if (ty === 'str') return D.id === 'smile'
+        ? (v) => { if (typeof v === 'string') return v; if (v instanceof BArray) return v.clone(); throw typeErr(); }
+        : (v) => { if (typeof v !== 'string') throw typeErr(); return v; };
       if (D.intOnly) return (v) => { if (typeof v !== 'number') throw typeErr(); return v; };
       if (ty === 'int') return (v) => { if (typeof v !== 'number') throw typeErr(); const r = Math.round(v); if (r > 32767 || r < -32768) throw ovf(); return r; };
       if (D.id === 'smile') return (v) => { if (typeof v === 'number') return v; if (v instanceof BArray) return v.clone(); throw typeErr(); };
@@ -1112,6 +1114,7 @@
     this.emit((vm) => {
       const v = nm(e(vm));
       const ms = D.id === 'tiny' ? v * 10 : D.id === 'full' ? v * 1000 : v * 1000 / 60;
+      if (D.id === 'smile') vm.advance(v);
       return vm.env.sleep(ms);
     });
   };
@@ -1268,10 +1271,15 @@
   };
 
   // smile BASIC のグラフィック
-  H.ACLS = function () { this.emit((vm) => { vm.screen.cls(); vm.screen.gcls(); vm.screen.color(vm.D.fg, -1); }); };
+  H.ACLS = function () {
+    this.emit((vm) => { vm.screen.cls(); vm.screen.usePage(0); vm.screen.dispPage = 0; vm.screen.gcls(); vm.screen.color(vm.D.fg, -1); if (vm.screen.spr) vm.screen.spr.acls(); });
+  };
   H.GCLS = function () {
     const e = this.atEnd() ? null : this.expr();
-    this.emit((vm) => vm.screen.gcls(e ? vm.toRGB(e(vm)) : vm.D.bg));
+    this.emit((vm) => {
+      const v = e ? e(vm) : 0;
+      vm.screen.gcls(v === 0 ? undefined : vm.toRGB(v)); // 色を省かない0 = 透明
+    });
   };
   H.GCOLOR = function () { const e = this.expr(); this.emit((vm) => { vm.gcolor = vm.toRGB(e(vm)); }); };
   H.GPSET = function () {
@@ -1321,6 +1329,98 @@
   }
   H.STICK = outStmt('STICK');
   H.TOUCH = outStmt('TOUCH');
+
+
+  // ---- スプライト / BG / グラフィックページ / ファイル (smile BASIC) ----
+  const sprOf = (vm) => { if (!vm.screen.spr) throw E('この環境ではスプライトを使えません', 5); return vm.screen.spr; };
+  const nv = (f, vm) => (f ? nm(f(vm)) : undefined);
+  function spSimple(method, min, max, what) {
+    return function () {
+      const a = numArgs(this, min, max, what);
+      this.emit((vm) => sprOf(vm)[method](...a.map((f) => nv(f, vm))));
+    };
+  }
+  function spOut(setM, getM, min, max, what) { // 例: SPOFS id,x,y  /  SPOFS id OUT x,y
+    return function () {
+      const pre = [];
+      while (!this.isId('OUT') && !this.atEnd()) { pre.push(this.expr()); if (!this.eatOp(',')) break; }
+      if (this.eatId('OUT')) {
+        const lvs = []; do { lvs.push(this.lvalue()); } while (this.eatOp(','));
+        if (pre.length !== 1) this.syntax(what);
+        this.emit((vm) => { const r = sprOf(vm)[getM](nm(pre[0](vm))); lvs.forEach((lv, i) => lv.set(vm, r[i] === undefined ? 0 : r[i])); });
+      } else {
+        if (pre.length < min || pre.length > max) this.syntax(what);
+        this.emit((vm) => sprOf(vm)[setM](...pre.map((f) => nm(f(vm)))));
+      }
+    };
+  }
+  H.SPSET = function () {
+    const a = numArgs(this, 2, 6, 'SPSET id,定義番号  /  SPSET id,u,v,w,h[,属性]');
+    this.emit((vm) => sprOf(vm).spset(a.map((f) => nv(f, vm))));
+  };
+  H.SPCLR = spSimple('spclr', 0, 1, 'SPCLR [id]');
+  H.SPCHR = spSimple('spchr', 2, 2, 'SPCHR id,定義番号');
+  H.SPDEF = spSimple('spdef', 5, 7, 'SPDEF 定義番号,u,v,w,h[,hx,hy]');
+  H.SPHOME = spSimple('sphome', 3, 3, 'SPHOME id,x,y');
+  H.SPCOL = spSimple('spcol', 5, 5, 'SPCOL id,x,y,w,h');
+  H.SPOFS = spOut('spofs', 'spofsGet', 3, 4, 'SPOFS id,x,y[,z]  /  SPOFS id OUT x,y,z');
+  H.SPROT = spOut('sprot', 'sprotGet', 2, 2, 'SPROT id,角度  /  SPROT id OUT 角度');
+  H.SPSCALE = spOut('spscale', 'spscaleGet', 3, 3, 'SPSCALE id,sx,sy  /  SPSCALE id OUT sx,sy');
+  H.SPCOLOR = function () {
+    const a = numArgs(this, 2, 2, 'SPCOLOR id,色');
+    this.emit((vm) => sprOf(vm).spcolor(nm(a[0](vm)), vm.toRGB(a[1](vm))));
+  };
+  H.SPSHOW = function () { const a = numArgs(this, 1, 1, 'SPSHOW id'); this.emit((vm) => sprOf(vm).spshow(nm(a[0](vm)), true)); };
+  H.SPHIDE = function () { const a = numArgs(this, 1, 1, 'SPHIDE id'); this.emit((vm) => sprOf(vm).spshow(nm(a[0](vm)), false)); };
+  H.SPVAR = function () {
+    const a = numArgs(this, 3, 3, 'SPVAR id,番号,値');
+    this.emit((vm) => sprOf(vm).spvarSet(nm(a[0](vm)), nm(a[1](vm)), nm(a[2](vm))));
+  };
+  H.SPANIM = function () {
+    const a = []; do { a.push(this.expr()); } while (this.eatOp(','));
+    if (a.length < 4) this.syntax('SPANIM id,"XY",時間,x,y ...');
+    this.emit((vm) => sprOf(vm).spanim(nm(a[0](vm)), a[1](vm), a.slice(2).map((f) => nm(f(vm)))));
+  };
+  H.BGSCREEN = spSimple('bgscreen', 3, 3, 'BGSCREEN 層,横のマス数,縦のマス数');
+  H.BGPUT = spSimple('bgput', 4, 4, 'BGPUT 層,x,y,タイル番号');
+  H.BGFILL = spSimple('bgfill', 6, 6, 'BGFILL 層,x1,y1,x2,y2,タイル番号');
+  H.BGCLR = spSimple('bgclr', 0, 1, 'BGCLR [層]');
+  H.BGOFS = spOut('bgofs', 'bgofsGet', 3, 3, 'BGOFS 層,x,y  /  BGOFS 層 OUT x,y');
+  H.BGSHOW = function () { const a = numArgs(this, 1, 1, 'BGSHOW 層'); this.emit((vm) => sprOf(vm).bgshow(nm(a[0](vm)), true)); };
+  H.BGHIDE = function () { const a = numArgs(this, 1, 1, 'BGHIDE 層'); this.emit((vm) => sprOf(vm).bgshow(nm(a[0](vm)), false)); };
+  H.GPAGE = function () {
+    const a = numArgs(this, 1, 2, 'GPAGE 表示ページ[,描画ページ]');
+    this.emit((vm) => vm.setPages(a[0] ? nm(a[0](vm)) : null, a[1] ? nm(a[1](vm)) : null));
+  };
+  H.GCOPY = function () {
+    const a = numArgs(this, 7, 8, 'GCOPY [元ページ,]x1,y1,x2,y2,dx,dy,モード');
+    this.emit((vm) => {
+      const v = a.map((f) => nm(f(vm)));
+      const sp = v.length === 8 ? v.shift() : vm.screen.drawPage;
+      if (!(sp >= 0 && sp <= 5)) throw illegal('ページ番号は 0〜5');
+      vm.screen.gcopy(Math.trunc(sp), v[0], v[1], v[2], v[3], v[4], v[5], v[6] !== 0);
+    });
+  };
+  H.SAVE = function () {
+    const n = this.expr(); this.expectOp(','); const d = this.expr();
+    this.emit((vm) => vm.fsSave(n(vm), d(vm)));
+  };
+  H.LOAD = function () {
+    const n = this.expr();
+    let lv = null;
+    if (this.eatOp(',')) lv = this.lvalue();
+    this.emit((vm) => { const v = vm.fsLoad(n(vm)); if (lv) lv.set(vm, v); });
+  };
+  H.DELETE = function () { const n = this.expr(); this.emit((vm) => vm.fsDelete(n(vm))); };
+  H.RENAME = function () { const a = this.expr(); this.expectOp(','); const b = this.expr(); this.emit((vm) => vm.fsRename(a(vm), b(vm))); };
+  H.FILES = function () {
+    const lv = this.atEnd() ? null : this.lvalue();
+    this.emit((vm) => {
+      const names = vm.fsList();
+      if (lv) { const a = new BArray([0], [Math.max(0, names.length - 1)], ''); a.data = names.slice(); if (!names.length) a.data = []; a.sync(); lv.set(vm, a); }
+      else { for (const n of names) vm.screen.write(n + '\n'); vm.screen.write(names.length + ' file(s)\n'); }
+    });
+  };
 
   // 方言外のコマンドを使ったときのメッセージ用に、ハンドラが無いキーワードも登録
   for (const w of ['RUN', 'NEW', 'LIST', 'CONT']) H[w] = function () { this.err(`${w} はエディタ操作用のコマンドです。「実行」ボタンを使ってください`, 2); };

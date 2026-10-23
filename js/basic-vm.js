@@ -23,7 +23,56 @@
       // 画面の初期化
       const s = this.screen;
       s.color(this.D.fg, -1);
+      if (this.D.id === 'smile' && !s.spr && NS.Sprites) NS.Sprites.attach(s);
     }
+    // ------------------------------------------------------------ グラフィックページ・フレーム
+    setPages(disp, draw) {
+      if (disp !== null) { if (!(disp >= 0 && disp <= 5)) throw illegal('ページ番号は 0〜5'); this.screen.dispPage = Math.trunc(disp); this.screen.dirtyG = true; }
+      if (draw !== null) { if (!(draw >= 0 && draw <= 5)) throw illegal('ページ番号は 0〜5'); this.screen.usePage(Math.trunc(draw)); }
+    }
+    advance(frames) { if (this.env.tickOnVsync && this.screen.spr) this.screen.spr.tick(frames); }
+    // ------------------------------------------------------------ ファイル (TXT:名前 / DAT:名前)
+    fsKey(name) {
+      if (typeof name !== 'string') throw typeErr();
+      const m = /^(TXT|DAT):([A-Za-z0-9_.\-]{1,32})$/i.exec(name.trim());
+      if (!m) throw illegal('ファイル名は "TXT:名前" または "DAT:名前" の形です');
+      return m[1].toUpperCase() + ':' + m[2].toUpperCase();
+    }
+    fsEnv() { if (!this.env.fs) throw E('この環境ではファイルを使えません', 5); return this.env.fs; }
+    fsSave(name, data) {
+      const key = this.fsKey(name);
+      let rec;
+      if (key.startsWith('TXT:')) { if (typeof data !== 'string') throw typeErr(); rec = { t: 'TXT', d: data }; }
+      else {
+        if (!(data instanceof BArray)) throw typeErr();
+        rec = { t: 'DAT', lo: data.lo, hi: data.hi, def: data.def, d: data.data };
+      }
+      try { this.fsEnv().set(key, JSON.stringify(rec)); } catch (e) { if (e instanceof BasicError) throw e; throw E('ファイルを保存できません (容量オーバーか、保存が許可されていません)', 70); }
+    }
+    fsLoad(name) {
+      const key = this.fsKey(name);
+      const raw = this.fsEnv().get(key);
+      if (raw === null || raw === undefined) throw E(`ファイルが見つかりません: ${key} (Load failed)`, 53);
+      const rec = JSON.parse(raw);
+      if (rec.t === 'TXT') return rec.d;
+      const a = new BArray(rec.lo, rec.hi, rec.def);
+      a.data = rec.d;
+      return a;
+    }
+    fsDelete(name) {
+      const key = this.fsKey(name), fs = this.fsEnv();
+      if (fs.get(key) === null || fs.get(key) === undefined) throw E(`ファイルが見つかりません: ${key}`, 53);
+      fs.del(key);
+    }
+    fsRename(a, b) {
+      const ka = this.fsKey(a), kb = this.fsKey(b), fs = this.fsEnv();
+      const raw = fs.get(ka);
+      if (raw === null || raw === undefined) throw E(`ファイルが見つかりません: ${ka}`, 53);
+      if (ka.slice(0, 3) !== kb.slice(0, 3)) throw illegal('種類(TXT/DAT)は変えられません');
+      if (fs.get(kb) !== null && fs.get(kb) !== undefined) throw E(`同じ名前のファイルがあります: ${kb}`, 58);
+      fs.set(kb, raw); fs.del(ka);
+    }
+    fsList() { return this.fsEnv().list().sort(); }
     // ------------------------------------------------------------ 乱数
     seed(s) { this.rs = (Math.floor(Math.abs(s) * 997) ^ 0x9e3779b9) >>> 0; this.lastRnd = this.rand(); }
     rand() {
@@ -268,6 +317,7 @@
 
     // ------------------------------------------------------------ 時間・音
     vsync(n) {
+      this.advance(n);
       const now = this.env.now();
       const target = (this.lastSync || now) + n * 1000 / 60;
       const wait = Math.max(0, target - now);
@@ -416,6 +466,10 @@
     return out;
   }
 
+  function memoryFs() {
+    const m = new Map();
+    return { get: (k) => (m.has(k) ? m.get(k) : null), set: (k, v) => { m.set(k, v); }, del: (k) => { m.delete(k); }, list: () => [...m.keys()] };
+  }
   // 簡易環境(テスト・既定値)
   function makeEnv(screen, o) {
     o = o || {};
@@ -429,10 +483,15 @@
       input: () => Promise.resolve(inputs.length ? inputs.shift() : ''),
       inkey: () => (keys.length ? keys.shift() : ''),
       buttons: () => 0, stick: () => [0, 0], touch: () => [0, 0, 0],
-      tone: null, abort: null,
+      tone: null, abort: null, tickOnVsync: true, fs: memoryFs(),
     }, o.env || {});
   }
 
+  NS.createScreen = (id) => {
+    const D = NS.DIALECTS[id];
+    return new NS.Screen({ cols: D.cols, rows: D.rows, gw: D.gw, gh: D.gh, bg: D.bg, fg: D.fg, transparent: !!D.transparent });
+  };
+  NS.memoryFs = memoryFs;
   NS.VM = VM; NS.StopSignal = StopSignal; NS.makeEnv = makeEnv;
   NS.run = function (src, dialectId, env) {
     const prog = NS.compile(src, dialectId);
